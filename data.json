@@ -1,0 +1,46 @@
+{
+  "updated": "2026-04-15",
+  "athlete": "Matt",
+
+  "next_race": {
+    "name": "Des Moines Women's Half Marathon",
+    "short_name": "DM Half",
+    "date": "2026-05-03",
+    "type": "half",
+    "distance": "13.1 mi"
+  },
+
+  "fitness": {
+    "vo2_max": 56.5,
+    "vo2_max_peak": 57.1,
+    "resting_hr": 64,
+    "hrv": 121,
+    "hr_recovery": 41,
+    "readiness_score": 68,
+    "readiness_label": "Good",
+    "readiness_color": "yellow"
+  },
+
+  "training": {
+    "runs_2026": 55,
+    "miles_2026": 332.6,
+    "miles_jan": 92.87,
+    "miles_feb": 119.19,
+    "miles_mar": 120.51,
+    "miles_apr": 0,
+    "weekly_hrs_avg": 3.7,
+    "peak_month_hrs": 16.6,
+    "ctL": 34.5,
+    "atl": 32.0,
+    "tsb": 2.6
+  },
+
+  "races": [
+    { "name": "Des Moines Women's Half Marathon", "short": "DM Half",     "date": "2026-05-03", "distance": "13.1 mi" },
+    { "name": "Market to Market Relay",           "short": "M2M Relay",   "date": "2026-05-09", "distance": "Relay"   },
+    { "name": "Ironman 70.3 Omaha",               "short": "Ironman 70.3","date": "2026-06-07", "distance": "70.3 mi" },
+    { "name": "Mile Night Run",                   "short": "Mile Night",  "date": "2026-06-20", "distance": "1 mi"    },
+    { "name": "Whiterock Ultra 50k",              "short": "Whiterock 50k","date": "2026-07-25","distance": "50k"     },
+    { "name": "Marine Corps Marathon",            "short": "Marine Corps", "date": "2026-10-25", "distance": "26.2 mi" }
+  ]
+}
