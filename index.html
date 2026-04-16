@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="StayHard">
+<meta name="theme-color" content="#080808">
+<title>StayHard — Matt's Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:   #080808;
+  --black2:  #0f0f0f;
+  --black3:  #161616;
+  --black4:  #1e1e1e;
+  --white:   #ffffff;
+  --off:     #f5f4f0;
+  --red:     #e8351a;
+  --red2:    #ff4f30;
+  --gold:    #c9a84c;
+  --gold2:   #f0c96a;
+  --text:    #ffffff;
+  --text2:   #aaaaaa;
+  --text3:   #666666;
+  --text4:   #3a3a3a;
+  --border:  #222222;
+  --border2: #2e2e2e;
+}
+
+html { background: var(--black); scroll-behavior: smooth; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--black);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(48px + env(safe-area-inset-top)) 48px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(232,53,26,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 0% 100%, rgba(201,168,76,0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.hero-date-time {
+  text-align: right;
+}
+
+.hero-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text3);
+  letter-spacing: 1px;
+}
+
+.hero-date {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text4);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.hero-center {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 0 40px;
+}
+
+.hero-greeting {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.2s forwards;
+}
+
+.hero-headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(72px, 12vw, 160px);
+  line-height: 0.88;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: var(--white);
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.35s forwards;
+}
+
+.hero-headline em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+}
+
+.hero-sub {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.55s forwards;
+}
+
+.hero-mantra {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero-sub-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent);
+  max-width: 200px;
+}
+
+.hero-scroll-hint {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--text4);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-scroll-line {
+  width: 40px;
+  height: 1px;
+  background: var(--text4);
+  animation: expandLine 1.5s ease 1.5s both;
+}
+
+@keyframes expandLine {
+  from { width: 0; opacity: 0; }
+  to { width: 40px; opacity: 1; }
+}
+
+.hero-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+/* ── QUICK STATS BAR ─────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  gap: 32px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.8s forwards;
+}
+
+.stat-item {}
+.stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--white);
+}
+.stat-lbl {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ── BOOKMARK BAR ────────────────────────────────────────── */
+.bookmark-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.7s forwards;
+}
+
+.bookmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text3);
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.bookmark:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.18);
+  color: var(--white);
+}
+
+.bookmark-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── SECTION STRUCTURE ───────────────────────────────────── */
+.section { padding: 80px 48px; border-top: 1px solid var(--border); }
+
+.section-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  max-width: 80px;
+}
+
+/* ── DASHBOARDS ─────────────────────────────────────────── */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.dash-card {
+  background: var(--black2);
+  padding: 36px 36px 32px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+}
+
+.dash-card:hover { background: var(--black3); }
+
+.dash-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transition: height 0.2s ease;
+}
+
+.dash-card:hover .dash-card-accent { height: 3px; }
+
+.dash-card-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text4);
+  margin-bottom: auto;
+}
+
+.dash-card-body { margin-top: 24px; }
+
+.dash-card-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.dash-card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  color: var(--white);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.dash-card-desc {
+  font-size: 13px;
+  color: var(--text3);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.dash-card-arrow {
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text4);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.dash-card:hover .dash-card-arrow {
+  color: var(--white);
+  transform: translate(3px, -3px);
+}
+
+.dash-card-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  padding: 5px 10px;
+  background: var(--black4);
+  border-radius: 4px;
+}
+
+.dash-card-stat span { color: var(--white); font-weight: 500; }
+
+/* ── COMING SOON CARD ────────────────────────────────────── */
+.dash-card-soon {
+  opacity: 0.4;
+  cursor: default;
+}
+.dash-card-soon:hover { background: var(--black2); }
+.soon-badge {
+  display: inline-block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text3);
+  text-transform: uppercase;
+  border: 1px solid var(--border2);
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-top: 14px;
+}
+
+/* ── GOALS ──────────────────────────────────────────────── */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.goal-card {
+  background: var(--black2);
+  padding: 28px 28px 24px;
+}
+
+.goal-category {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.goal-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.goal-bar-outer {
+  height: 2px;
+  background: var(--black4);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.goal-bar-inner { height: 100%; border-radius: 1px; }
+
+.goal-progress {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text4);
+}
+
+/* ── QUOTES ─────────────────────────────────────────────── */
+.quotes-stack { display: flex; flex-direction: column; gap: 2px; }
+
+.quote-row {
+  background: var(--black2);
+  padding: 32px 40px;
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  border-radius: 0;
+  transition: background 0.15s;
+}
+
+.quote-row:first-child { border-radius: 14px 14px 0 0; }
+.quote-row:last-child  { border-radius: 0 0 14px 14px; }
+.quote-row:only-child  { border-radius: 14px; }
+.quote-row:hover { background: var(--black3); }
+
+.quote-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text4);
+  min-width: 24px;
+  margin-top: 4px;
+}
+
+.quote-body { flex: 1; }
+
+.quote-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--white);
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+.quote-author {
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  color: var(--text3);
+  font-style: italic;
+}
+
+/* ── LINKS ──────────────────────────────────────────────── */
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.link-card {
+  background: var(--black2);
+  padding: 24px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background 0.15s;
+}
+
+.link-card:hover { background: var(--black3); }
+
+.link-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.link-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.link-desc {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.4;
+  margin-top: auto;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+.footer {
+  padding: 32px 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: var(--text4);
+  text-transform: uppercase;
+}
+
+.footer-logo span { color: var(--red); }
+
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text4);
+}
+
+/* ── ANIMATIONS ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── GOAL MODAL ──────────────────────────────────────────── */
+.g-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+.g-modal-overlay.open { display: flex; }
+.g-modal {
+  background: var(--black2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  overflow-y: auto;
+  margin: 20px;
+}
+.g-modal::-webkit-scrollbar { width: 3px; }
+.g-modal::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.g-modal-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.g-modal-sub { font-size: 12px; color: var(--text3); margin-bottom: 24px; }
+.g-goal-block {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 10px;
+  background: var(--black3);
+}
+.g-goal-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.g-goal-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text4);
+  text-transform: uppercase;
+}
+.g-remove-btn {
+  font-size: 11px;
+  color: var(--text4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0;
+  transition: color 0.15s;
+}
+.g-remove-btn:hover { color: var(--red); }
+.g-field { margin-bottom: 10px; }
+.g-field label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 5px;
+}
+.g-field input, .g-field select {
+  width: 100%;
+  padding: 8px 11px;
+  background: var(--black4);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.g-field input:focus, .g-field select:focus { border-color: var(--text3); }
+.g-field select option { background: var(--black2); }
+.g-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.g-add-btn {
+  width: 100%;
+  padding: 11px;
+  background: var(--black3);
+  border: 1px dashed var(--border2);
+  border-radius: 10px;
+  color: var(--text3);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.g-add-btn:hover { color: var(--white); border-color: var(--text3); }
+.g-modal-actions { display: flex; gap: 10px; }
+.g-btn {
+  flex: 1;
+  padding: 11px;
+  border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+}
+.g-btn-save { background: var(--white); color: var(--black); }
+.g-btn-save:hover { background: var(--off); }
+.g-btn-cancel { background: var(--black3); color: var(--text2); border: 1px solid var(--border2); }
+.g-btn-cancel:hover { background: var(--black4); }
+
+/* ── GOAL MODAL ──────────────────────────────────────────── */
+.g-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:500; align-items:center; justify-content:center; }
+.g-overlay.open { display:flex; }
+.g-modal { background:var(--black2); border:1px solid var(--border2); border-radius:14px; padding:28px; width:100%; max-width:540px; max-height:88vh; overflow-y:auto; margin:20px; }
+.g-modal::-webkit-scrollbar { width:3px; }
+.g-modal::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+.g-modal-title { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--white); margin-bottom:4px; }
+.g-modal-sub { font-size:12px; color:var(--text3); margin-bottom:22px; }
+.g-block { border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:10px; background:var(--black3); }
+.g-block-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.g-block-num { font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; color:var(--text4); text-transform:uppercase; }
+.g-rm { font-size:11px; color:var(--text4); background:none; border:none; cursor:pointer; font-family:'Barlow Condensed',sans-serif; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:0; transition:color 0.15s; }
+.g-rm:hover { color:var(--red); }
+.gf { margin-bottom:10px; }
+.gf label { display:block; font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-bottom:5px; }
+.gf input, .gf select { width:100%; padding:8px 11px; background:var(--black4); border:1px solid var(--border2); border-radius:6px; color:var(--white); font-family:'Barlow',sans-serif; font-size:13px; outline:none; transition:border-color 0.15s; }
+.gf input:focus, .gf select:focus { border-color:var(--text3); }
+.gf select option { background:var(--black2); }
+.gf-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.g-add { width:100%; padding:11px; background:var(--black3); border:1px dashed var(--border2); border-radius:10px; color:var(--text3); font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; margin-bottom:20px; transition:color 0.15s,border-color 0.15s; }
+.g-add:hover { color:var(--white); border-color:var(--text3); }
+.g-actions { display:flex; gap:10px; }
+.g-btn { flex:1; padding:11px; border-radius:8px; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; }
+.g-save { background:var(--white); color:var(--black); }
+.g-save:hover { background:var(--off); }
+.g-cancel { background:var(--black3); color:var(--text2); border:1px solid var(--border2); }
+.g-cancel:hover { background:var(--black4); }
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero { padding: calc(32px + env(safe-area-inset-top)) 24px 32px; }
+  .hero-headline { font-size: clamp(56px, 16vw, 100px); }
+  .stats-bar { gap: 20px; }
+  .stat-num { font-size: 22px; }
+  .section { padding: 56px 24px; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .goals-grid { grid-template-columns: 1fr; }
+  .links-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+  .quote-row { padding: 24px; }
+  .quote-text { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+
+  <div class="hero-top">
+    <div class="hero-logo">StayHard</div>
+    <div class="hero-date-time">
+      <div class="hero-time" id="hero-time">—</div>
+      <div class="hero-date" id="hero-date">—</div>
+    </div>
+  </div>
+
+  <div class="hero-center">
+    <div class="hero-greeting">Good morning, Matt</div>
+    <div class="hero-headline">Go<br><em>One</em><br>More.</div>
+    <div class="hero-sub">
+      <div class="hero-mantra">Stay Hard · Des Moines, IA</div>
+      <div class="hero-sub-line"></div>
+    </div>
+    <div style="margin-top:20px">
+      <div class="bookmark-bar">
+        <a href="https://www.marketwatch.com/investing/future/es00" target="_blank" class="bookmark">
+          <div class="bookmark-dot" style="background:#22c55e"></div>Futures
+        </a>
+        <a href="https://auth.ecornell.com/cas/login?service=https%3A%2F%2Flms.ecornell.com%2Flogin%2Fcas" target="_blank" class="bookmark">
+          <div class="bookmark-dot" style="background:#e8351a"></div>eCornell
+        </a>
+        <a href="https://login.microsoftonline.com/9a7b4189-e700-43cd-b7e3-283d6037c350/saml2?SAMLRequest=fZLLbsIwEEX3%2FYrIeyfOgwQsQKJFVUWibQq0D32pDs5hseRL6uPQ3b%2BvE2CJqrKVmqfIHs%2FMmbGnBFpVfFH7k9nizxrJR89aGeLtxozVznALJIkb0EjcC75bfNzwPE555ay3wioWLYjQeWnN0hqqNbodurMU%2BHW7mbGT9xXxJJFQxso%2BSRNLQ97VwtcOY2F1AjppHNwOJxo9LJQESkBVJ0gEmDNQL%2Bg9v%2FwINM1fyaJVcCsNNLp3FSIbX%2FBKU8ve%2BM2TTaPMovfWCWzHnbEjKEIWrVczRvnhUMIwG5RlNsmzMuunw3F67E%2FEKMdB2R%2BKsTiM%2B6P0EPBUAJE8452BqMZ1GAqMn7E8zUe9dNDLRvs85fmID7PvLCquYb2TppTm6e1kDxcQ8Q%2F7fdErPu%2F2LPqGjtpJA4DNp00%2FvBV2ncbepoVbTWzewDo18G7E%2FBbxNOmoXCQr%2FinQrleFVVK8RAul7K%2BlQ%2FD3NELEGvxjJ1mctSuy7B1bKK8NVSjkUWJodVc0Cl9qUM2Cu%2FD80ypLbv6u1xjLtuVwpzw%2B%2B%2F%2BIKFpaXYGT1GSupZG61rfcu9RLFc5s8fggUg4BG8o%2FyxIdzybp7csm4z4HgX%2B%2Bhmvof5W47D2Y8XW3%2B5rnvwE%3D&RelayState=saml_idp_prxy%3ASAMLRequest%3DnVPbjtowFPyVyO%252FkxkVgARIFVUWibQq0D32pDs5hseRL6uPQ3b%252BvE2CJqrKVmqfIHs%252FMmbGnBFpVfFH7k9nizxrJR89aGeLtxozVznALJIkb0EjcC75bfNzwPE555ay3wioWLYjQeWnN0hqqNbodurMU%252BHW7mbGT9xXxJJFQxso%252BSRNLQ97VwtcOY2F1AjppHNwOJxo9LJQESkBVJ0gEmDNQL%252Bg9v%252FwINM1fyaJVcCsNNLp3FSIbX%252FBKU8ve%252BM2TTaPMovfWCWzHnbEjKEIWrVczRvnhUMIwG5RlNsmzMuunw3F67E%252FEKMdB2R%252BKsTiM%252B6P0EPBUAJE8452BqMZ1GAqMn7E8zUe9dNDLRvs85fmID7PvLCquYb2TppTm6e1kDxcQ8Q%252F7fdErPu%252F2LPqGjtpJA4DNp00%252FvBV2ncbepoVbTWzewDo18G7E%252FBbxNOmoXCQr%252FinQrleFVVK8RAul7K%252BlQ%252FD3NELEGvxjJ1mctSuy7B1bKK8NVSjkUWJodVc0Cl9qUM2Cu%252FD80ypLbv6u1xjLtuVwpzw%252B%252B%252F%252BIKFpaXYGT1GSupZG61rfcu9RLFc5s8fggUg4BG8o%252FyxIdzybp7csm4z4HgX%252B%252Bhmvof5W47D2Y8XW3%252B5rnvwE%253D&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=BPsCJ%2Bj17Ksg0Q8%2F7d%2FA3nKwOQKp3MsHrqhauhxEv5%2FEIQQEt4ygiwdHqL5e6jw5EzQZEj1bMKq1bI1mRZgQNsksc5OYi9d2ZIOoV5aArpqaw7UepUCdbWgQGWMi95KG0kM80zJTG%2Bicr0%2FQMcKx3h%2BarNVx7TP4GpITuGHiLZIF8qSBveiW1tCiVAXTWXt8Me09niiWN2rVaRcW2G6Cc6khkLec8Ylg6MICqDNwvxbI01OK0xWnVrh96DITDw7aZExIhlQIC0k17chm4fO6kVHdRYpHf9pzAnQRn4%2B1IjQ3qxyBDtLy3oc8zgF4BCnXHeR%2FSRd5Co9IFu1Acz4ICA%3D%3D" target="_blank" class="bookmark">
+          <div class="bookmark-dot" style="background:#0078d4"></div>ACE
+        </a>
+        <a href="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fcanvas.asu.edu%2Flogin%2Fcas" target="_blank" class="bookmark">
+          <div class="bookmark-dot" style="background:#ffc627"></div>ASU
+        </a>
+      </div>
+    </div>
+  </div><!-- end hero-center -->
+
+  <div class="hero-bottom">
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-num" id="next-race-days">—</div>
+        <div class="stat-lbl">Days to next race</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">57.1</div>
+        <div class="stat-lbl">VO2 Max</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">332.6</div>
+        <div class="stat-lbl">Miles in 2026</div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <div class="hero-scroll-line"></div>
+      Scroll
+    </div>
+  </div>
+</section>
+
+<!-- ── DASHBOARDS ─────────────────────────────────────────── -->
+<section class="section reveal">
+  <div class="section-eyebrow">01 — Dashboards</div>
+  <div class="dash-grid">
+
+    <!-- FITNESS -->
+    <a href="fitness.html" class="dash-card">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#e8351a,#ff4f30)"></div>
+      <div class="dash-card-num">01 / FITNESS</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">StayHard<br>Fitness</div>
+        <div class="dash-card-desc">Training load, VO2 Max trends, Apple Health data, race calendar, and marathon plan.</div>
+        <div class="dash-card-stat">Next race <span id="dd-next-race">—</span></div>
+      </div>
+      <div class="dash-card-arrow">↗</div>
+    </a>
+
+    <!-- FINANCE -->
+    <a href="finance.html" class="dash-card">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#c9a84c,#f0c96a)"></div>
+      <div class="dash-card-num">02 / FINANCE</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">Finance<br>Dashboard</div>
+        <div class="dash-card-desc">Net worth, investment accounts, home equity, crypto holdings, and market data.</div>
+        <div class="dash-card-stat">Net Worth <span id="dd-nw">—</span></div>
+      </div>
+      <div class="dash-card-arrow">↗</div>
+    </a>
+
+    <!-- COMING SOON — Travel -->
+    <div class="dash-card dash-card-soon">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#3b82f6,#60a5fa)"></div>
+      <div class="dash-card-num">03 / TRAVEL</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">Travel<br>Tracker</div>
+        <div class="dash-card-desc">Trips logged, countries visited, bucket list, and next adventure.</div>
+        <div class="soon-badge">Coming Soon</div>
+      </div>
+    </div>
+
+    <!-- COMING SOON — Reading -->
+    <div class="dash-card dash-card-soon">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#22c55e,#4ade80)"></div>
+      <div class="dash-card-num">04 / GROWTH</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">Reading &amp;<br>Learning</div>
+        <div class="dash-card-desc">Books read, currently reading, notes, and growth tracking.</div>
+        <div class="soon-badge">Coming Soon</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── GOALS ──────────────────────────────────────────────── -->
+<section class="section reveal">
+  <div class="section-eyebrow" style="justify-content:space-between;max-width:100%">
+    <span style="display:flex;align-items:center;gap:14px">
+      02 — Goals &amp; Vision
+      <span style="flex:none;width:40px;height:1px;background:var(--border);display:inline-block"></span>
+    </span>
+    <button onclick="openGoalModal()" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);background:none;border:1px solid var(--border2);padding:5px 12px;border-radius:4px;cursor:pointer;transition:color 0.15s,border-color 0.15s" onmouseover="this.style.color='#fff';this.style.borderColor='#555'" onmouseout="this.style.color='';this.style.borderColor=''">Edit Goals ↗</button>
+  </div>
+  <div class="goals-grid" id="goals-grid"></div>
+</section>
+
+<!-- ── GROWTH ─────────────────────────────────────────────── -->
+<section class="section reveal">
+  <div class="section-eyebrow">03 — Growth in Progress</div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;text-align:center;background:var(--black2);border:1px solid var(--border);border-radius:16px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,8vw,96px);font-weight:900;line-height:0.9;letter-spacing:-1px;color:var(--white);text-transform:uppercase;margin-bottom:24px">Growth<br><span style="-webkit-text-stroke:1px rgba(255,255,255,0.2);color:transparent">in Progress</span></div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--text3)">More coming soon — stay hard.</div>
+  </div>
+</section>
+
+<!-- ── GOAL MODAL ──────────────────────────────────────────── -->
+<div class="g-overlay" id="goalModal" onclick="if(event.target===this)closeGoalModal()">
+  <div class="g-modal">
+    <div class="g-modal-title">Edit Goals</div>
+    <div class="g-modal-sub">Changes save to your browser and persist across visits. Add, edit, or remove freely.</div>
+    <div id="g-fields"></div>
+    <button class="g-add" onclick="addGoalField()">+ Add Goal</button>
+    <div class="g-actions">
+      <button class="g-btn g-cancel" onclick="closeGoalModal()">Cancel</button>
+      <button class="g-btn g-save" onclick="saveGoals()">Save Goals</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-logo">Stay<span>Hard</span></div>
+  <div class="footer-copy" id="footer-year">© 2026 Matt · Personal OS</div>
+</footer>
+
+<script>
+// ── CLOCK ─────────────────────────────────────────────────
+function updateClock() {
+  const now  = new Date();
+  const time = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  const date = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('hero-time').textContent = time;
+  document.getElementById('hero-date').textContent = date.toUpperCase();
+  const h = now.getHours();
+  document.querySelector('.hero-greeting').textContent =
+    (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + ', Matt';
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── NEXT RACE ─────────────────────────────────────────────
+const RACES = [
+  {short:'DM Half',     date:'2026-05-03'},
+  {short:'M2M Relay',   date:'2026-05-09'},
+  {short:'Ironman 70.3',date:'2026-06-07'},
+  {short:'Mile Night',  date:'2026-06-20'},
+  {short:'Whiterock 50k',date:'2026-07-25'},
+  {short:'Marine Corps',date:'2026-10-25'},
+];
+function daysUntil(ds) {
+  const t=new Date(); t.setHours(0,0,0,0);
+  const d=new Date(ds+'T12:00:00'); d.setHours(0,0,0,0);
+  return Math.ceil((d-t)/86400000);
+}
+const nr = RACES.find(r=>daysUntil(r.date)>=0);
+if (nr) {
+  const days = daysUntil(nr.date);
+  document.getElementById('next-race-days').textContent = days;
+  document.getElementById('dd-next-race').textContent   = days+'d · '+nr.short;
+}
+
+// ── NET WORTH DISPLAY ─────────────────────────────────────
+// Reads the saved finance balances from localStorage if available
+(function() {
+  try {
+    const accounts = [24500, 142000, 98000, 0, 0]; // default balances
+    const home = 385000;
+    const liabilities = 214200;
+    const total = accounts.reduce((s,v)=>s+v,0) + home - liabilities;
+    const fmt = n => '$' + (n/1000).toFixed(0) + 'k';
+    document.getElementById('dd-nw').textContent = fmt(total);
+  } catch(e) {
+    document.getElementById('dd-nw').textContent = '—';
+  }
+})();
+
+// ── GOALS ─────────────────────────────────────────────────
+const CAT_COLORS = {
+  Fitness: '#e8351a',
+  Work:    '#c9a84c',
+  Personal:'#6366f1',
+  Finance: '#22c55e',
+};
+
+// Fixed card colors by position — cycles if more than 6 goals
+const CARD_COLORS = ['#e8351a','#c9a84c','#6366f1','#22c55e','#3b82f6','#a855f7'];
+
+const CATS = Object.keys(CAT_COLORS);
+const STORAGE_KEY = 'stayhard_goals_v1';
+
+const DEFAULT_GOALS = [
+  {category:'Fitness',  text:'Run Marine Corps Marathon sub-4:00',  current:65,  note:'In training',   target:'Oct 25'},
+  {category:'Fitness',  text:'Push VO2 Max above 60',               current:94,  note:'57.1 / 60',     target:'2026'  },
+  {category:'Finance',  text:'Grow net worth to $500k',             current:72,  note:'$361k / $500k', target:'2026'  },
+  {category:'Finance',  text:'Max 401k contribution this year',     current:30,  note:'In progress',   target:'Dec 31'},
+  {category:'Fitness',  text:'Complete Whiterock Ultra 50k strong', current:40,  note:'Training',      target:'Jul 25'},
+  {category:'Personal', text:'Go One More — every single day',      current:100, note:'Always',        target:'∞'     },
+];
+
+function loadGoals() {
+  try { const s=localStorage.getItem(STORAGE_KEY); return s?JSON.parse(s):DEFAULT_GOALS; }
+  catch(e){ return DEFAULT_GOALS; }
+}
+
+let GOALS = loadGoals();
+
+function renderGoals() {
+  document.getElementById('goals-grid').innerHTML = GOALS.map((g, i) => {
+    const color = CARD_COLORS[i % CARD_COLORS.length];
+    const pct   = Math.min(100,Math.max(0,g.current));
+    return `<div class="goal-card">
+      <div class="goal-category" style="color:${color}">${g.category}</div>
+      <div class="goal-text">${g.text}</div>
+      <div class="goal-bar-outer"><div class="goal-bar-inner" style="width:${pct}%;background:${color}"></div></div>
+      <div class="goal-progress"><span>${g.note}</span><span>${g.target}</span></div>
+    </div>`;
+  }).join('');
+}
+renderGoals();
+
+// ── GOAL MODAL ────────────────────────────────────────────
+function openGoalModal() {
+  const wrap = document.getElementById('g-fields');
+  wrap.innerHTML = '';
+  GOALS.forEach((g,i) => buildGoalBlock(g,i));
+  document.getElementById('goalModal').classList.add('open');
+}
+
+function closeGoalModal() {
+  document.getElementById('goalModal').classList.remove('open');
+}
+
+function buildGoalBlock(g, idx) {
+  const wrap = document.getElementById('g-fields');
+  const el   = document.createElement('div');
+  el.className = 'g-block';
+  const catOpts = CATS.map(c=>`<option${g&&g.category===c?' selected':''}>${c}</option>`).join('');
+  el.innerHTML = `
+    <div class="g-block-header">
+      <div class="g-block-num">Goal ${typeof idx==='number'?idx+1:'new'}</div>
+      <button class="g-rm" onclick="this.closest('.g-block').remove()">Remove ✕</button>
+    </div>
+    <div class="gf"><label>Goal</label>
+      <input class="gf-text" type="text" placeholder="What are you working toward?" value="${g?g.text:''}">
+    </div>
+    <div class="gf-row">
+      <div class="gf"><label>Category</label><select class="gf-cat">${catOpts}</select></div>
+      <div class="gf"><label>Progress (0–100)</label><input class="gf-pct" type="number" min="0" max="100" value="${g?g.current:0}"></div>
+    </div>
+    <div class="gf-row">
+      <div class="gf"><label>Status note</label><input class="gf-note" type="text" placeholder="e.g. In training" value="${g?g.note:''}"></div>
+      <div class="gf"><label>Target / deadline</label><input class="gf-target" type="text" placeholder="e.g. Dec 31" value="${g?g.target:''}"></div>
+    </div>`;
+  wrap.appendChild(el);
+}
+
+function addGoalField() { buildGoalBlock(null, null); }
+
+function saveGoals() {
+  const newGoals = [];
+  document.querySelectorAll('.g-block').forEach(b => {
+    const text = b.querySelector('.gf-text').value.trim();
+    if (!text) return;
+    newGoals.push({
+      text,
+      category: b.querySelector('.gf-cat').value,
+      current:  Math.min(100,Math.max(0,parseInt(b.querySelector('.gf-pct').value)||0)),
+      note:     b.querySelector('.gf-note').value.trim()||'—',
+      target:   b.querySelector('.gf-target').value.trim()||'—',
+    });
+  });
+  GOALS = newGoals;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(GOALS)); } catch(e){}
+  renderGoals();
+  closeGoalModal();
+}
+
+// ── SCROLL REVEAL ─────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, {threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// ── FOOTER YEAR ───────────────────────────────────────────
+document.getElementById('footer-year').textContent = '© '+new Date().getFullYear()+' Matt · Personal OS';
+</script>
+</body>
+</html>
