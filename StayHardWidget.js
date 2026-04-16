@@ -11,8 +11,8 @@
 //  5. Supports Small, Medium, and Large widget sizes
 // ─────────────────────────────────────────────────────────────
 
-const DATA_URL       = "https://yourusername.github.io/running-dashboard/data.json"
-const DASHBOARD_URL  = "https://yourusername.github.io/running-dashboard/"
+const DATA_URL       = "https://romkeymm.github.io/stayhard/data.json"
+const DASHBOARD_URL  = "https://romkeymm.github.io/stayhard/"
 
 // ── COLORS ───────────────────────────────────────────────────
 const C = {
