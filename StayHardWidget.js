@@ -3,9 +3,9 @@
 //  
 //  SETUP:
 //  1. Replace DATA_URL below with your GitHub Pages data.json URL
-//     e.g. https://yourusername.github.io/running-dashboard/data.json
+//     e.g. https://yourusername.github.io/stayhard/data.json
 //  2. Replace DASHBOARD_URL with your GitHub Pages dashboard URL
-//     e.g. https://yourusername.github.io/running-dashboard/
+//     e.g. https://yourusername.github.io/stayhard/
 //  3. In Scriptable, tap + → paste this script → tap Run to test
 //  4. Add a Scriptable widget to your home screen, pick this script
 //  5. Supports Small, Medium, and Large widget sizes
