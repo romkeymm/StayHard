@@ -3,16 +3,16 @@
 //  
 //  SETUP:
 //  1. Replace DATA_URL below with your GitHub Pages data.json URL
-//     e.g. https://yourusername.github.io/stayhard/data.json
+//     e.g. https://yourusername.github.io/fitness/data.json
 //  2. Replace DASHBOARD_URL with your GitHub Pages dashboard URL
-//     e.g. https://yourusername.github.io/stayhard/
+//     e.g. https://yourusername.github.io/fitness/
 //  3. In Scriptable, tap + → paste this script → tap Run to test
 //  4. Add a Scriptable widget to your home screen, pick this script
 //  5. Supports Small, Medium, and Large widget sizes
 // ─────────────────────────────────────────────────────────────
 
-const DATA_URL       = "https://romkeymm.github.io/stayhard/data.json"
-const DASHBOARD_URL  = "https://romkeymm.github.io/StayHard/"
+const DATA_URL       = "https://romkeymm.github.io/fitness/data.json"
+const DASHBOARD_URL  = "https://romkeymm.github.io/fitness/"
 
 // ── COLORS ───────────────────────────────────────────────────
 const C = {
