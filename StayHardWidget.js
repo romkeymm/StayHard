@@ -12,7 +12,7 @@
 // ─────────────────────────────────────────────────────────────
 
 const DATA_URL       = "https://romkeymm.github.io/stayhard/data.json"
-const DASHBOARD_URL  = "https://romkeymm.github.io/stayhard/"
+const DASHBOARD_URL  = "https://romkeymm.github.io/StayHard/"
 
 // ── COLORS ───────────────────────────────────────────────────
 const C = {
