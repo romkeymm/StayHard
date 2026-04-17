@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Austria · Slovenia">
+<meta name="theme-color" content="#faf9f6">
+<title>Austria & Slovenia — June 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --cream:#faf9f6; --cream2:#f4f2ed; --cream3:#ede9e0;
+  --white:#fff; --ink:#1a1714; --ink2:#3d3a36;
+  --ink3:#7a7570; --ink4:#b8b3ab; --ink5:#ddd9d2;
+  --accent:#2b4d8f; --green:#2e6b4f; --gold:#b08d4a; --red:#c0392b;
+  --border:#e8e4dc;
+  --shadow:0 1px 3px rgba(26,23,20,.06),0 4px 16px rgba(26,23,20,.04);
+  --shadow2:0 2px 8px rgba(26,23,20,.1),0 16px 48px rgba(26,23,20,.08);
+}
+html { background:var(--cream); }
+body { font-family:'Outfit',sans-serif; background:var(--cream); color:var(--ink); line-height:1.6; overflow-x:hidden; padding-bottom:env(safe-area-inset-bottom); }
+
+/* NAV */
+.nav { display:flex; align-items:center; justify-content:space-between; padding:16px 48px; padding-top:calc(16px + env(safe-area-inset-top)); background:rgba(255,255,255,.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:300; }
+.nav-home { font-size:11px; font-weight:500; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); text-decoration:none; transition:color .2s; }
+.nav-home:hover { color:var(--ink); }
+.nav-center { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:500; color:var(--ink); }
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-badge { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; padding:4px 12px; border-radius:20px; background:var(--accent); color:#fff; }
+.nav-cd { font-family:'DM Mono',monospace; font-size:11px; color:var(--ink3); }
+
+/* ── MASTHEAD (Option C) ── */
+.masthead {
+  background:var(--cream);
+  padding:72px 56px 52px;
+  border-bottom:1px solid var(--border);
+}
+.masthead-top {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  margin-bottom:44px; gap:32px;
+}
+.masthead-kicker {
+  font-size:9px; font-weight:700; letter-spacing:4px; text-transform:uppercase;
+  color:var(--ink5); margin-bottom:18px;
+  animation:fadeSlideUp .6s ease .1s both;
+}
+.masthead-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(52px,7vw,88px);
+  font-weight:300; line-height:.92; letter-spacing:-2px; color:var(--ink);
+  animation:fadeSlideUp .7s ease .2s both;
+}
+.masthead-cd {
+  text-align:right; flex-shrink:0; padding-top:4px;
+  animation:fadeSlideUp .6s ease .3s both;
+}
+.masthead-cd-kicker {
+  font-size:9px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+  color:var(--ink5); margin-bottom:8px;
+}
+.masthead-cd-days {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(44px,5vw,68px);
+  font-weight:300; color:var(--ink); line-height:1; letter-spacing:-1.5px;
+}
+.masthead-cd-days .cd-unit { font-size:.42em; color:var(--ink4); font-weight:300; padding-left:3px; }
+.masthead-cd-days.tick { animation:cdTick .45s cubic-bezier(.22,1,.36,1); }
+.masthead-cd-hm {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,2.2vw,28px); font-weight:300;
+  color:var(--ink4); line-height:1.3; margin-top:3px; letter-spacing:-.3px;
+}
+.masthead-cd-hm .cd-unit { font-size:.75em; color:var(--ink5); padding-left:2px; }
+.masthead-cd-hm.tick { animation:cdTick .45s cubic-bezier(.22,1,.36,1); }
+@keyframes cdTick {
+  0%   { opacity:1; transform:translateY(0); }
+  30%  { opacity:0; transform:translateY(-7px); }
+  60%  { opacity:0; transform:translateY(5px); }
+  100% { opacity:1; transform:translateY(0); }
+}
+.masthead-rule { height:1px; background:var(--border); margin-bottom:22px; }
+.masthead-meta {
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  animation:fadeSlideUp .6s ease .4s both;
+}
+.masthead-stats { display:flex; gap:36px; }
+.ms-n {
+  font-family:'Cormorant Garamond',serif;
+  font-size:26px; font-weight:400; color:var(--ink); line-height:1;
+}
+.ms-l {
+  font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:var(--ink4); margin-top:3px;
+}
+.masthead-byline {
+  font-family:'Cormorant Garamond',serif;
+  font-size:14px; font-weight:400; font-style:italic; color:var(--ink4);
+}
+
+
+/* ── PROGRESS ── */
+.pstrip { background:var(--white); border-bottom:1px solid var(--border); padding:13px 52px; display:flex; align-items:center; gap:20px; }
+.ps-lbl { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); white-space:nowrap; }
+.ps-bar { flex:1; height:2px; background:var(--ink5); border-radius:1px; overflow:hidden; }
+.ps-fill { height:100%; background:linear-gradient(to right,var(--accent),var(--gold)); border-radius:1px; transition:width 1.4s cubic-bezier(.4,0,.2,1); }
+.ps-pct { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink3); white-space:nowrap; }
+
+/* ── PAGE ANIMATIONS ── */
+
+/* Hero title stagger handled by masthead classes via animation:fadeSlideUp ... both */
+@keyframes fadeSlideUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Scroll reveal — staggered children */
+.reveal { opacity:0; transform:translateY(22px); transition:opacity .65s cubic-bezier(.22,1,.36,1), transform .65s cubic-bezier(.22,1,.36,1); }
+.reveal.visible { opacity:1; transform:none; }
+
+/* Weather cards hover lift */
+.wx-card { transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease; }
+.wx-card:hover { transform:translateY(-4px) scale(1.02); box-shadow:var(--shadow2); }
+
+/* Day card open — smooth body reveal */
+.day-body { display:none; animation:none; }
+.day-card.open .day-body { display:block; animation:bodyReveal .3s cubic-bezier(.22,1,.36,1); }
+@keyframes bodyReveal {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:none; }
+}
+
+/* Step dots pulse on open */
+.day-card.open .step-dot { animation:dotPop .4s cubic-bezier(.34,1.56,.64,1) both; }
+.day-card.open .step:nth-child(1) .step-dot { animation-delay:.05s; }
+.day-card.open .step:nth-child(2) .step-dot { animation-delay:.10s; }
+.day-card.open .step:nth-child(3) .step-dot { animation-delay:.15s; }
+.day-card.open .step:nth-child(4) .step-dot { animation-delay:.20s; }
+.day-card.open .step:nth-child(5) .step-dot { animation-delay:.25s; }
+@keyframes dotPop {
+  from { transform:scale(0); }
+  to   { transform:scale(1); }
+}
+
+/* Map marker entrance */
+#trip-map { opacity:0; transition:opacity .8s ease .2s; }
+#trip-map.loaded { opacity:1; }
+
+/* Progress bar animated fill */
+@keyframes fillBar { from { width:0 } }
+.ps-fill { animation:fillBar 1.6s cubic-bezier(.4,0,.2,1) .5s both; }
+
+/* Accordion open */
+.qi-body { animation:none; }
+.qi-accordion.open .qi-body { display:block; animation:bodyReveal .25s ease; }
+
+/* Link/map-btn hover */
+.map-btn { transition:background .15s, transform .15s; }
+.map-btn:hover { transform:translateX(2px); }
+
+/* Hotel + rest chips hover */
+.hotel-chip, .rest-chip { transition:border-color .2s, box-shadow .2s; }
+.hotel-chip:hover, .rest-chip:hover { border-color:var(--ink4); box-shadow:var(--shadow); }
+
+/* Footer fade in */
+.footer { animation:fadeSlideUp .6s ease .3s both; }
+
+/* MAP SECTION */
+.map-wrap { width:100%; height:480px; border:0; border-bottom:1px solid var(--border); display:block; }
+
+/* SECTION */
+.section { padding:56px 52px; border-bottom:1px solid var(--border); }
+.sec-hdr { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:36px; }
+.sec-title { font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:400; color:var(--ink); }
+.sec-num { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink4); }
+
+/* WEATHER */
+.wx-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+.wx-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:16px 12px; text-align:center; box-shadow:var(--shadow); transition:transform .2s,box-shadow .2s; }
+.wx-card:hover { transform:translateY(-2px); box-shadow:var(--shadow2); }
+.wx-flag { font-size:15px; margin-bottom:4px; }
+.wx-city { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink3); margin-bottom:8px; }
+.wx-icon { font-size:26px; margin-bottom:6px; line-height:1; }
+.wx-temp { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:500; color:var(--ink); line-height:1; }
+.wx-feels { font-size:10px; color:var(--ink4); margin-top:2px; }
+.wx-desc { font-size:11px; color:var(--ink3); margin-top:5px; }
+
+/* ITINERARY — vertical single column */
+.itin-list { display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.day-card { background:var(--white); }
+.day-hdr { display:flex; align-items:stretch; cursor:pointer; user-select:none; }
+.day-bar { width:3px; flex-shrink:0; }
+.day-hdr-inner { flex:1; display:flex; align-items:center; padding:18px 26px; gap:18px; }
+.day-badge { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--ink4); min-width:40px; }
+.day-info { flex:1; }
+.day-date { font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:500; color:var(--ink); line-height:1.2; }
+.day-sub { font-size:12px; color:var(--ink3); margin-top:2px; }
+.day-tag { font-size:10px; font-weight:500; padding:3px 10px; border-radius:20px; white-space:nowrap; flex-shrink:0; }
+.day-chev { font-size:10px; color:var(--ink4); transition:transform .25s; flex-shrink:0; }
+.day-card.open .day-chev { transform:rotate(180deg); }
+
+/* VERTICAL STEP LIST */
+.day-body { display:none; }
+.day-card.open .day-body { display:block; }
+.step-list { border-top:1px solid var(--border); margin:0 26px; padding:20px 0 24px; display:flex; flex-direction:column; gap:0; }
+.step { display:flex; gap:0; position:relative; }
+.step:not(:last-child)::before { content:''; position:absolute; left:11px; top:26px; bottom:0; width:1px; background:var(--border); z-index:0; }
+.step-left { display:flex; flex-direction:column; align-items:center; padding-right:16px; z-index:1; }
+.step-dot { width:22px; height:22px; border-radius:50%; border:2px solid var(--border); background:var(--white); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:14px; }
+.step-dot-inner { width:8px; height:8px; border-radius:50%; }
+.step-right { flex:1; padding:12px 0 20px; }
+.step-lbl { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--ink4); margin-bottom:3px; }
+.step-val { font-size:13px; color:var(--ink2); line-height:1.6; }
+.step-val strong { color:var(--ink); font-weight:600; }
+
+.hotel-chip { background:var(--cream2); border:1px solid var(--border); border-radius:8px; padding:10px 13px; margin-top:6px; }
+.hc-name { font-weight:600; font-size:13px; color:var(--ink); }
+.hc-addr { font-size:11px; color:var(--ink3); margin-top:1px; }
+.hc-conf { font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); margin-top:2px; }
+
+.rest-chip { background:var(--cream2); border:1px solid var(--border); border-radius:8px; padding:10px 13px; margin-top:6px; }
+.rc-name { font-weight:600; font-size:13px; color:var(--ink); margin-bottom:4px; }
+.rc-tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:4px; }
+.rc-tag { font-size:9px; font-weight:600; letter-spacing:.8px; text-transform:uppercase; padding:2px 7px; border-radius:8px; }
+.rc-desc { font-size:11px; color:var(--ink3); line-height:1.5; }
+
+.map-btn { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; color:var(--accent); text-decoration:none; margin-top:6px; padding:3px 9px; background:rgba(43,77,143,.07); border-radius:5px; transition:background .15s; }
+.map-btn:hover { background:rgba(43,77,143,.13); }
+.map-btn::before { content:'↗'; font-size:10px; }
+
+.pill-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+.pill { font-size:11px; padding:3px 9px; background:var(--cream2); border:1px solid var(--border); border-radius:5px; }
+a.pill { color:var(--accent); text-decoration:none; }
+a.pill:hover { background:var(--cream3); }
+
+/* EXPENSES */
+.exp-layout { display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start; }
+.exp-form { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:26px; box-shadow:var(--shadow); }
+.ef-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:500; color:var(--ink); margin-bottom:18px; }
+.ef-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.ef-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
+.ef-field { display:flex; flex-direction:column; gap:4px; }
+.ef-field.full { grid-column:1/-1; }
+.ef-lbl { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink3); }
+.ef-input,.ef-select { width:100%; padding:8px 11px; background:var(--cream); border:1px solid var(--border); border-radius:7px; font-family:'Outfit',sans-serif; font-size:13px; color:var(--ink); outline:none; transition:border-color .15s; }
+.ef-input:focus,.ef-select:focus { border-color:var(--accent); background:var(--white); }
+.ef-btn { width:100%; padding:10px; background:var(--ink); color:#fff; border:none; border-radius:7px; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; cursor:pointer; margin-top:4px; transition:background .15s; }
+.ef-btn:hover { background:var(--ink2); }
+
+.exp-log { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); margin-top:18px; }
+.el-head { display:grid; grid-template-columns:76px 1fr 96px 76px 56px 64px 26px; gap:8px; padding:10px 16px; background:var(--cream2); border-bottom:1px solid var(--border); }
+.el-hcol { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink3); }
+.el-empty { padding:36px; text-align:center; font-size:13px; color:var(--ink4); font-style:italic; }
+.el-row { display:grid; grid-template-columns:76px 1fr 96px 76px 56px 64px 26px; gap:8px; padding:11px 16px; border-bottom:1px solid var(--border); align-items:center; animation:sli .2s ease; }
+.el-row:last-child { border-bottom:none; }
+@keyframes sli { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+.el-date { font-family:'DM Mono',monospace; font-size:11px; color:var(--ink3); }
+.el-desc { font-size:13px; color:var(--ink); }
+.el-cat { font-size:9px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border-radius:8px; width:fit-content; }
+.el-amt { font-family:'DM Mono',monospace; font-size:12px; color:var(--ink); }
+.el-curr { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink3); }
+.el-who { font-size:11px; font-weight:600; color:var(--ink3); }
+.el-del { background:none; border:none; cursor:pointer; font-size:12px; color:var(--ink4); padding:0; transition:color .15s; }
+.el-del:hover { color:var(--red); }
+
+.exp-sidebar { display:flex; flex-direction:column; gap:12px; }
+.exp-sum { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:22px; box-shadow:var(--shadow); }
+.es-lbl { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); margin-bottom:12px; }
+.es-total { font-family:'Cormorant Garamond',serif; font-size:38px; font-weight:400; color:var(--ink); line-height:1.1; }
+.es-sub { font-size:11px; color:var(--ink3); margin-bottom:14px; margin-top:3px; }
+.es-split { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+.es-person { background:var(--cream2); border-radius:7px; padding:10px; text-align:center; }
+.es-pname { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink3); margin-bottom:3px; }
+.es-pamt { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:500; color:var(--ink); }
+.es-cats { display:flex; flex-direction:column; gap:7px; }
+.es-cat { display:flex; align-items:center; gap:8px; }
+.es-cdot { width:7px; height:7px; border-radius:2px; flex-shrink:0; }
+.es-cname { font-size:12px; color:var(--ink2); flex:1; }
+.es-camt { font-family:'DM Mono',monospace; font-size:11px; color:var(--ink); }
+.exp-export { width:100%; padding:10px; background:var(--cream2); border:1px solid var(--border); border-radius:7px; font-family:'Outfit',sans-serif; font-size:12px; font-weight:600; color:var(--ink2); cursor:pointer; transition:background .15s; }
+.exp-export:hover { background:var(--cream3); }
+
+.reveal { opacity:0; transform:translateY(14px); transition:opacity .55s ease,transform .55s ease; }
+.reveal.visible { opacity:1; transform:none; }
+
+.footer { padding:28px 52px; display:flex; align-items:center; justify-content:space-between; }
+.footer-l { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:400; color:var(--ink3); font-style:italic; }
+.footer-r { font-size:11px; color:var(--ink4); letter-spacing:1px; }
+
+/* QUICK INFO ACCORDIONS */
+.qi-bar { border-bottom:1px solid var(--border); background:var(--white); }
+.qi-accordion { border-bottom:1px solid var(--border); }
+.qi-accordion:last-child { border-bottom:none; }
+.qi-trigger {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 52px; cursor:pointer; user-select:none;
+  transition:background .15s;
+}
+.qi-trigger:hover { background:var(--cream); }
+.qi-trigger-left { display:flex; align-items:center; gap:16px; }
+.qi-trigger-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); }
+.qi-trigger-preview { font-size:12px; color:var(--ink4); font-family:'DM Mono',monospace; }
+.qi-trigger-right { display:flex; align-items:center; gap:12px; }
+.qi-chev { font-size:10px; color:var(--ink4); transition:transform .25s; }
+.qi-accordion.open .qi-chev { transform:rotate(180deg); }
+.qi-body { display:none; padding:0 52px 28px; }
+.qi-accordion.open .qi-body { display:block; }
+
+/* Confirmations table */
+.conf-list { display:flex; flex-direction:column; }
+.conf-row { display:flex; align-items:center; gap:14px; padding:9px 0; border-bottom:1px solid var(--border); }
+.conf-row:first-child { padding-top:0; }
+.conf-row:last-child { border-bottom:none; padding-bottom:0; }
+.conf-name { font-size:13px; color:var(--ink2); font-weight:500; flex:1; }
+.conf-type { font-size:9px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:2px 7px; border-radius:4px; flex-shrink:0; }
+.conf-num { font-family:'DM Mono',monospace; font-size:12px; color:var(--accent); flex-shrink:0; }
+
+/* Clocks */
+.clock-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:2px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.clock-cell { background:var(--white); padding:20px 24px; }
+.clock-city { font-size:12px; font-weight:600; color:var(--ink); margin-bottom:2px; }
+.clock-tz-lbl { font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink4); margin-bottom:10px; }
+.clock-time-big { font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:400; color:var(--ink); line-height:1; margin-bottom:2px; }
+.clock-date-small { font-size:11px; color:var(--ink3); }
+.clock-ahead { grid-column:1/-1; background:var(--cream2); padding:10px 24px; text-align:center; font-size:11px; color:var(--ink3); font-style:italic; }
+
+/* Converter */
+.conv-layout { display:grid; grid-template-columns:auto 1fr; gap:32px; align-items:start; }
+.conv-left { }
+.conv-rate-big { font-family:'Cormorant Garamond',serif; font-size:38px; font-weight:400; color:var(--ink); line-height:1; margin-bottom:3px; }
+.conv-rate-sub { font-size:10px; color:var(--ink4); font-style:italic; margin-bottom:16px; }
+.conv-inputs { display:flex; align-items:center; gap:12px; }
+.conv-field { display:flex; flex-direction:column; gap:4px; }
+.conv-lbl { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink4); }
+.conv-inp { width:130px; padding:8px 11px; background:var(--cream); border:1px solid var(--border); border-radius:7px; font-family:'DM Mono',monospace; font-size:16px; color:var(--ink); outline:none; transition:border-color .15s; }
+.conv-inp:focus { border-color:var(--accent); background:var(--white); }
+.conv-swap { font-size:16px; color:var(--ink4); padding-top:16px; cursor:default; }
+.conv-ref { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-top:16px; }
+.conv-ref-item { background:var(--cream2); border-radius:6px; padding:8px 0; text-align:center; }
+.conv-ref-usd { font-size:9px; font-weight:600; color:var(--ink4); margin-bottom:3px; text-transform:uppercase; letter-spacing:.5px; }
+.conv-ref-eur { font-family:'DM Mono',monospace; font-size:12px; color:var(--ink); font-weight:500; }
+
+@media(max-width:900px){
+  .qi-trigger,.qi-body { padding-left:18px; padding-right:18px; }
+  .clock-row-3 { grid-template-columns:1fr; }
+  .clock-ahead { grid-column:1; }
+  .conv-layout { grid-template-columns:1fr; gap:16px; }
+  .conv-ref { grid-template-columns:repeat(3,1fr); }
+  .conv-inp { width:100%; }
+  .conv-inputs { flex-wrap:wrap; }
+}
+
+  .nav,.pstrip,.section,.footer { padding-left:18px; padding-right:18px; }
+  .masthead { padding:44px 18px 36px; }
+  .masthead-top { flex-direction:column; gap:28px; }
+  .masthead-cd { text-align:left; }
+  .masthead-stats { gap:24px; }
+  .wx-grid { grid-template-columns:repeat(3,1fr); }
+  .exp-layout { grid-template-columns:1fr; }
+  .el-head,.el-row { grid-template-columns:68px 1fr 80px 60px 48px 24px; gap:6px; }
+  .footer { flex-direction:column; gap:6px; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-home">← StayHard</a>
+  <div class="nav-center">Austria &amp; Slovenia &nbsp;·&nbsp; June 2026</div>
+  <div class="nav-right">
+    <span class="nav-cd" id="nav-cd">—</span>
+    <span class="nav-badge">June 2026</span>
+  </div>
+</nav>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-top">
+    <div>
+      <div class="masthead-kicker">StayHard &nbsp;·&nbsp; Travel</div>
+      <h1 class="masthead-title">Austria<br><em style="font-style:italic;color:var(--ink4)">&amp; Slovenia</em></h1>
+    </div>
+    <div class="masthead-cd">
+      <div class="masthead-cd-kicker">Departure in</div>
+      <div class="masthead-cd-days" id="cd-d">—<span class="cd-unit">days</span></div>
+      <div class="masthead-cd-hm" id="cd-hm">—<span class="cd-unit">hrs</span> &nbsp;—<span class="cd-unit">min</span></div>
+    </div>
+  </div>
+  <div class="masthead-rule"></div>
+  <div class="masthead-meta">
+    <div class="masthead-stats">
+      <div><div class="ms-n">11</div><div class="ms-l">Days</div></div>
+      <div><div class="ms-n">4</div><div class="ms-l">Countries</div></div>
+      <div><div class="ms-n">7</div><div class="ms-l">Hotels</div></div>
+      <div><div class="ms-n">3</div><div class="ms-l">Dinners</div></div>
+    </div>
+    <div class="masthead-byline">June 23 – July 3, 2026 &nbsp;·&nbsp; Matt &amp; Katie</div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="pstrip">
+  <div class="ps-lbl">Trip progress</div>
+  <div class="ps-bar"><div class="ps-fill" id="pf" style="width:0%"></div></div>
+  <div class="ps-pct" id="pp">Departs June 23</div>
+</div>
+
+
+
+<!-- QUICK INFO ACCORDIONS -->
+<div class="qi-bar">
+
+  <!-- CONFIRMATIONS -->
+  <div class="qi-accordion" id="qi-conf">
+    <div class="qi-trigger" onclick="togQI('qi-conf')">
+      <div class="qi-trigger-left">
+        <div class="qi-trigger-label">Confirmation Numbers</div>
+        <div class="qi-trigger-preview">7 reservations</div>
+      </div>
+      <div class="qi-trigger-right">
+        <div class="qi-chev">▾</div>
+      </div>
+    </div>
+    <div class="qi-body">
+      <div class="conf-list">
+        <div class="conf-row"><div class="conf-name">Leonardo Hotel, Salzburg</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">980005241</div></div>
+        <div class="conf-row"><div class="conf-name">Rental Car — Sixty</div><div class="conf-type" style="background:#fefce8;color:#92400e">Car</div><div class="conf-num">9731990258</div></div>
+        <div class="conf-row"><div class="conf-name">Hotel Seevilla Wolfgangsee</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">14771007</div></div>
+        <div class="conf-row"><div class="conf-name">Seewirt - Zauner, Hallstatt</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">cbm2692412534</div></div>
+        <div class="conf-row"><div class="conf-name">Staubinger Grand Hotel</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">STR00418461</div></div>
+        <div class="conf-row"><div class="conf-name">Johanneskeller, Salzburg — Dinner Jun 24</div><div class="conf-type" style="background:#dcfce7;color:#166534">Dinner</div><div class="conf-num">Confirmed</div></div>
+        <div class="conf-row"><div class="conf-name">Jägerhäusl, Bad Gastein — Dinner Jun 27</div><div class="conf-type" style="background:#dcfce7;color:#166534">Dinner</div><div class="conf-num">Confirmed</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOCKS -->
+  <div class="qi-accordion" id="qi-clocks">
+    <div class="qi-trigger" onclick="togQI('qi-clocks')">
+      <div class="qi-trigger-left">
+        <div class="qi-trigger-label">Local Time</div>
+        <div class="qi-trigger-preview" id="qi-clocks-preview">—</div>
+      </div>
+      <div class="qi-trigger-right">
+        <div class="qi-chev">▾</div>
+      </div>
+    </div>
+    <div class="qi-body">
+      <div class="clock-row-3">
+        <div class="clock-cell">
+          <div class="clock-city">Des Moines</div>
+          <div class="clock-tz-lbl">CDT · UTC−5</div>
+          <div class="clock-time-big" id="clk-dsm">—</div>
+          <div class="clock-date-small" id="clk-dsm-date">—</div>
+        </div>
+        <div class="clock-cell">
+          <div class="clock-city">Austria · Slovenia</div>
+          <div class="clock-tz-lbl">CEST · UTC+2</div>
+          <div class="clock-time-big" id="clk-eur">—</div>
+          <div class="clock-date-small" id="clk-eur-date">—</div>
+        </div>
+        <div class="clock-cell">
+          <div class="clock-city">Zagreb, Croatia</div>
+          <div class="clock-tz-lbl">CEST · UTC+2</div>
+          <div class="clock-time-big" id="clk-zag">—</div>
+          <div class="clock-date-small" id="clk-zag-date">—</div>
+        </div>
+        <div class="clock-ahead" id="clk-diff">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONVERTER -->
+  <div class="qi-accordion" id="qi-conv">
+    <div class="qi-trigger" onclick="togQI('qi-conv')">
+      <div class="qi-trigger-left">
+        <div class="qi-trigger-label">Currency</div>
+        <div class="qi-trigger-preview" id="qi-conv-preview">USD → EUR</div>
+      </div>
+      <div class="qi-trigger-right">
+        <div class="qi-chev">▾</div>
+      </div>
+    </div>
+    <div class="qi-body">
+      <div class="conv-layout">
+        <div class="conv-left">
+          <div class="conv-rate-big" id="conv-rate-display">1 USD = — EUR</div>
+          <div class="conv-rate-sub" id="conv-rate-time">Fetching live rate…</div>
+          <div class="conv-inputs">
+            <div class="conv-field">
+              <div class="conv-lbl">USD $</div>
+              <input class="conv-inp" type="number" id="conv-usd" placeholder="100" value="100" oninput="convertUSD()">
+            </div>
+            <div class="conv-swap">⇄</div>
+            <div class="conv-field">
+              <div class="conv-lbl">EUR €</div>
+              <input class="conv-inp" type="number" id="conv-eur" placeholder="—" oninput="convertEUR()">
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="conv-ref">
+            <div class="conv-ref-item"><div class="conv-ref-usd">$20</div><div class="conv-ref-eur" id="ref-20">—</div></div>
+            <div class="conv-ref-item"><div class="conv-ref-usd">$50</div><div class="conv-ref-eur" id="ref-50">—</div></div>
+            <div class="conv-ref-item"><div class="conv-ref-usd">$100</div><div class="conv-ref-eur" id="ref-100">—</div></div>
+            <div class="conv-ref-item"><div class="conv-ref-usd">$200</div><div class="conv-ref-eur" id="ref-200">—</div></div>
+            <div class="conv-ref-item"><div class="conv-ref-usd">$500</div><div class="conv-ref-eur" id="ref-500">—</div></div>
+            <div class="conv-ref-item"><div class="conv-ref-usd">$1,000</div><div class="conv-ref-eur" id="ref-1000">—</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MAP OVERVIEW -->
+<section class="section reveal">
+  <div class="sec-hdr">
+    <h2 class="sec-title">Route Map</h2>
+    <span class="sec-num">01</span>
+  </div>
+  <!-- Leaflet map — free, no API key, all overnight stops labeled -->
+  <div id="trip-map" style="height:500px;border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)"></div>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+  (function() {
+    const map = L.map('trip-map', { zoomControl: true, scrollWheelZoom: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 14
+    }).addTo(map);
+
+    const stops = [
+      { name: 'Salzburg',       nights: 'Nights 1–2', lat: 47.8095, lon: 13.0550, color: '#2b4d8f', days: 'June 24–25' },
+      { name: 'St. Wolfgang',   nights: 'Night 3',    lat: 47.7334, lon: 13.4453, color: '#0369a1', days: 'June 25–26' },
+      { name: 'Hallstatt',      nights: 'Night 4',    lat: 47.5623, lon: 13.6493, color: '#b08d4a', days: 'June 26–27' },
+      { name: 'Bad Gastein',    nights: 'Nights 5–6', lat: 47.1167, lon: 13.1333, color: '#7c3aed', days: 'June 27–28' },
+      { name: 'Klagenfurt',     nights: 'Transit',    lat: 46.6228, lon: 14.3050, color: '#64748b', days: 'June 28' },
+      { name: 'Rače / Maribor', nights: 'Nights 7–10',lat: 46.5547, lon: 15.6459, color: '#2e6b4f', days: 'June 28 – July 2' },
+      { name: 'Zagreb',         nights: 'Night 11',   lat: 45.8150, lon: 15.9819, color: '#dc2626', days: 'July 2–3' },
+    ];
+
+    // Draw route polyline
+    const coords = stops.map(s => [s.lat, s.lon]);
+    L.polyline(coords, { color: '#1a1714', weight: 2, opacity: 0.35, dashArray: '6 6' }).addTo(map);
+
+    // Add markers
+    stops.forEach((s, i) => {
+      const num = i + 1;
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="
+          background:${s.color};
+          color:#fff;
+          border:2px solid #fff;
+          border-radius:50%;
+          width:30px;height:30px;
+          display:flex;align-items:center;justify-content:center;
+          font-family:'Outfit',sans-serif;
+          font-size:12px;font-weight:700;
+          box-shadow:0 2px 8px rgba(0,0,0,.3);
+          cursor:pointer;
+        ">${num}</div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, -18],
+      });
+
+      const marker = L.marker([s.lat, s.lon], { icon }).addTo(map);
+      marker.bindPopup(`
+        <div style="font-family:'Outfit',sans-serif;min-width:140px">
+          <div style="font-size:14px;font-weight:700;color:#1a1714;margin-bottom:2px">${s.name}</div>
+          <div style="font-size:11px;color:#7a7570;margin-bottom:3px">${s.nights}</div>
+          <div style="font-size:11px;font-weight:600;color:${s.color}">${s.days}</div>
+        </div>
+      `, { maxWidth: 200 });
+    });
+
+    // Fit map to all stops
+    map.fitBounds(L.latLngBounds(coords), { padding: [40, 40] });
+    // Fade map in
+    setTimeout(() => document.getElementById('trip-map').classList.add('loaded'), 300);
+  })();
+  </script>
+</section>
+
+<!-- WEATHER -->
+<section class="section reveal">
+  <div class="sec-hdr">
+    <h2 class="sec-title">Weather <em style="font-style:italic;color:var(--ink3);font-size:.68em">at destinations</em></h2>
+    <span class="sec-num">02</span>
+  </div>
+  <div class="wx-grid" id="wx-grid"></div>
+</section>
+
+<!-- ITINERARY -->
+<section class="section reveal">
+  <div class="sec-hdr">
+    <h2 class="sec-title">Itinerary</h2>
+    <span class="sec-num">03</span>
+  </div>
+  <div class="itin-list">
+
+    <!-- DAY 1 -->
+    <div class="day-card" id="d1">
+      <div class="day-hdr" onclick="tog('d1')">
+        <div class="day-bar" style="background:#94a3b8"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Day 1</div>
+          <div class="day-info"><div class="day-date">June 23 — Travel Day</div><div class="day-sub">Des Moines → Denver → Munich</div></div>
+          <div class="day-tag" style="background:#f1f5f9;color:#475569">Departure 5:17 PM</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#94a3b8"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Pre-flight</div><div class="step-val">Drop off Zeus at the vet</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#94a3b8"></div></div></div>
+            <div class="step-right"><div class="step-lbl">5:17 PM — Flights</div><div class="step-val"><strong>DSM → Denver → Munich</strong> overnight</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-card" id="d2">
+      <div class="day-hdr" onclick="tog('d2')">
+        <div class="day-bar" style="background:#2b4d8f"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Day 2</div>
+          <div class="day-info"><div class="day-date">June 24 — Munich → Salzburg</div><div class="day-sub">Arrive 2:10 PM · Train · Old Town evening</div></div>
+          <div class="day-tag" style="background:#eff6ff;color:#1d4ed8">⭐ Salzburg Old Town</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2b4d8f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">2:10 PM — Arrive Munich</div><div class="step-val">Land at Munich Airport · Head to train station</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2b4d8f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Train to Salzburg (~2 hrs)</div><div class="step-val">Munich Airport → Salzburg Hauptbahnhof · Arrive <strong>6–7 PM</strong></div><a href="https://maps.google.com/?q=Salzburg+Hauptbahnhof,+Südtiroler+Platz+1,+5020+Salzburg" target="_blank" class="map-btn">Salzburg Station</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2b4d8f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Hotel</div>
+              <div class="hotel-chip"><div class="hc-name">Leonardo Boutique Hotel Salzburg Gablerbräu</div><div class="hc-addr">Richard-Mayr-Gasse 2, 5020 Salzburg</div><div class="hc-conf">Conf #980005241</div></div>
+              <a href="https://maps.google.com/?q=Richard-Mayr-Gasse+2,+5020+Salzburg" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2b4d8f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">6:45 PM — Dinner</div>
+              <div class="rest-chip"><div class="rc-name">Johanneskeller</div><div class="rc-tags"><span class="rc-tag" style="background:#dcfce7;color:#166534">Confirmed</span><span class="rc-tag" style="background:#fef9c3;color:#92400e">Cash Only</span></div><div class="rc-desc">Rustic schnitzel &amp; dumplings · 5–7 min walk from Domplatz</div></div>
+              <a href="https://maps.google.com/?q=Johanneskeller,+Richard-Mayr-Gasse+1,+Salzburg" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2b4d8f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Evening Highlights</div>
+              <div class="pill-row"><a href="https://maps.google.com/?q=Salzburg+Cathedral,+Domplatz+1a,+5020+Salzburg" target="_blank" class="pill">↗ Cathedral</a><a href="https://maps.google.com/?q=Mirabell+Gardens,+Mirabellplatz+3,+5020+Salzburg" target="_blank" class="pill">↗ Mirabell Gardens</a><a href="https://maps.google.com/?q=Hohensalzburg+Fortress,+Mönchsberg+34,+5020+Salzburg" target="_blank" class="pill">↗ Fortress</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-card" id="d3">
+      <div class="day-hdr" onclick="tog('d3')">
+        <div class="day-bar" style="background:#0369a1"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Day 3</div>
+          <div class="day-info"><div class="day-date">June 25 — Salzburg → St. Wolfgang</div><div class="day-sub">Rental car pickup · Wolfgangsee · Lakeside dinner</div></div>
+          <div class="day-tag" style="background:#e0f2fe;color:#0369a1">⭐ Lakeside Sunset</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#0369a1"></div></div></div>
+            <div class="step-right"><div class="step-lbl">11:00 AM — Rental Car Pickup</div><div class="step-val">Train to Salzburg Airport · Pickup <strong>Conf #9731990258</strong> (Sixty)</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#0369a1"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Drive to St. Wolfgang (~1 hr)</div><div class="step-val">Arrive at Hotel Seevilla Wolfgangsee</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#0369a1"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Hotel</div>
+              <div class="hotel-chip"><div class="hc-name">Hotel Seevilla Wolfgangsee</div><div class="hc-addr">Markt 17, 5360 St. Wolfgang, Austria</div><div class="hc-conf">Conf #14771007</div></div>
+              <a href="https://maps.google.com/?q=Hotel+Seevilla,+Markt+17,+5360+St.+Wolfgang" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#0369a1"></div></div></div>
+            <div class="step-right"><div class="step-lbl">6:00 PM — Dinner · Confirmed</div>
+              <div class="rest-chip"><div class="rc-name">Hotel Seevilla Restaurant</div><div class="rc-tags"><span class="rc-tag" style="background:#dcfce7;color:#166534">Confirmed</span><span class="rc-tag" style="background:#e0f2fe;color:#0369a1">Lakefront</span></div><div class="rc-desc">Lakefront dining + optional boat ride on Wolfgangsee</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-card" id="d4">
+      <div class="day-hdr" onclick="tog('d4')">
+        <div class="day-bar" style="background:#b08d4a"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Day 4</div>
+          <div class="day-info"><div class="day-date">June 26 — St. Wolfgang → Hallstatt</div><div class="day-sub">Schafbergbahn summit · Drive to Hallstatt · Arrive noon</div></div>
+          <div class="day-tag" style="background:#fefce8;color:#92400e">⭐ Schafbergbahn Summit</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#b08d4a"></div></div></div>
+            <div class="step-right"><div class="step-lbl">8:00–8:30 AM — Schafbergbahn</div><div class="step-val">Valley Station: Markt 35, St. Wolfgang · Train up + 2 hrs at summit</div><a href="https://maps.google.com/?q=Schafbergbahn+Valley+Station,+Markt+35,+5360+St.+Wolfgang" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#b08d4a"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Midday Drive to Hallstatt (~1 hr 15 min)</div><div class="step-val">Park at P1 Hallstatt Main — Salinenplatz 4, 4830 Hallstatt</div><a href="https://maps.google.com/?q=P1+Hallstatt,+Salinenplatz+4,+4830+Hallstatt" target="_blank" class="map-btn">Parking</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#b08d4a"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Afternoon — Hallstatt Skywalk</div><div class="step-val">Salzbergstraße 21, 4830 Hallstatt</div><a href="https://maps.google.com/?q=Hallstatt+Skywalk,+Salzbergstraße+21,+4830+Hallstatt" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#b08d4a"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Lunch Options (pick on arrival)</div><div class="pill-row"><span class="pill">Zum Bader</span><span class="pill">Muk's Schmankerl</span><span class="pill">Seecafé Frundsberg</span></div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#b08d4a"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Hotel</div>
+              <div class="hotel-chip"><div class="hc-name">Seewirt - Zauner</div><div class="hc-addr">Marktplatz, 4830 Hallstatt, Austria</div><div class="hc-conf">Conf #cbm2692412534</div></div>
+              <a href="https://maps.google.com/?q=Seewirt+Zauner,+Marktplatz,+4830+Hallstatt" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-card" id="d5">
+      <div class="day-hdr" onclick="tog('d5')">
+        <div class="day-bar" style="background:#7c3aed"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Day 5</div>
+          <div class="day-info"><div class="day-date">June 27 — Hallstatt → Bad Gastein</div><div class="day-sub">Dachstein Five Fingers · Spa · Dinner confirmed</div></div>
+          <div class="day-tag" style="background:#f5f3ff;color:#6d28d9">⭐ Five Fingers Platform</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">8:30 AM — Dachstein Cable Car</div><div class="step-val">Five Fingers Viewing Platform · Parking: Winkl 34, 4831 Obertraun · Allow 3 hrs</div><a href="https://maps.google.com/?q=Dachstein+Krippenstein,+Winkl+34,+4831+Obertraun" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Drive to Bad Gastein (~1 hr 30 min)</div><div class="step-val">Arrive ~3–4 PM</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Afternoon — Felsentherme Spa</div><div class="step-val">Kaiser Wilhelm Promenade, 5640 Bad Gastein</div><a href="https://maps.google.com/?q=Felsentherme,+Kaiser+Wilhelm+Promenade,+5640+Bad+Gastein" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Hotel</div>
+              <div class="hotel-chip"><div class="hc-name">Staubinger Grand Hotel Bad Gastein</div><div class="hc-addr">Straubinger Platz 2, 5640 Bad Gastein</div><div class="hc-conf">Conf #STR00418461</div></div>
+              <a href="https://maps.google.com/?q=Staubinger+Grand+Hotel,+Straubinger+Platz+2,+5640+Bad+Gastein" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">6:30 PM — Dinner</div>
+              <div class="rest-chip"><div class="rc-name">Jägerhäusl</div><div class="rc-tags"><span class="rc-tag" style="background:#dcfce7;color:#166534">Confirmed</span></div><div class="rc-desc">Casual, hearty local favorite · Kaiser-Franz-Josef-Str. 9 · 6–8 min walk from promenade</div></div>
+              <a href="https://maps.google.com/?q=Jägerhäusl,+Kaiser-Franz-Josef-Straße+9,+Bad+Gastein" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 6 -->
+    <div class="day-card" id="d6">
+      <div class="day-hdr" onclick="tog('d6')">
+        <div class="day-bar" style="background:#7c3aed"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Day 6</div>
+          <div class="day-info"><div class="day-date">June 28 — Bad Gastein → Slovenia</div><div class="day-sub">Stubnerkogel · Millstätter See · Train to Rače</div></div>
+          <div class="day-tag" style="background:#f5f3ff;color:#6d28d9">⭐ Suspension Bridge</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">8:30 AM — Stubnerkogel Cable Car</div><div class="step-val">Suspension Bridge · Stubnerkogelstraße 1 · Allow 2–3 hrs</div><a href="https://maps.google.com/?q=Stubnerkogel+Cable+Car,+Stubnerkogelstraße+1,+5640+Bad+Gastein" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Bad Gastein Waterfall</div><div class="step-val">Kaiser Wilhelm Promenade — quick stop before driving</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">~2:00 PM — Drive to Klagenfurt</div><div class="step-val">Stop at Millstätter See (Seemühlgasse 56, 9872 Millstatt) ~1 hr 15 min</div><a href="https://maps.google.com/?q=Millstätter+See,+Seemühlgasse+56,+9872+Millstatt" target="_blank" class="map-btn">Millstätter See</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">5–6 PM — Return Rental Car</div><div class="step-val">Klagenfurt Airport · Follow rental return signs</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Train to Slovenia (~2.5 hrs)</div><div class="step-val">Klagenfurt → Maribor → Rače · Change at Bleiburg or Villach</div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Hotel</div>
+              <div class="hotel-chip"><div class="hc-name">City Maribor</div><div class="hc-addr">Ulica kneza Koclja 22, 2000 Maribor, Slovenia</div><div class="hc-conf">hotelcitymb.si</div></div>
+              <a href="https://maps.google.com/?q=City+Maribor,+Ulica+kneza+Koclja+22,+2000+Maribor" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAYS 7–10 -->
+    <div class="day-card" id="d7">
+      <div class="day-hdr" onclick="tog('d7')">
+        <div class="day-bar" style="background:#2e6b4f"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Days 7–10</div>
+          <div class="day-info"><div class="day-date">June 28 – July 2 — Rače, Slovenia</div><div class="day-sub">Maribor · Ljubljana Castle · Lake Bled</div></div>
+          <div class="day-tag" style="background:#f0fdf4;color:#166534">Slovenia Base</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Maribor — Must Do</div><div class="step-val">Old Vine House — world's oldest grape vine · Vojašniška ulica 8</div><a href="https://maps.google.com/?q=Old+Vine+House,+Vojašniška+ulica+8,+2000+Maribor" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Day Trip — Ljubljana Castle</div><div class="step-val">Grajska planota 1, 1000 Ljubljana</div><a href="https://maps.google.com/?q=Ljubljana+Castle,+Grajska+planota+1,+1000+Ljubljana" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Day Trip — Lake Bled</div><div class="step-val">Cesta svobode 10, 4260 Bled</div><a href="https://maps.google.com/?q=Lake+Bled,+Cesta+svobode+10,+4260+Bled" target="_blank" class="map-btn">Open in Maps</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAYS 11–12 -->
+    <div class="day-card" id="d11">
+      <div class="day-hdr" onclick="tog('d11')">
+        <div class="day-bar" style="background:#dc2626"></div>
+        <div class="day-hdr-inner">
+          <div class="day-badge">Day 11–12</div>
+          <div class="day-info"><div class="day-date">July 2–3 — Zagreb + Return</div><div class="day-sub">Train to Zagreb · Old Town · Fly home July 3</div></div>
+          <div class="day-tag" style="background:#fef2f2;color:#991b1b">Zagreb → DSM</div>
+          <div class="day-chev">▾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="step-list">
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#dc2626"></div></div></div>
+            <div class="step-right"><div class="step-lbl">July 2 — Train to Zagreb (~1 hr 45 min)</div><div class="step-val">Depart Maribor afternoon · Arrive Zagreb Main Station</div><a href="https://maps.google.com/?q=Zagreb+Main+Train+Station,+Trg+kralja+Tomislava+12,+10000+Zagreb" target="_blank" class="map-btn">Zagreb Station</a></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#dc2626"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Evening Highlights</div><div class="pill-row"><a href="https://maps.google.com/?q=Ban+Jelačić+Square,+Zagreb" target="_blank" class="pill">↗ Ban Jelačić Square</a><a href="https://maps.google.com/?q=Zagreb+Cathedral,+Kaptol+31,+Zagreb" target="_blank" class="pill">↗ Zagreb Cathedral</a></div></div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#dc2626"></div></div></div>
+            <div class="step-right"><div class="step-lbl">July 3 — Flights Home</div><div class="step-val">Zagreb Airport → Munich → Chicago → Des Moines 😢</div><a href="https://maps.google.com/?q=Zagreb+Airport,+Ul.+Rudolfa+Fizira+21,+10410+Velika+Gorica" target="_blank" class="map-btn">Zagreb Airport</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPENSES -->
+<section class="section reveal">
+  <div class="sec-hdr">
+    <h2 class="sec-title">Expenses</h2>
+    <span class="sec-num">04</span>
+  </div>
+  <div class="exp-layout">
+    <div>
+      <div class="exp-form">
+        <div class="ef-title">Add Expense</div>
+        <div class="ef-row">
+          <div class="ef-field"><label class="ef-lbl">Date</label><input class="ef-input" type="date" id="ef-date"></div>
+          <div class="ef-field"><label class="ef-lbl">Amount</label><input class="ef-input" type="number" id="ef-amount" placeholder="0.00" step="0.01" min="0"></div>
+        </div>
+        <div class="ef-row-3">
+          <div class="ef-field"><label class="ef-lbl">Currency</label>
+            <select class="ef-select" id="ef-curr"><option value="€">€ Euro</option><option value="$">$ USD</option></select>
+          </div>
+          <div class="ef-field"><label class="ef-lbl">Category</label>
+            <select class="ef-select" id="ef-cat"><option>Food &amp; Drink</option><option>Transport</option><option>Hotels</option><option>Activities</option><option>Shopping</option><option>Other</option></select>
+          </div>
+          <div class="ef-field"><label class="ef-lbl">Paid by</label>
+            <select class="ef-select" id="ef-who"><option>Matt</option><option>Katie</option><option>Split 50/50</option></select>
+          </div>
+        </div>
+        <div class="ef-row">
+          <div class="ef-field full"><label class="ef-lbl">Description</label><input class="ef-input" type="text" id="ef-desc" placeholder="e.g. Dinner at Johanneskeller"></div>
+        </div>
+        <button class="ef-btn" onclick="addExp()">Add Expense</button>
+      </div>
+      <div class="exp-log" id="exp-log">
+        <div class="el-head">
+          <div class="el-hcol">Date</div><div class="el-hcol">Description</div><div class="el-hcol">Category</div><div class="el-hcol">Amount</div><div class="el-hcol">Curr.</div><div class="el-hcol">Paid by</div><div></div>
+        </div>
+        <div class="el-empty" id="el-empty">No expenses yet.</div>
+      </div>
+    </div>
+    <div class="exp-sidebar">
+      <div class="exp-sum">
+        <div class="es-lbl">Totals</div>
+        <div class="es-total" id="es-total">€0 · $0</div>
+        <div class="es-sub" id="es-sub">0 transactions</div>
+        <div class="es-split">
+          <div class="es-person"><div class="es-pname">Matt</div><div class="es-pamt" id="es-matt">—</div></div>
+          <div class="es-person"><div class="es-pname">Katie</div><div class="es-pamt" id="es-katie">—</div></div>
+        </div>
+        <div class="es-cats" id="es-cats"></div>
+      </div>
+      <button class="exp-export" onclick="exportCSV()">↓ Export to CSV</button>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-l">Austria &amp; Slovenia, June 2026</div>
+  <div class="footer-r">StayHard Travel · Matt &amp; Katie</div>
+</footer>
+
+<script>
+// ── MASTHEAD COUNTDOWN ───────────────────────────────────
+const DEPART  = new Date('2026-06-23T17:17:00');
+const RETURN_ = new Date('2026-07-03T23:59:00');
+function pad(n){ return String(n).padStart(2,'0'); }
+
+let prevD = null, prevH = null, prevM = null;
+
+function updateCD() {
+  const now  = new Date();
+  const diff = DEPART - now;
+  const dEl  = document.getElementById('cd-d');
+  const hmEl = document.getElementById('cd-hm');
+
+  if (diff <= 0) {
+    if (dEl)  dEl.innerHTML  = (now < RETURN_ ? 'Happening' : 'Complete') + '<span class="cd-unit"> now</span>';
+    if (hmEl) hmEl.innerHTML = '';
+    document.getElementById('nav-cd').textContent = now < RETURN_ ? 'In progress!' : 'Complete ✓';
+    return;
+  }
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+
+  if (dEl && d !== prevD) {
+    dEl.classList.remove('tick');
+    void dEl.offsetWidth;
+    dEl.classList.add('tick');
+    dEl.innerHTML = d + '<span class="cd-unit">days</span>';
+    prevD = d;
+  }
+
+  if (hmEl && (h !== prevH || m !== prevM)) {
+    hmEl.classList.remove('tick');
+    void hmEl.offsetWidth;
+    hmEl.classList.add('tick');
+    hmEl.innerHTML = pad(h) + '<span class="cd-unit">hrs</span> &nbsp;' + pad(m) + '<span class="cd-unit">min</span>';
+    prevH = h; prevM = m;
+  }
+
+  document.getElementById('nav-cd').textContent = d + 'd ' + pad(h) + 'h';
+}
+
+updateCD();
+setInterval(updateCD, 1000);
+
+// PROGRESS
+(function(){
+  const now=new Date();let p=0;
+  if(now>=DEPART&&now<=RETURN_)p=(now-DEPART)/(RETURN_-DEPART)*100;
+  else if(now>RETURN_)p=100;
+  document.getElementById('pf').style.width=p.toFixed(1)+'%';
+  document.getElementById('pp').textContent=p>0?p.toFixed(0)+'% complete':'Departs June 23';
+})();
+
+function tog(id){document.getElementById(id).classList.toggle('open');}
+function togQI(id){document.getElementById(id).classList.toggle('open');}
+
+// WEATHER
+const CITIES=[
+  {name:'Salzburg',lat:47.8095,lon:13.0550,flag:'🇦🇹'},
+  {name:'St. Wolfgang',lat:47.7333,lon:13.4500,flag:'🇦🇹'},
+  {name:'Hallstatt',lat:47.5622,lon:13.6493,flag:'🇦🇹'},
+  {name:'Bad Gastein',lat:47.1167,lon:13.1333,flag:'🇦🇹'},
+  {name:'Maribor',lat:46.5547,lon:15.6459,flag:'🇸🇮'},
+  {name:'Zagreb',lat:45.8150,lon:15.9819,flag:'🇭🇷'},
+];
+const WI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌦️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'❄️',80:'🌦️',95:'⛈️'};
+const WD={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',51:'Light drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',80:'Showers',95:'Thunderstorm'};
+(async function(){
+  const g=document.getElementById('wx-grid');
+  g.innerHTML=CITIES.map(c=>{const k=c.name.replace(/[\s.]/g,'');return`<div class="wx-card"><div class="wx-flag">${c.flag}</div><div class="wx-city">${c.name}</div><div class="wx-icon" id="wi-${k}">⏳</div><div class="wx-temp" id="wt-${k}">—</div><div class="wx-feels" id="wf-${k}"></div><div class="wx-desc" id="wd-${k}" style="color:var(--ink4);font-style:italic">Loading…</div></div>`;}).join('');
+  await Promise.allSettled(CITIES.map(async c=>{
+    const k=c.name.replace(/[\s.]/g,'');
+    try{
+      const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,apparent_temperature,weathercode&temperature_unit=fahrenheit&timezone=auto`);
+      const d=await r.json();const cur=d.current;const code=cur.weathercode;
+      document.getElementById(`wi-${k}`).textContent=WI[code]||'🌡️';
+      document.getElementById(`wt-${k}`).textContent=Math.round(cur.temperature_2m)+'°F';
+      document.getElementById(`wf-${k}`).textContent='Feels '+Math.round(cur.apparent_temperature)+'°F';
+      const wd=document.getElementById(`wd-${k}`);wd.textContent=WD[code]||'—';wd.style.fontStyle='normal';wd.style.color='var(--ink3)';
+    }catch(e){document.getElementById(`wd-${k}`).textContent='Unavailable';}
+  }));
+})();
+
+// EXPENSES
+const EXP_KEY='stayhard_travel_exp_v3';
+const CS={'Food & Drink':'#dbeafe:#1e40af','Transport':'#fef9c3:#92400e','Hotels':'#f3e8ff:#6d28d9','Activities':'#dcfce7:#166534','Shopping':'#fce7f3:#9d174d','Other':'#f3f4f6:#374151'};
+const CD={'Food & Drink':'#3b82f6','Transport':'#f59e0b','Hotels':'#8b5cf6','Activities':'#22c55e','Shopping':'#ec4899','Other':'#6b7280'};
+let EXPS=[];
+try{EXPS=JSON.parse(localStorage.getItem(EXP_KEY))||[];}catch(e){}
+document.getElementById('ef-date').value=new Date().toISOString().split('T')[0];
+function saveExps(){try{localStorage.setItem(EXP_KEY,JSON.stringify(EXPS));}catch(e){}}
+function addExp(){
+  const date=document.getElementById('ef-date').value;
+  const amt=parseFloat(document.getElementById('ef-amount').value);
+  const curr=document.getElementById('ef-curr').value;
+  const cat=document.getElementById('ef-cat').value;
+  const who=document.getElementById('ef-who').value;
+  const desc=document.getElementById('ef-desc').value.trim();
+  if(!date||isNaN(amt)||amt<=0||!desc){alert('Please fill in all fields.');return;}
+  EXPS.unshift({id:Date.now(),date,amt,curr,cat,who,desc});
+  saveExps();renderExps();
+  document.getElementById('ef-amount').value='';
+  document.getElementById('ef-desc').value='';
+}
+function delExp(id){EXPS=EXPS.filter(e=>e.id!==id);saveExps();renderExps();}
+function renderExps(){
+  const log=document.getElementById('exp-log');
+  log.querySelectorAll('.el-row').forEach(r=>r.remove());
+  document.getElementById('el-empty').style.display=EXPS.length?'none':'block';
+  EXPS.forEach(e=>{
+    const[bg,fg]=(CS[e.cat]||'#f3f4f6:#374151').split(':');
+    const row=document.createElement('div');row.className='el-row';
+    row.innerHTML=`<div class="el-date">${e.date.slice(5)}</div><div class="el-desc">${e.desc}</div><div><span class="el-cat" style="background:${bg};color:${fg}">${e.cat}</span></div><div class="el-amt">${e.curr}${e.amt.toFixed(2)}</div><div class="el-curr">${e.curr==='$'?'USD':'EUR'}</div><div class="el-who">${e.who}</div><button class="el-del" onclick="delExp(${e.id})">✕</button>`;
+    log.appendChild(row);
+  });
+  const eur=EXPS.filter(e=>e.curr==='€').reduce((s,e)=>s+e.amt,0);
+  const usd=EXPS.filter(e=>e.curr==='$').reduce((s,e)=>s+e.amt,0);
+  const matt=EXPS.reduce((s,e)=>s+(e.who==='Matt'?e.amt:e.who==='Split 50/50'?e.amt/2:0),0);
+  const katie=EXPS.reduce((s,e)=>s+(e.who==='Katie'?e.amt:e.who==='Split 50/50'?e.amt/2:0),0);
+  const mattCurr=EXPS.find(e=>e.who==='Matt'||e.who==='Split 50/50');
+  document.getElementById('es-total').textContent='€'+eur.toFixed(2)+(usd>0?' · $'+usd.toFixed(2):'');
+  document.getElementById('es-sub').textContent=EXPS.length+' transaction'+(EXPS.length!==1?'s':'');
+  document.getElementById('es-matt').textContent=(mattCurr?.curr||'€')+matt.toFixed(2);
+  document.getElementById('es-katie').textContent=(mattCurr?.curr||'€')+katie.toFixed(2);
+  const cats={};EXPS.forEach(e=>cats[e.cat]=(cats[e.cat]||0)+e.amt);
+  document.getElementById('es-cats').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,a])=>`<div class="es-cat"><div class="es-cdot" style="background:${CD[c]||'#999'}"></div><div class="es-cname">${c}</div><div class="es-camt">${a.toFixed(2)}</div></div>`).join('');
+}
+function exportCSV(){
+  if(!EXPS.length){alert('No expenses to export.');return;}
+  const csv='Date,Description,Category,Amount,Currency,Paid By\n'+EXPS.map(e=>`${e.date},"${e.desc}",${e.cat},${e.amt.toFixed(2)},${e.curr==='$'?'USD':'EUR'},${e.who}`).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='austria_slovenia_expenses.csv';a.click();
+}
+renderExps();
+
+// CLOCKS
+function fmtClock(date, tz) {
+  return date.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true, timeZone:tz });
+}
+function fmtDate(date, tz) {
+  return date.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', timeZone:tz });
+}
+function updateClocks() {
+  const now = new Date();
+  const dsmTime = fmtClock(now, 'America/Chicago');
+  const eurTime = fmtClock(now, 'Europe/Vienna');
+  document.getElementById('clk-dsm').textContent      = dsmTime;
+  document.getElementById('clk-dsm-date').textContent = fmtDate(now, 'America/Chicago');
+  document.getElementById('clk-eur').textContent      = eurTime;
+  document.getElementById('clk-eur-date').textContent = fmtDate(now, 'Europe/Vienna');
+  document.getElementById('clk-zag').textContent      = fmtClock(now, 'Europe/Zagreb');
+  document.getElementById('clk-zag-date').textContent = fmtDate(now, 'Europe/Zagreb');
+  document.getElementById('clk-diff').textContent     = 'Austria is 7 hours ahead of Des Moines';
+  // Update collapsed preview
+  const prev = document.getElementById('qi-clocks-preview');
+  if (prev) prev.textContent = 'DSM ' + dsmTime.slice(0,-3) + dsmTime.slice(-2) + ' · Vienna ' + eurTime.slice(0,-3) + eurTime.slice(-2);
+}
+updateClocks();
+setInterval(updateClocks, 1000);
+
+// CURRENCY CONVERTER
+let EUR_RATE = null; // USD → EUR
+
+async function fetchRate() {
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/USD');
+    const d = await r.json();
+    EUR_RATE = d.rates.EUR;
+    const updated = new Date(d.time_last_update_utc).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    document.getElementById('conv-rate-display').textContent = `1 USD = ${EUR_RATE.toFixed(4)} EUR`;
+    document.getElementById('conv-rate-time').textContent    = `Live rate · updated ${updated}`;
+    const prev = document.getElementById('qi-conv-preview');
+    if (prev) prev.textContent = `1 USD = ${EUR_RATE.toFixed(4)} EUR`;
+    updateRefTable();
+    convertUSD(); // recalculate with live rate
+  } catch(e) {
+    // Fallback to approximate rate
+    EUR_RATE = 0.92;
+    document.getElementById('conv-rate-display').textContent = '1 USD ≈ 0.92 EUR';
+    document.getElementById('conv-rate-time').textContent    = 'Approximate rate · could not fetch live';
+    updateRefTable();
+    convertUSD();
+  }
+}
+
+function updateRefTable() {
+  if (!EUR_RATE) return;
+  [20, 50, 100, 200, 500, 1000].forEach(n => {
+    const el = document.getElementById(`ref-${n}`);
+    if (el) el.textContent = '€' + (n * EUR_RATE).toFixed(2);
+  });
+}
+
+function convertUSD() {
+  if (!EUR_RATE) return;
+  const usd = parseFloat(document.getElementById('conv-usd').value);
+  if (!isNaN(usd) && usd >= 0) {
+    document.getElementById('conv-eur').value = (usd * EUR_RATE).toFixed(2);
+  }
+}
+
+function convertEUR() {
+  if (!EUR_RATE) return;
+  const eur = parseFloat(document.getElementById('conv-eur').value);
+  if (!isNaN(eur) && eur >= 0) {
+    document.getElementById('conv-usd').value = (eur / EUR_RATE).toFixed(2);
+  }
+}
+
+fetchRate();
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
