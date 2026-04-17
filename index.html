@@ -970,18 +970,39 @@ if (nr) {
   document.getElementById('dd-next-race').textContent   = days+'d · '+nr.short;
 }
 
-// ── NET WORTH DISPLAY ─────────────────────────────────────
-// Reads the saved finance balances from localStorage if available
-(function() {
+// ── NET WORTH DISPLAY (live from Supabase) ────────────────
+(async function() {
+  const SB_URL = 'https://urqcldfagszngbxtdmck.supabase.co';
+  const SB_KEY = 'sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo';
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+  const el  = document.getElementById('dd-nw');
   try {
-    const accounts = [24500, 142000, 98000, 0, 0]; // default balances
-    const home = 385000;
-    const liabilities = 214200;
-    const total = accounts.reduce((s,v)=>s+v,0) + home - liabilities;
-    const fmt = n => '$' + (n/1000).toFixed(0) + 'k';
-    document.getElementById('dd-nw').textContent = fmt(total);
+    const res  = await fetch(`${SB_URL}/rest/v1/finance_snapshots?order=created_at.desc&limit=1&select=net_worth`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    const rows = await res.json();
+    if (rows && rows.length > 0 && rows[0].net_worth != null) {
+      el.textContent = fmt(rows[0].net_worth);
+    } else {
+      // Fall back to localStorage if no Supabase data yet
+      const saved = JSON.parse(localStorage.getItem('stayhard_finance_v1'));
+      if (saved) {
+        const acctTotal = saved.accounts.reduce((s,a)=>s+(a.balance||0),0);
+        const nw = acctTotal + (saved.home?.current_value||0) - (saved.liabilities?.mortgage||0) - (saved.liabilities?.other||0);
+        el.textContent = fmt(nw);
+      } else {
+        el.textContent = '—';
+      }
+    }
   } catch(e) {
-    document.getElementById('dd-nw').textContent = '—';
+    try {
+      const saved = JSON.parse(localStorage.getItem('stayhard_finance_v1'));
+      if (saved) {
+        const acctTotal = saved.accounts.reduce((s,a)=>s+(a.balance||0),0);
+        const nw = acctTotal + (saved.home?.current_value||0) - (saved.liabilities?.mortgage||0) - (saved.liabilities?.other||0);
+        el.textContent = fmt(nw);
+      }
+    } catch(e2) { el.textContent = '—'; }
   }
 })();
 
