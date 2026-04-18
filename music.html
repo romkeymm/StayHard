@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0a">
+<title>StayHard — Music</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #0a0a0a;
+  --bg2:     #0f0f0f;
+  --bg3:     #141414;
+  --bg4:     #1a1a1a;
+  --bg5:     #222;
+  --white:   #ffffff;
+  --text:    #e8e8e8;
+  --text2:   #888;
+  --text3:   #444;
+  --text4:   #2a2a2a;
+  --border:  #1a1a1a;
+  --border2: #222;
+  --green:   #6ee7b7;
+  --purple:  #a78bfa;
+  --amber:   #fb923c;
+  --blue:    #60a5fa;
+  --red:     #f87171;
+}
+html { background: var(--bg); }
+body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; overflow-x: hidden; min-height: 100vh; }
+a { text-decoration: none; color: inherit; }
+button { font-family: 'Space Grotesk', sans-serif; cursor: pointer; }
+
+/* ── NAV ── */
+.nav { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 56px; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 100; }
+.nav-back { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); text-decoration: none; transition: color .2s; }
+.nav-back:hover { color: var(--text2); }
+.nav-logo { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--white); }
+.nav-meta { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); }
+
+/* ── MASTHEAD ── */
+.masthead { padding: 52px 40px 44px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+.mh-kicker { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; }
+.mh-title { font-size: clamp(36px, 5vw, 56px); font-weight: 700; line-height: .92; letter-spacing: -1.5px; color: var(--white); }
+.mh-title-accent { color: var(--green); }
+.mh-stats { display: flex; gap: 32px; flex-shrink: 0; }
+.mh-stat { text-align: right; }
+.mh-stat-n { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--white); line-height: 1; }
+.mh-stat-l { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-top: 4px; }
+
+/* ── SECTION BAR ── */
+.sec-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 40px; background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.sec-label { font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--text3); }
+.sec-label-num { color: var(--green); }
+.sec-action-btn { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); background: none; border: 1px solid var(--border2); padding: 5px 12px; border-radius: 3px; cursor: pointer; transition: color .2s, border-color .2s; }
+.sec-action-btn:hover { color: var(--text2); border-color: var(--text3); }
+
+/* ── CHARTS ── */
+.charts-wrap { display: grid; grid-template-columns: 1fr 1fr; }
+.chart-panel { padding: 28px 40px; border-bottom: 1px solid var(--border); }
+.chart-panel:first-child { border-right: 1px solid var(--border); }
+.chart-panel-hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+.chart-panel-title { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); }
+.chart-updated { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text4); }
+.chart-row { display: flex; align-items: center; gap: 14px; padding: 9px 0; border-bottom: 1px solid #111; }
+.chart-row:last-child { border-bottom: none; }
+.chart-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); width: 18px; flex-shrink: 0; text-align: right; }
+.chart-info { flex: 1; min-width: 0; }
+.chart-track-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chart-track-artist { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Space Mono', monospace; }
+.chart-bar-col { width: 80px; flex-shrink: 0; }
+.chart-bar-wrap { height: 2px; background: var(--bg4); border-radius: 1px; overflow: hidden; }
+.chart-bar-fill { height: 2px; border-radius: 1px; transition: width 1s ease; }
+.chart-apple-link { flex-shrink: 0; font-size: 11px; color: var(--text3); transition: color .2s; padding: 3px 6px; border: 1px solid transparent; border-radius: 3px; }
+.chart-apple-link:hover { color: var(--green); border-color: var(--border2); }
+.chart-loading { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); padding: 20px 0; font-style: italic; }
+
+/* ── NEW RELEASES ── */
+.releases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+.release-card { background: var(--bg); padding: 24px; transition: background .2s; }
+.release-card:hover { background: var(--bg2); }
+.rc-art { width: 100%; aspect-ratio: 1; background: var(--bg3); border: 1px solid var(--border); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.rc-art img { width: 100%; height: 100%; object-fit: cover; }
+.rc-art-placeholder { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.rc-art-disc { width: 52%; aspect-ratio: 1; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; }
+.rc-art-disc-inner { width: 38%; aspect-ratio: 1; border-radius: 50%; background: var(--bg5); }
+.rc-artist { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc-title { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 8px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc-meta { display: flex; align-items: center; gap: 7px; }
+.rc-badge { font-family: 'Space Mono', monospace; font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; }
+.badge-album  { background: rgba(251,146,60,.1);  color: var(--amber); }
+.badge-single { background: rgba(167,139,250,.1); color: var(--purple); }
+.badge-ep     { background: rgba(96,165,250,.1);  color: var(--blue); }
+.badge-new    { background: rgba(110,231,183,.1); color: var(--green); }
+.rc-date { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text3); }
+.rc-empty { padding: 40px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); font-style: italic; }
+
+/* ── SHOWS ── */
+.shows-section { border-bottom: 1px solid var(--border); }
+.shows-list { padding: 0 40px; }
+.show-row { display: grid; grid-template-columns: 72px 1fr auto; align-items: center; gap: 24px; padding: 18px 0; border-bottom: 1px solid #111; }
+.show-row:last-child { border-bottom: none; }
+.show-date-block { text-align: center; }
+.show-month { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+.show-day { font-size: 30px; font-weight: 700; color: var(--white); line-height: 1.1; }
+.show-artist { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+.show-venue { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); }
+.show-actions { display: flex; gap: 8px; align-items: center; }
+.show-ticket-btn { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border: 1px solid var(--border2); border-radius: 3px; color: var(--text3); background: none; transition: all .2s; white-space: nowrap; }
+.show-ticket-btn:hover { border-color: var(--green); color: var(--green); }
+.show-apple-btn { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border: 1px solid var(--border2); border-radius: 3px; color: var(--text3); background: none; transition: all .2s; text-decoration: none; white-space: nowrap; }
+.show-apple-btn:hover { border-color: var(--text2); color: var(--text2); }
+.show-empty { padding: 40px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); font-style: italic; }
+.shows-note { padding: 12px 40px; background: var(--bg2); border-top: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text3); }
+
+/* ── ARTISTS ── */
+.artists-section { border-bottom: 1px solid var(--border); }
+.artists-wrap { padding: 24px 40px; display: flex; flex-wrap: wrap; gap: 8px; }
+.artist-pill { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 100px; cursor: pointer; transition: border-color .2s; text-decoration: none; }
+.artist-pill:hover { border-color: var(--green); }
+.ap-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.ap-name { font-size: 12px; font-weight: 500; color: var(--text2); }
+.ap-add-btn { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: transparent; border: 1px dashed var(--border2); border-radius: 100px; font-size: 12px; font-weight: 500; color: var(--text3); cursor: pointer; transition: all .2s; font-family: 'Space Grotesk', sans-serif; }
+.ap-add-btn:hover { border-color: var(--text2); color: var(--text2); }
+.ap-del-btn { width: 14px; height: 14px; border-radius: 50%; background: var(--bg4); border: none; color: var(--text3); font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; transition: background .15s, color .15s; padding: 0; }
+.ap-del-btn:hover { background: var(--red); color: var(--white); }
+
+/* ── ADD ARTIST MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; padding: 28px; width: 360px; }
+.modal-title { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+.modal-sub { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); margin-bottom: 20px; }
+.modal-input { width: 100%; padding: 10px 14px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 5px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: var(--white); outline: none; transition: border-color .15s; }
+.modal-input:focus { border-color: var(--green); }
+.modal-actions { display: flex; gap: 10px; margin-top: 14px; }
+.modal-btn { flex: 1; padding: 10px; border: none; border-radius: 5px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.modal-btn-cancel { background: var(--bg4); color: var(--text2); }
+.modal-btn-cancel:hover { background: var(--bg5); }
+.modal-btn-add { background: var(--green); color: #0a0a0a; }
+.modal-btn-add:hover { background: #a7f3d0; }
+
+/* ── FOOTER ── */
+.footer { padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; }
+.footer-l { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+.footer-r { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text4); }
+
+/* ── UTILS ── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+@media (max-width: 768px) {
+  .nav, .masthead, .sec-bar, .shows-list, .artists-wrap, .shows-note, .footer { padding-left: 20px; padding-right: 20px; }
+  .masthead { flex-direction: column; align-items: flex-start; gap: 28px; }
+  .mh-stats { gap: 24px; }
+  .charts-wrap { grid-template-columns: 1fr; }
+  .chart-panel:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .chart-panel { padding: 24px 20px; }
+  .show-row { grid-template-columns: 60px 1fr; gap: 16px; }
+  .show-actions { grid-column: 1/-1; padding-left: 76px; }
+  .releases-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-back">← StayHard</a>
+  <div class="nav-logo">MUSIC</div>
+  <div class="nav-meta" id="nav-meta">—</div>
+</nav>
+
+<section class="masthead">
+  <div>
+    <div class="mh-kicker">StayHard · Music Intelligence</div>
+    <h1 class="mh-title">What's<br><span class="mh-title-accent">playing.</span></h1>
+  </div>
+  <div class="mh-stats">
+    <div class="mh-stat">
+      <div class="mh-stat-n" id="stat-artists">—</div>
+      <div class="mh-stat-l">Artists</div>
+    </div>
+    <div class="mh-stat">
+      <div class="mh-stat-n" id="stat-shows">—</div>
+      <div class="mh-stat-l">Upcoming shows</div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARTS -->
+<div class="sec-bar reveal">
+  <div class="sec-label"><span class="sec-label-num">01</span> — Top Charts</div>
+  <a href="https://music.apple.com/us/charts" target="_blank" class="sec-action-btn">Apple Music Charts ↗</a>
+</div>
+<div class="charts-wrap reveal">
+  <div class="chart-panel">
+    <div class="chart-panel-hdr">
+      <div class="chart-panel-title">Top Songs · US</div>
+      <div class="chart-updated" id="songs-updated">—</div>
+    </div>
+    <div id="songs-list"><div class="chart-loading">Loading…</div></div>
+  </div>
+  <div class="chart-panel">
+    <div class="chart-panel-hdr">
+      <div class="chart-panel-title">Top Albums · US</div>
+      <div class="chart-updated" id="albums-updated">—</div>
+    </div>
+    <div id="albums-list"><div class="chart-loading">Loading…</div></div>
+  </div>
+</div>
+
+<!-- NEW RELEASES -->
+<div class="sec-bar reveal">
+  <div class="sec-label"><span class="sec-label-num">02</span> — New Releases from Your Artists</div>
+  <span class="sec-action-btn" id="releases-updated">—</span>
+</div>
+<div class="releases-grid reveal" id="releases-grid">
+  <div class="rc-empty">Loading releases…</div>
+</div>
+
+<!-- SHOWS -->
+<div class="shows-section reveal">
+  <div class="sec-bar">
+    <div class="sec-label"><span class="sec-label-num">03</span> — Upcoming Shows · Iowa &amp; Midwest</div>
+    <span class="sec-action-btn" id="shows-updated">—</span>
+  </div>
+  <div class="shows-list" id="shows-list">
+    <div class="show-empty">Loading shows…</div>
+  </div>
+  <div class="shows-note">Concert data via Bandsintown · filtered to Iowa, Chicago, Minneapolis, Kansas City, Omaha</div>
+</div>
+
+<!-- YOUR ARTISTS -->
+<div class="artists-section reveal">
+  <div class="sec-bar">
+    <div class="sec-label"><span class="sec-label-num">04</span> — Your Artists</div>
+    <button class="sec-action-btn" onclick="openModal()">+ Add Artist</button>
+  </div>
+  <div class="artists-wrap" id="artists-wrap"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-l">StayHard · Music</div>
+  <div class="footer-r">Charts: Apple Music · Shows: Bandsintown · Releases: MusicBrainz</div>
+</footer>
+
+<!-- ADD ARTIST MODAL -->
+<div class="modal-overlay" id="artist-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">Add Artist</div>
+    <div class="modal-sub">Artist will be tracked for new releases &amp; shows</div>
+    <input class="modal-input" type="text" id="artist-input" placeholder="e.g. Morgan Wallen" onkeydown="if(event.key==='Enter')addArtist()">
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn modal-btn-add" onclick="addArtist()">Add Artist</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const SB_URL = 'https://urqcldfagszngbxtdmck.supabase.co';
+const SB_KEY = 'sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo';
+const SB_HDR = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+
+// ── DEFAULT ARTISTS (seeded from Apple Music playlist) ───
+const DEFAULT_ARTISTS = [
+  { name: 'MacKenzie Porter',           mbid: null, am_id: '570849903' },
+  { name: 'Jordan Davis',               mbid: null, am_id: '1240921740' },
+  { name: 'Michael Marcagi',            mbid: null, am_id: '1524265962' },
+  { name: 'Sam Barber',                 mbid: null, am_id: '1584802114' },
+  { name: 'Jonah Kagen',                mbid: null, am_id: '1547525971' },
+  { name: 'Jake Owen',                  mbid: null, am_id: '128412737' },
+  { name: 'Josiah and the Bonnevilles', mbid: null, am_id: '1101954493' },
+  { name: 'Jake Etheridge',             mbid: null, am_id: '678008790' },
+  { name: 'Jonas Conner',               mbid: null, am_id: '1775933996' },
+  { name: 'Vincent Mason',              mbid: null, am_id: '1602781449' },
+];
+
+const LOCAL_KEY = 'stayhard_music_artists_v1';
+let ARTISTS = [];
+
+// ── SUPABASE HELPERS ──────────────────────────────────────
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, { headers: SB_HDR, ...opts });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ── ARTIST STORAGE ────────────────────────────────────────
+async function loadArtists() {
+  try {
+    const rows = await sbFetch('music_artists?order=name.asc');
+    if (rows && rows.length > 0) {
+      ARTISTS = rows;
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(ARTISTS));
+      return;
+    }
+  } catch(e) { console.warn('Supabase artist load failed, using local'); }
+
+  // Fallback to localStorage
+  try {
+    const saved = JSON.parse(localStorage.getItem(LOCAL_KEY));
+    if (saved && saved.length) { ARTISTS = saved; return; }
+  } catch(e) {}
+
+  // First run — seed defaults
+  ARTISTS = DEFAULT_ARTISTS.map((a, i) => ({ ...a, id: i + 1 }));
+  await syncArtistsToSupabase();
+}
+
+async function syncArtistsToSupabase() {
+  try {
+    // Upsert all artists
+    await sbFetch('music_artists', {
+      method: 'POST',
+      body: JSON.stringify(DEFAULT_ARTISTS.map(a => ({ name: a.name, am_id: a.am_id }))),
+      headers: { ...SB_HDR, 'Prefer': 'resolution=ignore-duplicates,return=minimal' }
+    });
+  } catch(e) { console.warn('Supabase artist sync failed:', e.message); }
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(ARTISTS));
+}
+
+async function saveArtist(name) {
+  const row = { name: name.trim(), am_id: null };
+  try {
+    const res = await sbFetch('music_artists', { method: 'POST', body: JSON.stringify(row) });
+    return Array.isArray(res) ? res[0] : res;
+  } catch(e) {
+    console.warn('Supabase save failed:', e.message);
+    return { ...row, id: Date.now() };
+  }
+}
+
+async function deleteArtist(id) {
+  try { await sbFetch(`music_artists?id=eq.${id}`, { method: 'DELETE' }); } catch(e) {}
+}
+
+function renderArtists() {
+  const wrap = document.getElementById('artists-wrap');
+  wrap.innerHTML = ARTISTS.map(a => {
+    const amUrl = a.am_id
+      ? `https://music.apple.com/us/artist/${encodeURIComponent(a.name.toLowerCase().replace(/\s+/g, '-'))}/${a.am_id}`
+      : `https://music.apple.com/us/search?term=${encodeURIComponent(a.name)}`;
+    return `<a href="${amUrl}" target="_blank" class="artist-pill">
+      <div class="ap-dot"></div>
+      <div class="ap-name">${a.name}</div>
+      <button class="ap-del-btn" onclick="event.preventDefault();removeArtist(${a.id})" title="Remove">✕</button>
+    </a>`;
+  }).join('') + `<button class="ap-add-btn" onclick="openModal()">+ Add artist</button>`;
+  document.getElementById('stat-artists').textContent = ARTISTS.length;
+}
+
+function openModal() {
+  document.getElementById('artist-modal').classList.add('open');
+  setTimeout(() => document.getElementById('artist-input').focus(), 50);
+}
+function closeModal() {
+  document.getElementById('artist-modal').classList.remove('open');
+  document.getElementById('artist-input').value = '';
+}
+
+async function addArtist() {
+  const name = document.getElementById('artist-input').value.trim();
+  if (!name) return;
+  const saved = await saveArtist(name);
+  ARTISTS.push(saved);
+  ARTISTS.sort((a, b) => a.name.localeCompare(b.name));
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(ARTISTS));
+  renderArtists();
+  closeModal();
+  fetchReleases(); // refresh releases with new artist
+}
+
+async function removeArtist(id) {
+  ARTISTS = ARTISTS.filter(a => a.id !== id);
+  await deleteArtist(id);
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(ARTISTS));
+  renderArtists();
+}
+
+// ── ITUNES CHARTS ─────────────────────────────────────────
+async function fetchCharts() {
+  try {
+    const [songsRes, albumsRes] = await Promise.all([
+      fetch('https://itunes.apple.com/us/rss/topsongs/limit=10/json'),
+      fetch('https://itunes.apple.com/us/rss/topalbums/limit=10/json')
+    ]);
+    const [songsData, albumsData] = await Promise.all([songsRes.json(), albumsRes.json()]);
+
+    renderChartList('songs-list', songsData.feed.entry, 'songs-updated', 'song');
+    renderChartList('albums-list', albumsData.feed.entry, 'albums-updated', 'album');
+  } catch(e) {
+    document.getElementById('songs-list').innerHTML = '<div class="chart-loading">Unable to load charts</div>';
+    document.getElementById('albums-list').innerHTML = '<div class="chart-loading">Unable to load charts</div>';
+  }
+}
+
+function renderChartList(elId, entries, updatedId, type) {
+  if (!entries || !entries.length) return;
+  const max = entries[0]?.['im:releaseDate']?.label;
+  document.getElementById(updatedId).textContent = 'Updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  const html = entries.slice(0, 8).map((e, i) => {
+    const title  = e['im:name']?.label || '—';
+    const artist = e['im:artist']?.label || e['im:artist']?.['#text'] || '—';
+    const url    = e.link?.attributes?.href || `https://music.apple.com/us/search?term=${encodeURIComponent(title)}`;
+    const pct    = Math.round(100 - (i * 11));
+    const color  = type === 'song' ? '#6ee7b7' : '#a78bfa';
+    return `<div class="chart-row">
+      <div class="chart-num">${i + 1}</div>
+      <div class="chart-info">
+        <div class="chart-track-name">${title}</div>
+        <div class="chart-track-artist">${artist}</div>
+      </div>
+      <div class="chart-bar-col">
+        <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+      <a href="${url}" target="_blank" class="chart-apple-link" title="Open in Apple Music">♪</a>
+    </div>`;
+  }).join('');
+  document.getElementById(elId).innerHTML = html;
+}
+
+// ── NEW RELEASES via MusicBrainz ──────────────────────────
+async function fetchReleases() {
+  const grid = document.getElementById('releases-grid');
+  grid.innerHTML = '<div class="rc-empty">Fetching new releases…</div>';
+
+  const today    = new Date();
+  const sixMonths = new Date(today);
+  sixMonths.setMonth(sixMonths.getMonth() - 6);
+  const dateStr  = sixMonths.toISOString().split('T')[0];
+
+  const results = [];
+
+  // Fetch in batches to avoid rate limiting
+  for (const artist of ARTISTS.slice(0, 10)) {
+    try {
+      const searchUrl = `https://musicbrainz.org/ws/2/release?query=artist:"${encodeURIComponent(artist.name)}"&limit=3&fmt=json`;
+      const res  = await fetch(searchUrl, { headers: { 'User-Agent': 'StayHardOS/1.0 (music@stayhard.app)' } });
+      const data = await res.json();
+
+      if (data.releases) {
+        const relevant = data.releases
+          .filter(r => r.date && r.date >= dateStr)
+          .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+          .slice(0, 1);
+        relevant.forEach(r => results.push({ artist: artist.name, am_id: artist.am_id, ...r }));
+      }
+      await new Promise(r => setTimeout(r, 120)); // MusicBrainz rate limit
+    } catch(e) {}
+  }
+
+  document.getElementById('releases-updated').textContent = 'Last 6 months';
+
+  if (results.length === 0) {
+    grid.innerHTML = '<div class="rc-empty">No recent releases found for your artists · try adding more</div>';
+    return;
+  }
+
+  results.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  grid.innerHTML = results.map(r => {
+    const type    = (r['release-group']?.['primary-type'] || 'Release').toLowerCase();
+    const badgeClass = type === 'album' ? 'badge-album' : type === 'single' ? 'badge-single' : type === 'ep' ? 'badge-ep' : 'badge-new';
+    const badgeText  = type.charAt(0).toUpperCase() + type.slice(1);
+    const date    = r.date ? new Date(r.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '—';
+    const amUrl   = r.am_id
+      ? `https://music.apple.com/us/artist/${encodeURIComponent(r.artist.toLowerCase().replace(/\s+/g, '-'))}/${r.am_id}`
+      : `https://music.apple.com/us/search?term=${encodeURIComponent(r.artist + ' ' + r.title)}`;
+
+    return `<a href="${amUrl}" target="_blank" class="release-card">
+      <div class="rc-art">
+        <div class="rc-art-placeholder">
+          <div class="rc-art-disc"><div class="rc-art-disc-inner"></div></div>
+        </div>
+      </div>
+      <div class="rc-artist">${r.artist}</div>
+      <div class="rc-title">${r.title}</div>
+      <div class="rc-meta">
+        <span class="rc-badge ${badgeClass}">${badgeText}</span>
+        <span class="rc-date">${date}</span>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+// ── SHOWS via Bandsintown ─────────────────────────────────
+// Bandsintown's free public endpoint (no key needed for basic artist events)
+const MIDWEST_CITIES = ['des moines', 'iowa city', 'chicago', 'minneapolis', 'omaha', 'kansas city', 'st. louis', 'milwaukee'];
+
+async function fetchShows() {
+  const showsList = document.getElementById('shows-list');
+  const allShows = [];
+
+  for (const artist of ARTISTS.slice(0, 10)) {
+    try {
+      const encoded = encodeURIComponent(artist.name);
+      const url = `https://rest.bandsintown.com/artists/${encoded}/events?app_id=stayhard_music&date=upcoming`;
+      const res  = await fetch(url);
+      if (!res.ok) continue;
+      const events = await res.json();
+      if (!Array.isArray(events)) continue;
+
+      events.forEach(ev => {
+        const city = (ev.venue?.city || '').toLowerCase();
+        const state = (ev.venue?.region || '').toLowerCase();
+        const isMidwest = MIDWEST_CITIES.some(c => city.includes(c)) || state === 'ia' || state === 'il' || state === 'mn' || state === 'ne' || state === 'mo' || state === 'wi' || state === 'ks';
+        if (isMidwest) {
+          allShows.push({ artist: artist.name, am_id: artist.am_id, ...ev });
+        }
+      });
+      await new Promise(r => setTimeout(r, 80));
+    } catch(e) {}
+  }
+
+  document.getElementById('shows-updated').textContent = 'Live data';
+  document.getElementById('stat-shows').textContent = allShows.length;
+
+  if (allShows.length === 0) {
+    showsList.innerHTML = '<div class="show-empty">No upcoming shows found in the Midwest for your artists · shows may not be announced yet</div>';
+    return;
+  }
+
+  allShows.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+  showsList.innerHTML = allShows.slice(0, 12).map(ev => {
+    const d      = new Date(ev.datetime);
+    const month  = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+    const day    = d.getDate();
+    const venue  = ev.venue?.name || '—';
+    const city   = ev.venue?.city || '';
+    const region = ev.venue?.region || '';
+    const location = [venue, city + (region ? ', ' + region : '')].filter(Boolean).join(' · ');
+    const amUrl  = ev.am_id
+      ? `https://music.apple.com/us/artist/${encodeURIComponent(ev.artist.toLowerCase().replace(/\s+/g,'-'))}/${ev.am_id}`
+      : `https://music.apple.com/us/search?term=${encodeURIComponent(ev.artist)}`;
+    const ticketUrl = ev.offers?.[0]?.url || ev.url || '#';
+
+    return `<div class="show-row">
+      <div class="show-date-block">
+        <div class="show-month">${month}</div>
+        <div class="show-day">${day}</div>
+      </div>
+      <div>
+        <div class="show-artist">${ev.artist}</div>
+        <div class="show-venue">${location}</div>
+      </div>
+      <div class="show-actions">
+        <a href="${amUrl}" target="_blank" class="show-apple-btn">Artist ♪</a>
+        <a href="${ticketUrl}" target="_blank" class="show-ticket-btn">Tickets ↗</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── SCROLL REVEAL ─────────────────────────────────────────
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.04 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ── INIT ──────────────────────────────────────────────────
+(async function init() {
+  document.getElementById('nav-meta').textContent =
+    new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+  initReveal();
+  await loadArtists();
+  renderArtists();
+
+  // Fetch all data in parallel
+  fetchCharts();
+  fetchReleases();
+  fetchShows();
+})();
+</script>
+</body>
+</html>
