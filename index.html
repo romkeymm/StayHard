@@ -978,14 +978,19 @@ if (nr) {
   const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
   const el  = document.getElementById('dd-nw');
   try {
-    const res  = await fetch(`${SB_URL}/rest/v1/finance_snapshots?order=created_at.desc&limit=1&select=net_worth`, {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-    });
+    const res  = await fetch(
+      `${SB_URL}/rest/v1/finance_snapshots?order=created_at.desc&limit=1&select=net_worth,central_bank,vanguard,fidelity,bitcoin,ethereum,home_value,mortgage,other_liabilities`,
+      { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
+    );
     const rows = await res.json();
-    if (rows && rows.length > 0 && rows[0].net_worth != null) {
-      el.textContent = fmt(rows[0].net_worth);
+    if (rows && rows.length > 0) {
+      const r = rows[0];
+      // Recalculate from raw columns to avoid any stale stored net_worth
+      const accounts = (r.central_bank||0) + (r.vanguard||0) + (r.fidelity||0) + (r.bitcoin||0) + (r.ethereum||0);
+      const nw = accounts + (r.home_value||0) - (r.mortgage||0) - (r.other_liabilities||0);
+      el.textContent = fmt(nw);
     } else {
-      // Fall back to localStorage if no Supabase data yet
+      // Fall back to localStorage
       const saved = JSON.parse(localStorage.getItem('stayhard_finance_v1'));
       if (saved) {
         const acctTotal = saved.accounts.reduce((s,a)=>s+(a.balance||0),0);
