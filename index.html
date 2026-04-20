@@ -113,15 +113,7 @@ body {
   margin-top: 2px;
 }
 
-.hero-center {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px 0 40px;
-}
+
 
 .hero-greeting {
   font-family: 'Barlow Condensed', sans-serif;
@@ -589,7 +581,214 @@ body {
   color: var(--text4);
 }
 
-/* ── ANIMATIONS ─────────────────────────────────────────── */
+/* ── HERO TWO-COLUMN ─────────────────────────────────────── */
+.hero-center {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  align-items: center;
+  padding: 40px 0 24px;
+}
+.hero-left {}
+
+/* ── INBOX STRIP ─────────────────────────────────────────── */
+.inbox-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.7s forwards;
+}
+.inbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.inbox-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.inbox-unread-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  background: #1a2535;
+  color: #60a5fa;
+  padding: 1px 7px;
+  border-radius: 8px;
+}
+.inbox-refresh {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text4);
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: color 0.2s;
+}
+.inbox-refresh:hover { color: var(--text2); }
+.email-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #111;
+  border: 1px solid #1a1a1a;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+}
+.email-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  background: #0d0d0d;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.email-row:hover { background: #131313; }
+.email-row.unread {
+  background: #09090f;
+  border-left: 2px solid #3b82f6;
+}
+.e-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #3b82f6;
+  flex-shrink: 0;
+}
+.e-dot.read { background: transparent; }
+.e-from {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  width: 106px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.email-row.unread .e-from { color: #ccc; }
+.e-subj {
+  font-size: 11px;
+  color: #2e2e2e;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.email-row.unread .e-subj { color: #777; }
+.e-tag {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.t-action { background: #1a2a1a; color: #4ade80; }
+.t-info   { background: #1a1a2e; color: #818cf8; }
+.t-urgent { background: #2a1a1a; color: #f87171; }
+.e-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text4);
+  flex-shrink: 0;
+  width: 34px;
+  text-align: right;
+}
+.inbox-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 11px;
+  background: #080808;
+  border: 1px solid #1a1a1a;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+}
+.inbox-footer-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text4);
+}
+.inbox-footer-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.inbox-footer-link:hover { color: var(--text2); }
+.inbox-signin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 16px;
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  border-radius: 5px;
+  text-align: center;
+}
+.inbox-signin-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text4);
+  line-height: 1.6;
+}
+.inbox-signin-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text2);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.inbox-signin-btn:hover { border-color: rgba(255,255,255,0.25); color: var(--white); }
+.inbox-loading {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text4);
+  padding: 20px 11px;
+  text-align: center;
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  border-radius: 5px;
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .hero-center {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 32px 0 16px;
+  }
+  .inbox-wrap { order: 2; }
+}
+
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -792,28 +991,56 @@ body {
   </div>
 
   <div class="hero-center">
-    <div class="hero-greeting">Good morning, Matt</div>
-    <div class="hero-headline">Go<br><em>One</em><br>More.</div>
-    <div class="hero-sub">
-      <div class="hero-mantra">Stay Hard · Des Moines, IA</div>
-      <div class="hero-sub-line"></div>
-    </div>
-    <div style="margin-top:20px">
-      <div class="bookmark-bar">
-        <a href="https://www.marketwatch.com/investing/future/es00" target="_blank" class="bookmark">
-          <div class="bookmark-dot" style="background:#22c55e"></div>Futures
-        </a>
-        <a href="https://auth.ecornell.com/cas/login?service=https%3A%2F%2Flms.ecornell.com%2Flogin%2Fcas" target="_blank" class="bookmark">
-          <div class="bookmark-dot" style="background:#e8351a"></div>eCornell
-        </a>
-        <a href="https://login.microsoftonline.com/9a7b4189-e700-43cd-b7e3-283d6037c350/saml2?SAMLRequest=fZLLbsIwEEX3%2FYrIeyfOgwQsQKJFVUWibQq0D32pDs5hseRL6uPQ3b%2BvE2CJqrKVmqfIHs%2FMmbGnBFpVfFH7k9nizxrJR89aGeLtxozVznALJIkb0EjcC75bfNzwPE555ay3wioWLYjQeWnN0hqqNbodurMU%2BHW7mbGT9xXxJJFQxso%2BSRNLQ97VwtcOY2F1AjppHNwOJxo9LJQESkBVJ0gEmDNQL%2Bg9v%2FwINM1fyaJVcCsNNLp3FSIbX%2FBKU8ve%2BM2TTaPMovfWCWzHnbEjKEIWrVczRvnhUMIwG5RlNsmzMuunw3F67E%2FEKMdB2R%2BKsTiM%2B6P0EPBUAJE8452BqMZ1GAqMn7E8zUe9dNDLRvs85fmID7PvLCquYb2TppTm6e1kDxcQ8Q%2F7fdErPu%2F2LPqGjtpJA4DNp00%2FvBV2ncbepoVbTWzewDo18G7E%2FBbxNOmoXCQr%2FinQrleFVVK8RAul7K%2BlQ%2FD3NELEGvxjJ1mctSuy7B1bKK8NVSjkUWJodVc0Cl9qUM2Cu%2FD80ypLbv6u1xjLtuVwpzw%2B%2B%2F%2BIKFpaXYGT1GSupZG61rfcu9RLFc5s8fggUg4BG8o%2FyxIdzybp7csm4z4HgX%2B%2Bhmvof5W47D2Y8XW3%2B5rnvwE%3D&RelayState=saml_idp_prxy%3ASAMLRequest%3DnVPbjtowFPyVyO%252FkxkVgARIFVUWibQq0D32pDs5hseRL6uPQ3b%252BvE2CJqrKVmqfIHs%252FMmbGnBFpVfFH7k9nizxrJR89aGeLtxozVznALJIkb0EjcC75bfNzwPE555ay3wioWLYjQeWnN0hqqNbodurMU%252BHW7mbGT9xXxJJFQxso%252BSRNLQ97VwtcOY2F1AjppHNwOJxo9LJQESkBVJ0gEmDNQL%252Bg9v%252FwINM1fyaJVcCsNNLp3FSIbX%252FBKU8ve%252BM2TTaPMovfWCWzHnbEjKEIWrVczRvnhUMIwG5RlNsmzMuunw3F67E%252FEKMdB2R%252BKsTiM%252B6P0EPBUAJE8452BqMZ1GAqMn7E8zUe9dNDLRvs85fmID7PvLCquYb2TppTm6e1kDxcQ8Q%252F7fdErPu%252F2LPqGjtpJA4DNp00%252FvBV2ncbepoVbTWzewDo18G7E%252FBbxNOmoXCQr%252FinQrleFVVK8RAul7K%252BlQ%252FD3NELEGvxjJ1mctSuy7B1bKK8NVSjkUWJodVc0Cl9qUM2Cu%252FD80ypLbv6u1xjLtuVwpzw%252B%252B%252F%252BIKFpaXYGT1GSupZG61rfcu9RLFc5s8fggUg4BG8o%252FyxIdzybp7csm4z4HgX%252B%252Bhmvof5W47D2Y8XW3%252B5rnvwE%253D&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=BPsCJ%2Bj17Ksg0Q8%2F7d%2FA3nKwOQKp3MsHrqhauhxEv5%2FEIQQEt4ygiwdHqL5e6jw5EzQZEj1bMKq1bI1mRZgQNsksc5OYi9d2ZIOoV5aArpqaw7UepUCdbWgQGWMi95KG0kM80zJTG%2Bicr0%2FQMcKx3h%2BarNVx7TP4GpITuGHiLZIF8qSBveiW1tCiVAXTWXt8Me09niiWN2rVaRcW2G6Cc6khkLec8Ylg6MICqDNwvxbI01OK0xWnVrh96DITDw7aZExIhlQIC0k17chm4fO6kVHdRYpHf9pzAnQRn4%2B1IjQ3qxyBDtLy3oc8zgF4BCnXHeR%2FSRd5Co9IFu1Acz4ICA%3D%3D" target="_blank" class="bookmark">
-          <div class="bookmark-dot" style="background:#0078d4"></div>ACE
-        </a>
-        <a href="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fcanvas.asu.edu%2Flogin%2Fcas" target="_blank" class="bookmark">
-          <div class="bookmark-dot" style="background:#ffc627"></div>ASU
-        </a>
+    <!-- LEFT: headline + bookmarks -->
+    <div class="hero-left">
+      <div class="hero-greeting">Good morning, Matt</div>
+      <div class="hero-headline">Go<br><em>One</em><br>More.</div>
+      <div class="hero-sub">
+        <div class="hero-mantra">Stay Hard · Des Moines, IA</div>
+        <div class="hero-sub-line"></div>
       </div>
-    </div>
+      <div style="margin-top:20px">
+        <div class="bookmark-bar">
+          <a href="https://www.marketwatch.com/investing/future/es00" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#22c55e"></div>Futures
+          </a>
+          <a href="https://auth.ecornell.com/cas/login?service=https%3A%2F%2Flms.ecornell.com%2Flogin%2Fcas" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#e8351a"></div>eCornell
+          </a>
+          <a href="https://login.microsoftonline.com/9a7b4189-e700-43cd-b7e3-283d6037c350/saml2?SAMLRequest=fZLLbsIwEEX3%2FYrIeyfOgwQsQKJFVUWibQq0D32pDs5hseRL6uPQ3b%2BvE2CJqrKVmqfIHs%2FMmbGnBFpVfFH7k9nizxrJR89aGeLtxozVznALJIkb0EjcC75bfNzwPE555ay3wioWLYjQeWnN0hqqNbodurMU%2BHW7mbGT9xXxJJFQxso%2BSRNLQ97VwtcOY2F1AjppHNwOJxo9LJQESkBVJ0gEmDNQL%2Bg9v%2FwINM1fyaJVcCsNNLp3FSIbX%2FBKU8ve%2BM2TTaPMovfWCWzHnbEjKEIWrVczRvnhUMIwG5RlNsmzMuunw3F67E%2FEKMdB2R%2BKsTiM%2B6P0EPBUAJE8452BqMZ1GAqMn7E8zUe9dNDLRvs85fmID7PvLCquYb2TppTm6e1kDxcQ8Q%2F7fdErPu%2F2LPqGjtpJA4DNp00%2FvBV2ncbepoVbTWzewDo18G7E%2FBbxNOmoXCQr%2FinQrleFVVK8RAul7K%2BlQ%2FD3NELEGvxjJ1mctSuy7B1bKK8NVSjkUWJodVc0Cl9qUM2Cu%2FD80ypLbv6u1xjLtuVwpzw%2B%2B%2F%2BIKFpaXYGT1GSupZG61rfcu9RLFc5s8fggUg4BG8o%2FyxIdzybp7csm4z4HgX%2B%2Bhmvof5W47D2Y8XW3%2B5rnvwE%3D&RelayState=saml_idp_prxy%3ASAMLRequest%3DnVPbjtowFPyVyO%252FkxkVgARIFVUWibQq0D32pDs5hseRL6uPQ3b%252BvE2CJqrKVmqfIHs%252FMmbGnBFpVfFH7k9nizxrJR89aGeLtxozVznALJIkb0EjcC75bfNzwPE555ay3wioWLYjQeWnN0hqqNbodurMU%252BHW7mbGT9xXxJJFQxso%252BSRNLQ97VwtcOY2F1AjppHNwOJxo9LJQESkBVJ0gEmDNQL%252Bg9v%252FwINM1fyaJVcCsNNLp3FSIbX%252FBKU8ve%252BM2TTaPMovfWCWzHnbEjKEIWrVczRvnhUMIwG5RlNsmzMuunw3F67E%252FEKMdB2R%252BKsTiM%252B6P0EPBUAJE8452BqMZ1GAqMn7E8zUe9dNDLRvs85fmID7PvLCquYb2TppTm6e1kDxcQ8Q%252F7fdErPu%252F2LPqGjtpJA4DNp00%252FvBV2ncbepoVbTWzewDo18G7E%252FBbxNOmoXCQr%252FinQrleFVVK8RAul7K%252BlQ%252FD3NELEGvxjJ1mctSuy7B1bKK8NVSjkUWJodVc0Cl9qUM2Cu%252FD80ypLbv6u1xjLtuVwpzw%252B%252B%252F%252BIKFpaXYGT1GSupZG61rfcu9RLFc5s8fggUg4BG8o%252FyxIdzybp7csm4z4HgX%252B%252Bhmvof5W47D2Y8XW3%252B5rnvwE%253D&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=BPsCJ%2Bj17Ksg0Q8%2F7d%2FA3nKwOQKp3MsHrqhauhxEv5%2FEIQQEt4ygiwdHqL5e6jw5EzQZEj1bMKq1bI1mRZgQNsksc5OYi9d2ZIOoV5aArpqaw7UepUCdbWgQGWMi95KG0kM80zJTG%2Bicr0%2FQMcKx3h%2BarNVx7TP4GpITuGHiLZIF8qSBveiW1tCiVAXTWXt8Me09niiWN2rVaRcW2G6Cc6khkLec8Ylg6MICqDNwvxbI01OK0xWnVrh96DITDw7aZExIhlQIC0k17chm4fO6kVHdRYpHf9pzAnQRn4%2B1IjQ3qxyBDtLy3oc8zgF4BCnXHeR%2FSRd5Co9IFu1Acz4ICA%3D%3D" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#0078d4"></div>ACE
+          </a>
+          <a href="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fcanvas.asu.edu%2Flogin%2Fcas" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#ffc627"></div>ASU
+          </a>
+        </div>
+      </div>
+    </div><!-- end hero-left -->
+
+    <!-- RIGHT: Gmail inbox strip -->
+    <div class="inbox-wrap" id="inbox-wrap">
+      <div class="inbox-header">
+        <div class="inbox-label">
+          Inbox
+          <span class="inbox-unread-badge" id="inbox-unread-badge" style="display:none">0</span>
+        </div>
+        <button class="inbox-refresh" id="inbox-refresh-btn" onclick="gmailRefresh()" title="Refresh" style="display:none">↺</button>
+      </div>
+      <div id="inbox-body">
+        <div class="inbox-signin" id="inbox-signin">
+          <div class="inbox-signin-text">Connect Gmail to see<br>your inbox here</div>
+          <button class="inbox-signin-btn" onclick="gmailSignIn()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Connect Gmail
+          </button>
+        </div>
+      </div>
+      <div class="inbox-footer" id="inbox-footer" style="display:none">
+        <span class="inbox-footer-count" id="inbox-footer-count">—</span>
+        <a href="https://mail.google.com" target="_blank" class="inbox-footer-link">Open Gmail ↗</a>
+      </div>
+    </div><!-- end inbox-wrap -->
+
   </div><!-- end hero-center -->
 
   <div class="hero-bottom">
@@ -1119,8 +1346,167 @@ const obs = new IntersectionObserver(entries => {
 }, {threshold:0.08});
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+// ── GMAIL INTEGRATION ─────────────────────────────────────
+const GMAIL_CLIENT_ID = '261963357906-in2a0aqt5s0r07b7bif1q43ipe3q50rq.apps.googleusercontent.com';
+const GMAIL_SCOPE     = 'https://www.googleapis.com/auth/gmail.readonly';
+const GMAIL_TOKEN_KEY = 'stayhard_gmail_token_v1';
+
+let gmailToken = null;
+
+// Tag detection
+function detectEmailTag(from, subject) {
+  const text = (from + ' ' + subject).toLowerCase();
+  if (/deadline|urgent|asap|immediately|overdue|past due/.test(text))
+    return { label: 'Urgent', cls: 't-urgent' };
+  if (/action required|action needed|response needed|please review|your approval|sign|complete/.test(text))
+    return { label: 'Action', cls: 't-action' };
+  if (/schedule|roster|assignment|section|enrollment|registration|update|notice|reminder/.test(text))
+    return { label: 'Info', cls: 't-info' };
+  return null;
+}
+
+// Format timestamp
+function fmtEmailTime(internalDate) {
+  const d    = new Date(parseInt(internalDate));
+  const now  = new Date();
+  const diff = now - d;
+  if (diff < 86400000) return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  if (diff < 172800000) return 'Yest.';
+  return d.toLocaleDateString('en-US', { weekday: 'short' });
+}
+
+// Decode email header
+function decodeHeader(str) {
+  return str.replace(/=\?utf-8\?[bq]\?[^?]+\?=/gi, s => {
+    try {
+      const parts = s.match(/=\?utf-8\?([bq])\?([^?]+)\?=/i);
+      if (!parts) return s;
+      return parts[1].toLowerCase() === 'b'
+        ? atob(parts[2])
+        : decodeURIComponent(parts[2].replace(/_/g, ' ').replace(/=([0-9a-f]{2})/gi, (_, h) => '%' + h));
+    } catch(e) { return s; }
+  });
+}
+
+async function gmailSignIn() {
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id:  GMAIL_CLIENT_ID,
+    scope:      GMAIL_SCOPE,
+    callback:   async (response) => {
+      if (response.error) { console.error('Gmail auth error:', response.error); return; }
+      gmailToken = response.access_token;
+      // Store with expiry
+      localStorage.setItem(GMAIL_TOKEN_KEY, JSON.stringify({
+        token: gmailToken,
+        expiry: Date.now() + (response.expires_in * 1000)
+      }));
+      await loadInbox();
+    }
+  });
+  client.requestAccessToken();
+}
+
+async function loadInbox() {
+  const body = document.getElementById('inbox-body');
+  body.innerHTML = '<div class="inbox-loading">Loading inbox…</div>';
+
+  try {
+    // Fetch unread count + first 5 messages
+    const [unreadRes, listRes] = await Promise.all([
+      fetch('https://gmail.googleapis.com/gmail/v1/users/me/labels/INBOX', {
+        headers: { 'Authorization': 'Bearer ' + gmailToken }
+      }),
+      fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=8&labelIds=INBOX&q=in:inbox', {
+        headers: { 'Authorization': 'Bearer ' + gmailToken }
+      })
+    ]);
+
+    const unreadData = await unreadRes.json();
+    const listData   = await listRes.json();
+    const unread     = unreadData.messagesUnread || 0;
+
+    if (!listData.messages?.length) {
+      body.innerHTML = '<div class="inbox-loading">Inbox is empty</div>';
+      return;
+    }
+
+    // Fetch message details in parallel
+    const messages = await Promise.all(
+      listData.messages.slice(0, 5).map(m =>
+        fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date`, {
+          headers: { 'Authorization': 'Bearer ' + gmailToken }
+        }).then(r => r.json())
+      )
+    );
+
+    // Render
+    const getHeader = (msg, name) =>
+      msg.payload?.headers?.find(h => h.name.toLowerCase() === name.toLowerCase())?.value || '';
+
+    const rows = messages.map(msg => {
+      const from     = decodeHeader(getHeader(msg, 'From'));
+      const subject  = decodeHeader(getHeader(msg, 'Subject'));
+      const isUnread = msg.labelIds?.includes('UNREAD');
+      const time     = fmtEmailTime(msg.internalDate);
+      const tag      = detectEmailTag(from, subject);
+
+      // Clean "Name <email>" → just name
+      const fromName = from.replace(/<[^>]+>/, '').replace(/"/g, '').trim() || from;
+      const msgUrl   = `https://mail.google.com/mail/u/0/#inbox/${msg.id}`;
+
+      return `<a href="${msgUrl}" target="_blank" class="email-row${isUnread ? ' unread' : ''}">
+        <div class="e-dot${isUnread ? '' : ' read'}"></div>
+        <div class="e-from">${fromName}</div>
+        <div class="e-subj">${subject || '(no subject)'}</div>
+        ${tag ? `<span class="e-tag ${tag.cls}">${tag.label}</span>` : ''}
+        <div class="e-time">${time}</div>
+      </a>`;
+    }).join('');
+
+    body.innerHTML = `<div class="email-strip">${rows}</div>`;
+
+    // Show badge and footer
+    const badge = document.getElementById('inbox-unread-badge');
+    if (unread > 0) { badge.textContent = unread; badge.style.display = 'inline'; }
+    document.getElementById('inbox-footer').style.display = 'flex';
+    document.getElementById('inbox-footer-count').textContent = `${unread} unread · matt.romkey@gmail.com`;
+    document.getElementById('inbox-refresh-btn').style.display = 'block';
+    document.getElementById('inbox-signin').style.display = 'none';
+
+  } catch(e) {
+    console.error('Gmail load error:', e);
+    body.innerHTML = '<div class="inbox-loading">Error loading inbox — try refreshing</div>';
+  }
+}
+
+async function gmailRefresh() {
+  const stored = JSON.parse(localStorage.getItem(GMAIL_TOKEN_KEY) || 'null');
+  if (stored && stored.expiry > Date.now()) {
+    gmailToken = stored.token;
+    await loadInbox();
+  } else {
+    gmailSignIn();
+  }
+}
+
+// Auto-load if token exists
+(async function initGmail() {
+  const stored = JSON.parse(localStorage.getItem(GMAIL_TOKEN_KEY) || 'null');
+  if (stored && stored.expiry > Date.now()) {
+    gmailToken = stored.token;
+    await loadInbox();
+  }
+})();
+
+// ── SCROLL REVEAL ─────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, {threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
 // ── FOOTER YEAR ───────────────────────────────────────────
 document.getElementById('footer-year').textContent = '© '+new Date().getFullYear()+' Matt · Personal OS';
 </script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 </body>
 </html>
