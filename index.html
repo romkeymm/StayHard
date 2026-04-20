@@ -1348,7 +1348,7 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
 // ── GMAIL INTEGRATION ─────────────────────────────────────
 const GMAIL_CLIENT_ID = '261963357906-in2a0aqt5s0r07b7bif1q43ipe3q50rq.apps.googleusercontent.com';
-const GMAIL_SCOPE     = 'https://www.googleapis.com/auth/gmail.readonly';
+const GMAIL_SCOPE     = 'https://www.googleapis.com/auth/gmail.metadata';
 const GMAIL_TOKEN_KEY = 'stayhard_gmail_token_v1';
 
 let gmailToken = null;
@@ -1388,23 +1388,6 @@ function decodeHeader(str) {
   });
 }
 
-async function gmailSignIn() {
-  const client = google.accounts.oauth2.initTokenClient({
-    client_id:  GMAIL_CLIENT_ID,
-    scope:      GMAIL_SCOPE,
-    callback:   async (response) => {
-      if (response.error) { console.error('Gmail auth error:', response.error); return; }
-      gmailToken = response.access_token;
-      // Store with expiry
-      localStorage.setItem(GMAIL_TOKEN_KEY, JSON.stringify({
-        token: gmailToken,
-        expiry: Date.now() + (response.expires_in * 1000)
-      }));
-      await loadInbox();
-    }
-  });
-  client.requestAccessToken();
-}
 
 async function loadInbox() {
   const body = document.getElementById('inbox-body');
@@ -1507,6 +1490,34 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 // ── FOOTER YEAR ───────────────────────────────────────────
 document.getElementById('footer-year').textContent = '© '+new Date().getFullYear()+' Matt · Personal OS';
 </script>
-<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+<script>
+// Gmail sign-in — runs after Google library is loaded
+function gmailSignIn() {
+  if (typeof google === 'undefined' || !google.accounts) {
+    alert('Google sign-in library not loaded. Please refresh the page and try again.');
+    return;
+  }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: '261963357906-in2a0aqt5s0r07b7bif1q43ipe3q50rq.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/gmail.metadata',
+    callback: async (response) => {
+      if (response.error) {
+        console.error('Gmail auth error:', response.error, response);
+        document.getElementById('inbox-body').innerHTML =
+          `<div class="inbox-loading">Auth error: ${response.error}. Check console for details.</div>`;
+        return;
+      }
+      gmailToken = response.access_token;
+      localStorage.setItem(GMAIL_TOKEN_KEY, JSON.stringify({
+        token: gmailToken,
+        expiry: Date.now() + (response.expires_in * 1000)
+      }));
+      await loadInbox();
+    }
+  });
+  client.requestAccessToken({ prompt: 'consent' });
+}
+</script>
 </body>
 </html>
