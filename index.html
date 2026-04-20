@@ -1450,12 +1450,15 @@ async function loadInbox() {
 
     // Update badge
     const badge = document.getElementById('inbox-unread-badge');
-    if (unreadCount > 0) { badge.textContent = unreadCount; badge.style.display = 'inline'; }
-    document.getElementById('inbox-footer').style.display = 'flex';
-    document.getElementById('inbox-footer-count').textContent =
-      `${unreadCount} unread · matt.romkey@gmail.com`;
-    document.getElementById('inbox-refresh-btn').style.display = 'block';
-    document.getElementById('inbox-signin').style.display = 'none';
+    if (badge && unreadCount > 0) { badge.textContent = unreadCount; badge.style.display = 'inline'; }
+    const footer = document.getElementById('inbox-footer');
+    if (footer) { footer.style.display = 'flex'; }
+    const footerCount = document.getElementById('inbox-footer-count');
+    if (footerCount) footerCount.textContent = `${unreadCount} unread · matt.romkey@gmail.com`;
+    const refreshBtn = document.getElementById('inbox-refresh-btn');
+    if (refreshBtn) refreshBtn.style.display = 'block';
+    const signinEl = document.getElementById('inbox-signin');
+    if (signinEl) signinEl.style.display = 'none';
 
   } catch(e) {
     console.error('Gmail load error:', e);
