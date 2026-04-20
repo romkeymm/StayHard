@@ -1396,7 +1396,7 @@ async function loadInbox() {
   try {
     // metadata scope can list messages and read headers — but NOT labels endpoint
     const listRes = await fetch(
-      'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=8&labelIds=INBOX&q=in:inbox',
+      'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=8&labelIds=INBOX',
       { headers: { 'Authorization': 'Bearer ' + gmailToken } }
     );
 
