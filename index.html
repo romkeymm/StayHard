@@ -1394,37 +1394,39 @@ async function loadInbox() {
   body.innerHTML = '<div class="inbox-loading">Loading inbox…</div>';
 
   try {
-    // Fetch unread count + first 5 messages
-    const [unreadRes, listRes] = await Promise.all([
-      fetch('https://gmail.googleapis.com/gmail/v1/users/me/labels/INBOX', {
-        headers: { 'Authorization': 'Bearer ' + gmailToken }
-      }),
-      fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=8&labelIds=INBOX&q=in:inbox', {
-        headers: { 'Authorization': 'Bearer ' + gmailToken }
-      })
-    ]);
+    // metadata scope can list messages and read headers — but NOT labels endpoint
+    const listRes = await fetch(
+      'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=8&labelIds=INBOX&q=in:inbox',
+      { headers: { 'Authorization': 'Bearer ' + gmailToken } }
+    );
 
-    const unreadData = await unreadRes.json();
-    const listData   = await listRes.json();
-    const unread     = unreadData.messagesUnread || 0;
+    if (!listRes.ok) {
+      const err = await listRes.json();
+      throw new Error(err.error?.message || listRes.status);
+    }
+
+    const listData = await listRes.json();
 
     if (!listData.messages?.length) {
       body.innerHTML = '<div class="inbox-loading">Inbox is empty</div>';
       return;
     }
 
-    // Fetch message details in parallel
+    // Fetch message metadata (headers only — works with gmail.metadata scope)
     const messages = await Promise.all(
       listData.messages.slice(0, 5).map(m =>
-        fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date`, {
-          headers: { 'Authorization': 'Bearer ' + gmailToken }
-        }).then(r => r.json())
+        fetch(
+          `https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date`,
+          { headers: { 'Authorization': 'Bearer ' + gmailToken } }
+        ).then(r => r.json())
       )
     );
 
-    // Render
     const getHeader = (msg, name) =>
       msg.payload?.headers?.find(h => h.name.toLowerCase() === name.toLowerCase())?.value || '';
+
+    // Count unread from results
+    const unreadCount = messages.filter(m => m.labelIds?.includes('UNREAD')).length;
 
     const rows = messages.map(msg => {
       const from     = decodeHeader(getHeader(msg, 'From'));
@@ -1432,8 +1434,6 @@ async function loadInbox() {
       const isUnread = msg.labelIds?.includes('UNREAD');
       const time     = fmtEmailTime(msg.internalDate);
       const tag      = detectEmailTag(from, subject);
-
-      // Clean "Name <email>" → just name
       const fromName = from.replace(/<[^>]+>/, '').replace(/"/g, '').trim() || from;
       const msgUrl   = `https://mail.google.com/mail/u/0/#inbox/${msg.id}`;
 
@@ -1448,17 +1448,18 @@ async function loadInbox() {
 
     body.innerHTML = `<div class="email-strip">${rows}</div>`;
 
-    // Show badge and footer
+    // Update badge
     const badge = document.getElementById('inbox-unread-badge');
-    if (unread > 0) { badge.textContent = unread; badge.style.display = 'inline'; }
+    if (unreadCount > 0) { badge.textContent = unreadCount; badge.style.display = 'inline'; }
     document.getElementById('inbox-footer').style.display = 'flex';
-    document.getElementById('inbox-footer-count').textContent = `${unread} unread · matt.romkey@gmail.com`;
+    document.getElementById('inbox-footer-count').textContent =
+      `${unreadCount} unread · matt.romkey@gmail.com`;
     document.getElementById('inbox-refresh-btn').style.display = 'block';
     document.getElementById('inbox-signin').style.display = 'none';
 
   } catch(e) {
     console.error('Gmail load error:', e);
-    body.innerHTML = '<div class="inbox-loading">Error loading inbox — try refreshing</div>';
+    body.innerHTML = `<div class="inbox-loading">Error: ${e.message}</div>`;
   }
 }
 
