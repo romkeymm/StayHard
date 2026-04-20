@@ -1480,15 +1480,6 @@ async function gmailRefresh() {
     await loadInbox();
   }
 })();
-
-// ── SCROLL REVEAL ─────────────────────────────────────────
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
-}, {threshold:0.08});
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-// ── FOOTER YEAR ───────────────────────────────────────────
-document.getElementById('footer-year').textContent = '© '+new Date().getFullYear()+' Matt · Personal OS';
 </script>
 <script src="https://accounts.google.com/gsi/client"></script>
 <script>
