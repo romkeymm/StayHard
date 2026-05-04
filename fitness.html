@@ -307,6 +307,14 @@
 
   /* ─── RACE CARDS ─── */
   .race-card { background: var(--bg3); padding: 16px 18px; border-radius: 4px; }
+  .result-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+  .result-medal { font-size: 18px; line-height: 1; flex-shrink: 0; }
+  .result-pr-badge { background: var(--red); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 900; letter-spacing: 1.5px; padding: 2px 7px; border-radius: 2px; text-transform: uppercase; margin-top: 2px; }
+  .result-finish-line { height: 3px; background: repeating-linear-gradient(90deg,#fff 0,#fff 5px,#000 5px,#000 10px); margin: 10px 0 10px; opacity: 0.1; border-radius: 1px; }
+  .result-stat-row { display: flex; gap: 5px; }
+  .result-stat { flex: 1; background: var(--bg4); border-radius: 3px; padding: 6px 8px; }
+  .result-stat-l { font-family: 'Barlow Condensed', sans-serif; font-size: 8px; color: var(--text4); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2px; }
+  .result-stat-v { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 900; line-height: 1; }
   .race-card.next-race { background: #120909; border: 1px solid rgba(255,45,32,0.2); }
   .next-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--red); text-transform: uppercase; margin-bottom: 8px; }
   .race-type-bar { height: 2px; width: 28px; margin-bottom: 10px; border-radius: 1px; }
@@ -671,11 +679,11 @@
 <!-- SECTION: OVERVIEW -->
 <div class="section-label">Overview</div>
 <div class="grid-gap g5">
-  <div class="hero-stat"><div class="hsl">VO2 Max Peak</div><div class="hsv">57.1</div><div class="hss grn">All-time high · Mar &amp; Apr 2026</div></div>
-  <div class="hero-stat"><div class="hsl">Resting HR</div><div class="hsv">59</div><div class="hss blu">bpm avg · May 2026</div></div>
-  <div class="hero-stat"><div class="hsl">HRV</div><div class="hsv">49</div><div class="hss yel">ms avg · May 2026</div></div>
-  <div class="hero-stat"><div class="hsl">HR Recovery</div><div class="hsv">43</div><div class="hss prp">bpm drop · Apr 2026</div></div>
-  <div class="hero-stat"><div class="hsl">2026 Runs</div><div class="hsv">91</div><div class="hss grn">through May 4, 2026</div></div>
+  <div class="hero-stat"><div class="hsl">VO2 Max Peak</div><div class="hsv">57.1</div><div class="hss grn">All-time high · Apr 2026</div></div>
+  <div class="hero-stat"><div class="hsl">Resting HR</div><div class="hsv">60</div><div class="hss blu">bpm avg · Mar 2026</div></div>
+  <div class="hero-stat"><div class="hsl">HRV</div><div class="hsv">55</div><div class="hss yel">ms avg · Mar 2026</div></div>
+  <div class="hero-stat"><div class="hsl">HR Recovery</div><div class="hsv">41</div><div class="hss prp">bpm drop · Mar 2026</div></div>
+  <div class="hero-stat"><div class="hsl">2026 Runs</div><div class="hsv">55</div><div class="hss grn">workouts logged</div></div>
 </div>
 
 <!-- SECTION: FITNESS METRICS -->
@@ -684,11 +692,11 @@
 
   <!-- VO2 MAX -->
   <div class="panel">
-    <div class="ptitle">VO2 Max — Apple Watch readings (2021–2026)</div>
+    <div class="ptitle">VO2 Max — 810 Apple Watch readings</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
-      <div class="mini-stat" style="flex:1"><div class="msl">May 2026 avg</div><div class="msv grn">56.2</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Apr 2026 avg</div><div class="msv grn">56.5</div></div>
       <div class="mini-stat" style="flex:1"><div class="msl">Peak ever</div><div class="msv yel">57.1</div></div>
-      <div class="mini-stat" style="flex:1"><div class="msl">vs Jun 2021</div><div class="msv grn">+48%</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">vs Jun 2021</div><div class="msv grn">+52%</div></div>
     </div>
     <div class="chart-wrap" style="height:150px">
       <canvas id="vo2Chart" role="img" aria-label="VO2 max trend from 37.5 in 2021 to 57.1 in 2026 showing steady improvement">VO2 max improving from 37.5 in 2021 to 57.1 in 2026.</canvas>
@@ -727,8 +735,8 @@
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-      <div class="mini-stat"><div class="msl">HRV today</div><div class="msv yel" id="rd-hrv">49</div></div>
-      <div class="mini-stat"><div class="msl">Resting HR</div><div class="msv blu" id="rd-rhr">59</div></div>
+      <div class="mini-stat"><div class="msl">HRV today</div><div class="msv yel" id="rd-hrv">121</div></div>
+      <div class="mini-stat"><div class="msl">Resting HR</div><div class="msv blu" id="rd-rhr">64</div></div>
       <div class="mini-stat"><div class="msl">TSB (form)</div><div class="msv" id="rd-tsb" style="color:#fff">2.6</div></div>
       <div class="mini-stat"><div class="msl">Fatigue (ATL)</div><div class="msv" id="rd-atl" style="color:#ff7043">32</div></div>
     </div>
@@ -750,9 +758,9 @@
     <div class="ptitle">Monthly training hours — 2026</div>
     <div class="chart-wrap" style="height:140px"><canvas id="weeklyLoadChart" role="img" aria-label="Weekly training hours in 2026">Weekly training hours bar chart.</canvas></div>
     <div style="display:flex;gap:8px;margin-top:10px">
-      <div class="mini-stat" style="flex:1"><div class="msl">This month</div><div class="msv grn">3.0h</div></div>
-      <div class="mini-stat" style="flex:1"><div class="msl">Peak month</div><div class="msv yel">19.2h</div></div>
-      <div class="mini-stat" style="flex:1"><div class="msl">Avg/month</div><div class="msv">17.2h</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">This month</div><div class="msv grn">2.2h</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Peak month</div><div class="msv yel">5.1h</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Avg/month</div><div class="msv">3.7h</div></div>
     </div>
   </div>
 </div>
@@ -772,7 +780,7 @@
     <div class="mbars-wrap" id="mbars"></div>
     <div style="display:flex;gap:3px" id="mlbls"></div>
     <div style="display:flex;align-items:baseline;gap:8px;margin-top:10px">
-      <span class="big-num" id="ytotal" style="font-size:40px">398.1</span>
+      <span class="big-num" id="ytotal" style="font-size:40px">332.6</span>
       <span style="font-size:12px;color:var(--text3)">total miles</span>
     </div>
   </div>
@@ -787,16 +795,16 @@
   <div class="panel">
     <div class="ptitle">Heart rate variability</div>
     <div class="chart-wrap" style="height:90px"><canvas id="hrvChart" role="img" aria-label="HRV trend 50-59ms over last 12 months">HRV ranging 50-59ms.</canvas></div>
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>May '26</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>Apr '26</span></div>
     <div style="display:flex;gap:6px;margin-top:10px">
-      <div class="mini-stat" style="flex:1"><div class="msl">Current</div><div class="msv yel">48.6</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Current</div><div class="msv yel">55.5</div></div>
       <div class="mini-stat" style="flex:1"><div class="msl">Best</div><div class="msv grn">58.8</div></div>
     </div>
   </div>
   <div class="panel">
     <div class="ptitle">HR recovery (1-min drop)</div>
     <div class="chart-wrap" style="height:90px"><canvas id="hrrChart" role="img" aria-label="HR recovery improving from 35 to 43 bpm drop">HR recovery improving 35→43 bpm drop.</canvas></div>
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>May '26</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>Apr '26</span></div>
     <div style="display:flex;gap:6px;margin-top:10px">
       <div class="mini-stat" style="flex:1"><div class="msl">Current</div><div class="msv prp">43.2</div></div>
       <div class="mini-stat" style="flex:1"><div class="msl">Best</div><div class="msv grn">43.2</div></div>
@@ -805,10 +813,10 @@
   <div class="panel">
     <div class="ptitle">Resting heart rate</div>
     <div class="chart-wrap" style="height:90px"><canvas id="rhrChart" role="img" aria-label="Resting HR declining from 63 to 60 as fitness improves">Resting HR declining from 63 to 60 bpm.</canvas></div>
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>Nov '24</span><span>May '26</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>Nov '24</span><span>Apr '26</span></div>
     <div style="display:flex;gap:6px;margin-top:10px">
-      <div class="mini-stat" style="flex:1"><div class="msl">Current</div><div class="msv blu">59</div></div>
-      <div class="mini-stat" style="flex:1"><div class="msl">Best</div><div class="msv grn">59</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Current</div><div class="msv blu">61</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Best</div><div class="msv grn">58</div></div>
     </div>
   </div>
 </div>
@@ -818,7 +826,7 @@
   <div class="panel">
     <div class="ptitle">Running form — ground contact time</div>
     <div class="chart-wrap" style="height:80px"><canvas id="gctChart" role="img" aria-label="Ground contact time dropping from 239ms to 223ms">Ground contact time dropping 239→223ms.</canvas></div>
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>May '26</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>Apr '26</span></div>
     <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px">
       <span class="big-num" style="font-size:32px;color:var(--text)">223</span>
       <span style="font-size:10px;color:var(--text3)">ms · lower = more efficient</span>
@@ -827,10 +835,10 @@
   <div class="panel">
     <div class="ptitle">Running form — stride length</div>
     <div class="chart-wrap" style="height:80px"><canvas id="strideChart" role="img" aria-label="Stride length improving from 1.03m to 1.14m">Stride length improving 1.03→1.14m.</canvas></div>
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>May '26</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--text4)"><span>May '25</span><span>Apr '26</span></div>
     <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px">
       <span class="big-num" style="font-size:32px;color:var(--text)">1.14</span>
-      <span style="font-size:10px;color:var(--text3)">m avg · May 2026</span>
+      <span style="font-size:10px;color:var(--text3)">m avg · Apr 2026</span>
     </div>
   </div>
 </div>
@@ -842,32 +850,32 @@
 <script>
 // ─── DATA ───────────────────────────────────────────────────
 
-const VO2_MONTHS = ['Jun 21','Jul 21','Aug 21','Dec 21','Jan 22','Feb 22','Mar 22','May 22','Jun 22','Sep 22','Oct 22','Nov 22','Dec 22','Jan 23','Feb 23','Mar 23','Apr 23','May 23','Jun 23','Jul 23','Aug 23','Sep 23','Oct 23','Nov 23','Dec 23','Jan 24','Feb 24','Mar 24','Apr 24','May 24','Jun 24','Jul 24','Aug 24','Sep 24','Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'];
-const VO2_AVG = [37.9,37.6,37.6,39.7,42.9,45.6,46.5,46.1,46.0,42.5,42.4,43.2,43.4,44.9,45.7,45.8,46.7,45.1,45.2,45.7,44.9,46.1,48.1,48.9,47.2,47.5,47.1,48.7,49.2,49.2,48.9,48.0,46.9,46.2,44.8,49.5,50.1,49.7,49.7,50.6,49.9,50.4,51.6,52.4,52.0,53.0,55.2,56.0,56.5,55.0,54.3,56.3,55.9,56.2];
-const VO2_MAX = [38.7,38.4,38.7,41.4,44.5,46.4,46.6,46.3,46.6,44.1,43.3,43.6,44.5,45.3,46.1,46.1,47.7,47.6,45.9,46.0,45.2,48.5,48.6,49.5,47.6,48.3,47.5,49.5,49.6,49.5,49.5,48.6,47.2,46.8,46.7,50.1,51.5,51.6,51.1,51.1,50.7,51.2,51.9,53.0,52.4,54.9,55.7,56.4,56.5,55.8,55.1,57.1,57.1,56.4];
+const VO2_MONTHS = ['Jun 21','Jul 21','Aug 21','Sep 21','Oct 21','Nov 21','Dec 21','Jan 22','Feb 22','Mar 22','Apr 22','May 22','Jun 22','Jul 22','Aug 22','Sep 22','Oct 22','Nov 22','Dec 22','Jan 23','Feb 23','Mar 23','Apr 23','May 23','Jun 23','Jul 23','Aug 23','Sep 23','Oct 23','Nov 23','Dec 23','Jan 24','Feb 24','Mar 24','Apr 24','May 24','Jun 24','Jul 24','Aug 24','Sep 24','Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26'];
+const VO2_AVG = [37.5,38.1,38.8,39.2,39.8,40.2,40.5,41.0,41.8,42.3,42.0,42.5,43.1,43.0,42.8,42.5,43.2,43.8,44.1,44.8,45.2,45.6,46.0,46.3,46.8,47.0,46.5,47.2,47.5,48.1,48.0,48.2,48.5,48.8,49.0,49.2,48.9,48.0,46.9,46.2,44.8,49.5,50.1,49.7,49.7,50.6,49.9,50.4,51.6,52.4,52.0,53.0,55.2,56.0,56.5,55.0,54.3,56.3,56.5];
+const VO2_MAX = [37.5,38.5,39.2,39.8,40.5,41.0,41.2,42.0,42.8,43.5,42.8,43.2,44.0,43.8,43.5,43.2,44.0,44.5,45.0,45.6,46.0,46.5,46.8,47.0,47.5,47.8,47.2,48.0,48.6,49.0,49.0,49.4,49.5,49.8,50.1,49.5,49.5,48.6,47.2,46.8,46.7,50.1,51.5,51.6,51.1,51.1,50.7,51.2,51.9,53.0,52.4,54.9,55.7,56.4,56.5,55.8,55.1,57.1,57.1];
 
-const RECENT_MOS = ['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'];
-const HRV_DATA  = [50.9,54.0,55.7,52.8,53.1,56.8,55.5,55.3,52.7,58.8,55.1,54.4,48.6];
-const HRR_DATA  = [35.7,36.1,36.7,38.4,40.0,40.4,41.3,41.2,37.5,37.8,40.8,43.2,43.2];
-const RHR_MOS   = ['Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'];
-const RHR_DATA  = [66,67,69,68,66,67,65,60,62,60,61,61,62,63,64,61,59,61,59];
-const GCT_DATA  = [237,239,238,230,243,237,236,222,232,227,229,223,223];
-const STR_DATA  = [1.13,1.03,1.03,1.05,1.06,1.09,1.12,1.15,1.10,1.13,1.10,1.14,1.14];
+const RECENT_MOS = ['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26'];
+const HRV_DATA  = [50.9,54.0,55.7,52.8,53.1,56.8,55.5,55.3,52.7,58.8,55.1,55.5];
+const HRR_DATA  = [35.7,36.1,36.7,38.4,40.0,40.4,41.3,41.2,37.5,37.8,40.8,43.2];
+const RHR_MOS   = ['Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26'];
+const RHR_DATA  = [60,63,63,63,63,63,59,58,59,59,59,58,59,60,63,61,60,61];
+const GCT_DATA  = [237,239,238,230,243,237,236,222,232,227,229,223];
+const STR_DATA  = [1.13,1.03,1.03,1.05,1.06,1.09,1.12,1.15,1.10,1.13,1.10,1.14];
 
 const MILEAGE = {
   months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-  2026:[92.9,114.8,91.7,98.7,0,0,0,0,0,0,0,0],
-  2025:[43.1,71.1,74.3,69.8,90.5,111.3,145.6,80.5,93.5,95.2,75.4,46.2],
-  2024:[83.5,92.0,130.4,117.6,134.4,131.4,67.9,12.3,12.2,16.4,37.3,35.5],
-  2023:[116.9,137.9,128.2,84.8,46.4,96.8,29.5,64.4,80.6,97.6,77.7,85.6],
-  2022:[103.3,97.7,58.9,0,0,0,16.6,0,0,58.0,57.4,71.6]
+  2026:[92.87,119.19,120.51,0,0,0,0,0,0,0,0,0],
+  2025:[43.13,71.12,74.32,69.79,90.48,122.62,149.10,83.48,93.47,109.13,97.19,55.91],
+  2024:[83.53,92.04,130.41,117.55,134.41,131.40,67.86,12.28,12.22,16.35,37.31,35.46],
+  2023:[116.85,137.86,128.21,84.81,46.39,96.75,29.46,64.42,80.58,97.57,77.65,85.59],
+  2022:[103.34,97.67,58.94,0,0,0,16.56,0,0,57.97,57.43,71.58]
 };
-const YTOTALS = {2026:398.1,2025:996.5,2024:824.8,2023:1046.2,2022:463.5};
-const YR_VO2 = {2026:56.2,2025:53.0,2024:48.2,2023:46.4,2022:44.8};
-const YR_RUNS = {2026:91,2025:263,2024:208,2023:217,2022:95};
+const YTOTALS = {2026:332.6,2025:1059.7,2024:870.8,2023:1046.1,2022:463.5};
+const YR_VO2 = {2026:55.4,2025:52.4,2024:48.2,2023:46.4,2022:44.8};
+const YR_RUNS = {2026:55,2025:255,2024:198,2023:213,2022:89};
 
 const RACES = [
-  {name:"Des Moines Women's Half Marathon",date:'2026-05-03',type:'half',label:'13.1 mi',color:'#ff2d20'},
+  {name:"Des Moines Women's Half Marathon",date:'2026-05-03',type:'half',label:'13.1 mi',color:'#ff2d20',result:{time:'1:34:19',pace:'7:11 / mi',pr:true}},
   {name:'Market to Market Relay',date:'2026-05-09',type:'relay',label:'Relay',color:'#4a9eff'},
   {name:'Ironman 70.3 Omaha',date:'2026-06-07',type:'triathlon',label:'70.3 mi',color:'#bb86fc'},
   {name:'Mile Night Run',date:'2026-06-20',type:'run',label:'1 mi',color:'#ffd600'},
@@ -980,9 +988,9 @@ mkLine('vo2Chart', VO2_MONTHS, [
   { data:VO2_AVG, borderColor:'#ff2d20', borderWidth:2, backgroundColor:'rgba(255,45,32,0.07)', fill:true, tension:0.4 }
 ], 35, 60);
 
-mkLine('hrvChart', RECENT_MOS, [{ data:HRV_DATA, borderColor:'#ffd600', borderWidth:2, backgroundColor:'rgba(255,214,0,0.08)', fill:true, tension:0.4 }], 44, 62);
+mkLine('hrvChart', RECENT_MOS, [{ data:HRV_DATA, borderColor:'#ffd600', borderWidth:2, backgroundColor:'rgba(255,214,0,0.08)', fill:true, tension:0.4 }], 46, 62);
 mkLine('hrrChart', RECENT_MOS, [{ data:HRR_DATA, borderColor:'#bb86fc', borderWidth:2, backgroundColor:'rgba(187,134,252,0.08)', fill:true, tension:0.4 }], 32, 46);
-mkLine('rhrChart', RHR_MOS,    [{ data:RHR_DATA, borderColor:'#4a9eff',  borderWidth:2, backgroundColor:'rgba(74,158,255,0.08)',   fill:true, tension:0.4 }], 55, 72);
+mkLine('rhrChart', RHR_MOS,    [{ data:RHR_DATA, borderColor:'#4a9eff',  borderWidth:2, backgroundColor:'rgba(74,158,255,0.08)',   fill:true, tension:0.4 }], 55, 67);
 mkLine('gctChart', RECENT_MOS, [{ data:GCT_DATA, borderColor:'#ff7043', borderWidth:2, backgroundColor:'rgba(255,112,67,0.08)',  fill:true, tension:0.4 }], 215, 250);
 mkLine('strideChart', RECENT_MOS, [{ data:STR_DATA, borderColor:'#00e676', borderWidth:2, backgroundColor:'rgba(0,230,118,0.08)', fill:true, tension:0.4 }], 0.95, 1.25);
 
@@ -994,7 +1002,7 @@ mkLine('strideChart', RECENT_MOS, [{ data:STR_DATA, borderColor:'#00e676', borde
     data: {
       labels: ['2022','2023','2024','2025','2026*'],
       datasets: [{
-        data: [463.5,1046.2,824.8,996.5,398.1],
+        data: [463.5,1046.1,870.8,1059.7,332.6],
         backgroundColor: ['#2a2a2a','#2a2a2a','#2a2a2a','#2a2a2a','#ff2d20'],
         borderRadius: 2
       }]
@@ -1024,7 +1032,7 @@ mkLine('strideChart', RECENT_MOS, [{ data:STR_DATA, borderColor:'#00e676', borde
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:#555">${y} · ${YR_RUNS[y]} runs · ${YTOTALS[y].toFixed(0)} mi</span>
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:#fff">VO2 ${YR_VO2[y].toFixed(1)}</span>
         </div>
-        <div class="tbar-o"><div class="tbar-i" style="width:${(YR_VO2[y]/57.5*100).toFixed(1)}%;background:${colors[i]}"></div></div>
+        <div class="tbar-o"><div class="tbar-i" style="width:${(YR_VO2[y]/58*100).toFixed(1)}%;background:${colors[i]}"></div></div>
       </div>`;
   });
 })();
@@ -1083,13 +1091,48 @@ RACES.forEach((race,i) => {
   card.className = 'panel panel-sm';
   card.style.background = isNext ? '#0f0a0a' : 'var(--bg2)';
   if(isNext) card.style.borderLeft = `2px solid ${race.color}`;
-  card.innerHTML = `
-    ${isNext?`<div class="next-tag">Next up</div>`:''}
-    <div class="race-type-bar" style="background:${race.color};opacity:${isPast?0.25:1}"></div>
-    <div class="race-name" style="color:${isPast?'#444':'#fff'}">${race.name}</div>
-    <div class="race-date-txt">${fmtDate(race.date)}</div>
-    ${cdHtml}
-    <div class="type-pill" style="background:${race.color}18;color:${isPast?'#444':race.color}">${race.label}</div>`;
+
+  let cardInner = '';
+  if(isPast && race.result) {
+    const r = race.result;
+    cardInner = `
+      <div class="result-header">
+        <div>
+          <div class="race-type-bar" style="background:${race.color};opacity:0.35"></div>
+          <div class="race-name" style="color:#444;min-height:unset;font-size:13px">${race.name}</div>
+          <div class="race-date-txt" style="margin-bottom:0">${fmtDate(race.date)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <div class="result-medal">🏅</div>
+          ${r.pr ? '<div class="result-pr-badge">PR</div>' : ''}
+        </div>
+      </div>
+      <div class="result-finish-line"></div>
+      <div class="result-stat-row">
+        <div class="result-stat">
+          <div class="result-stat-l">Time</div>
+          <div class="result-stat-v" style="color:#00e676">${r.time}</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-l">Pace</div>
+          <div class="result-stat-v" style="color:#fff">${r.pace.replace(' / mi','')}</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-l">Dist</div>
+          <div class="result-stat-v" style="color:${race.color}">${race.label}</div>
+        </div>
+      </div>`;
+  } else {
+    cardInner = `
+      ${isNext?`<div class="next-tag">Next up</div>`:''}
+      <div class="race-type-bar" style="background:${race.color};opacity:${isPast?0.25:1}"></div>
+      <div class="race-name" style="color:${isPast?'#444':'#fff'}">${race.name}</div>
+      <div class="race-date-txt">${fmtDate(race.date)}</div>
+      ${cdHtml}
+      <div class="type-pill" style="background:${race.color}18;color:${isPast?'#444':race.color}">${race.label}</div>`;
+  }
+
+  card.innerHTML = cardInner;
   raceGrid.appendChild(card);
 });
 
