@@ -944,6 +944,7 @@ async function loadRunningData() {
     // Re-render charts with fresh data
     renderMbars(activeYear);
     updateAnnualChart();
+    updateYrCompare();
 
     // Update sync label
     const lbl = document.getElementById('sb-sync-lbl');
@@ -956,7 +957,9 @@ async function loadRunningData() {
 
 // ─── UPSERT TO SUPABASE ───────────────────────────────────
 async function upsertRunningRow(year, month, miles, vo2, notes) {
-  const row = { year, month, miles: parseFloat(miles) };
+  const row = { year, month };
+  if (miles) row.miles = parseFloat(miles);
+  else row.miles = 0; // required column — use 0 if only logging VO2
   if (vo2) row.vo2_max = parseFloat(vo2);
   if (notes) row.notes = notes;
   const res = await fetch(`${SB_URL}/rest/v1/running_log`, {
@@ -1003,9 +1006,27 @@ async function loadRaces() {
       } : null
     }));
     renderRaceCards();
+    renderTimeline();
     updateNextRaceHero();
   } catch(e) {
     console.warn('Races load failed, using fallback', e);
+  }
+}
+
+// ─── UPDATE HERO COUNTDOWN ───────────────────────────────
+function updateNextRaceHero() {
+  const nr = RACES.find(r => daysUntil(r.date) >= 0);
+  if (!nr) return;
+  document.getElementById('nrh-name').textContent = nr.name;
+  document.getElementById('nrh-date').textContent = fmtDate(nr.date) + ' · ' + nr.label;
+  document.getElementById('live-dot').style.background = nr.color;
+  document.getElementById('nrh-fill').style.background = nr.color;
+  document.querySelectorAll('.cd-block .n').forEach(el => { el.style.color = nr.color; });
+  const pill = document.getElementById('header-pill');
+  if (pill) {
+    const nd = daysUntil(nr.date);
+    const shortName = nr.name.replace("Des Moines Women's","DM Women's").replace('Market to Market','M2M').replace('Ironman 70.3 Omaha','Ironman 70.3').replace('Whiterock Ultra 50k','Whiterock 50k').replace('Marine Corps Marathon','Marine Corps');
+    pill.textContent = nd === 0 ? 'RACE DAY!' : 'NEXT: ' + shortName.toUpperCase() + ' — ' + nd + 'D';
   }
 }
 
@@ -1170,8 +1191,9 @@ updateAnnualChart();
 
 // ─── YEAR COMPARE ─────────────────────────────────────────────
 
-(function() {
+function updateYrCompare() {
   const el = document.getElementById('yr-compare');
+  if (!el) return;
   const years = [2026,2025,2024,2023,2022];
   const colors = ['#ff2d20','#4a9eff','#00e676','#ffd600','#bb86fc'];
   el.innerHTML = '';
@@ -1185,7 +1207,8 @@ updateAnnualChart();
         <div class="tbar-o"><div class="tbar-i" style="width:${(YR_VO2[y]/58*100).toFixed(1)}%;background:${colors[i]}"></div></div>
       </div>`;
   });
-})();
+}
+updateYrCompare();
 
 // ─── MONTHLY BARS ─────────────────────────────────────────────
 
@@ -1244,8 +1267,8 @@ document.getElementById('modal-save').addEventListener('click', async () => {
   const vo2   = document.getElementById('edit-vo2').value.trim();
   const notes = document.getElementById('edit-notes').value.trim();
 
-  if (!yr || !mo || !miles) {
-    statusEl.textContent = 'YEAR, MONTH AND MILES ARE REQUIRED';
+  if (!yr || !mo || (!miles && !vo2)) {
+    statusEl.textContent = 'YEAR, MONTH, AND EITHER MILES OR VO2 ARE REQUIRED';
     statusEl.className = 'modal-status err';
     return;
   }
@@ -1344,10 +1367,6 @@ document.getElementById('result-modal-save').addEventListener('click', async () 
   }
 });
 
-// ─── INIT: Load live data from Supabase ──────────────────
-loadRunningData();
-loadRaces();
-
 // ─── RACE CARDS ───────────────────────────────────────────────
 
 function renderRaceCards() {
@@ -1417,10 +1436,13 @@ renderRaceCards();
 // ─── TIMELINE ─────────────────────────────────────────────────
 
 const tlEl = document.getElementById('timeline');
-RACES.forEach((race,i) => {
+function renderTimeline() {
+  tlEl.innerHTML = '';
+  const tlNextIdx = RACES.findIndex(r=>daysUntil(r.date)>=0);
+  RACES.forEach((race,i) => {
   const days = daysUntil(race.date);
   const isPast = days < 0;
-  const isNext = i === nextIdx;
+  const isNext = i === tlNextIdx;
   const item = document.createElement('div');
   item.className = 'tl-item';
   item.innerHTML = `
@@ -1429,7 +1451,9 @@ RACES.forEach((race,i) => {
     <div class="tl-name" style="color:${isPast?'#2a2a2a':isNext?'#fff':'#555'}">${race.name.split(' ').slice(0,3).join(' ')}</div>
     <div class="tl-mo" style="color:${isPast?'#2a2a2a':race.color}">${fmtMo(race.date)}</div>`;
   tlEl.appendChild(item);
-});
+  });
+}
+renderTimeline();
 
 // ─── TRAINING LOAD DATA ──────────────────────────────────────
 
@@ -1611,6 +1635,11 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
     observer.observe(el);
   });
 })();
+
+// ─── INIT: fire after all functions defined ──────────
+loadRunningData();
+loadRaces();
+
 </script>
 <!-- RACE RESULT MODAL -->
 <div class="modal-overlay" id="resultModal">
@@ -1665,11 +1694,11 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
       <input class="modal-input" id="edit-month" type="number" min="1" max="12" value="5">
     </div>
     <div class="modal-row">
-      <div class="modal-label">Miles</div>
+      <div class="modal-label">Miles <span style="color:#444;font-weight:400">(leave blank to update VO2 only)</span></div>
       <input class="modal-input" id="edit-miles" type="number" step="0.01" placeholder="e.g. 98.66">
     </div>
     <div class="modal-row">
-      <div class="modal-label">VO2 Max (optional)</div>
+      <div class="modal-label">VO2 Max <span style="color:#444;font-weight:400">(optional)</span></div>
       <input class="modal-input" id="edit-vo2" type="number" step="0.1" placeholder="e.g. 55.6">
     </div>
     <div class="modal-row">
