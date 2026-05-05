@@ -683,7 +683,10 @@
 </div>
 
 <!-- SECTION: RACE CALENDAR -->
-<div class="section-label">2026 Race Calendar</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-bottom:4px">
+  <div class="section-label" style="margin:0;padding:0">2026 Race Calendar</div>
+  <button class="edit-btn" id="open-result-btn">✎ Log Result</button>
+</div>
 <div class="grid-gap g3" id="race-grid" style="padding:0;background:var(--border)"></div>
 
 <!-- TIMELINE -->
@@ -965,14 +968,62 @@ async function upsertRunningRow(year, month, miles, vo2, notes) {
   return res.json();
 }
 
-const RACES = [
-  {name:"Des Moines Women's Half Marathon",date:'2026-05-03',type:'half',label:'13.1 mi',color:'#ff2d20'},
-  {name:'Market to Market Relay',date:'2026-05-09',type:'relay',label:'Relay',color:'#4a9eff'},
-  {name:'Ironman 70.3 Omaha',date:'2026-06-07',type:'triathlon',label:'70.3 mi',color:'#bb86fc'},
-  {name:'Mile Night Run',date:'2026-06-20',type:'run',label:'1 mi',color:'#ffd600'},
-  {name:'Whiterock Ultra 50k',date:'2026-07-25',type:'ultra',label:'50k · 31 mi',color:'#ff7043'},
-  {name:'Marine Corps Marathon',date:'2026-10-25',type:'marathon',label:'26.2 mi',color:'#00e676'}
+// RACES populated from Supabase — fallback until loaded
+let RACES = [
+  {id:1,name:"Des Moines Women's Half Marathon",date:'2026-05-03',type:'half',label:'13.1 mi',color:'#ff2d20',result:{time:'1:34:19',pace:'7:11 / mi',pr:true}},
+  {id:2,name:'Market to Market Relay',date:'2026-05-09',type:'relay',label:'Relay',color:'#4a9eff'},
+  {id:3,name:'Ironman 70.3 Omaha',date:'2026-06-07',type:'triathlon',label:'70.3 mi',color:'#bb86fc'},
+  {id:4,name:'Mile Night Run',date:'2026-06-20',type:'run',label:'1 mi',color:'#ffd600'},
+  {id:5,name:'Whiterock Ultra 50k',date:'2026-07-25',type:'ultra',label:'50k · 31 mi',color:'#ff7043'},
+  {id:6,name:'Marine Corps Marathon',date:'2026-10-25',type:'marathon',label:'26.2 mi',color:'#00e676'}
 ];
+
+// ─── LOAD RACES FROM SUPABASE ─────────────────────────────
+async function loadRaces() {
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/races?select=*&order=race_date.asc`,
+      { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
+    );
+    if (!res.ok) throw new Error('fetch failed');
+    const rows = await res.json();
+    if (!rows.length) return;
+    RACES = rows.map(r => ({
+      id:    r.id,
+      name:  r.name,
+      date:  r.race_date,
+      type:  r.type,
+      label: r.label,
+      color: r.color,
+      result: (r.result_time) ? {
+        time:  r.result_time,
+        pace:  r.result_pace,
+        pr:    r.result_pr,
+        notes: r.result_notes
+      } : null
+    }));
+    renderRaceCards();
+    updateNextRaceHero();
+  } catch(e) {
+    console.warn('Races load failed, using fallback', e);
+  }
+}
+
+// ─── SAVE RACE RESULT TO SUPABASE ────────────────────────
+async function saveRaceResult(id, time, pace, pr, notes) {
+  const res = await fetch(`${SB_URL}/rest/v1/races?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: SB_HEADERS,
+    body: JSON.stringify({
+      result_time: time || null,
+      result_pace: pace || null,
+      result_pr:   !!pr,
+      result_notes: notes || null
+    })
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
 // ─── HELPERS ─────────────────────────────────────────────────
 
@@ -1214,15 +1265,97 @@ document.getElementById('modal-save').addEventListener('click', async () => {
   }
 });
 
+// ─── RACE RESULT MODAL ───────────────────────────────────
+const resultModal   = document.getElementById('resultModal');
+const resultStatus  = document.getElementById('result-modal-status');
+
+function openResultModal() {
+  // Populate race dropdown with past/today races
+  const sel = document.getElementById('result-race-id');
+  sel.innerHTML = '';
+  RACES.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r.id;
+    opt.textContent = r.name + ' (' + fmtDate(r.date) + ')';
+    // Pre-select first past race
+    sel.appendChild(opt);
+  });
+  // Pre-fill if race already has result
+  const firstPast = RACES.find(r => daysUntil(r.date) < 0);
+  if (firstPast) {
+    sel.value = firstPast.id;
+    if (firstPast.result) {
+      document.getElementById('result-time').value  = firstPast.result.time || '';
+      document.getElementById('result-pace').value  = firstPast.result.pace || '';
+      document.getElementById('result-pr').checked  = !!firstPast.result.pr;
+      document.getElementById('result-notes').value = firstPast.result.notes || '';
+    }
+  }
+  resultStatus.textContent = '';
+  resultStatus.className = 'modal-status';
+  resultModal.classList.add('open');
+}
+function closeResultModal() { resultModal.classList.remove('open'); }
+
+document.getElementById('open-result-btn').addEventListener('click', openResultModal);
+document.getElementById('result-modal-close').addEventListener('click', closeResultModal);
+document.getElementById('result-modal-cancel').addEventListener('click', closeResultModal);
+resultModal.addEventListener('click', e => { if (e.target === resultModal) closeResultModal(); });
+
+// When race selection changes, pre-fill existing result if any
+document.getElementById('result-race-id').addEventListener('change', function() {
+  const race = RACES.find(r => r.id == this.value);
+  if (race && race.result) {
+    document.getElementById('result-time').value  = race.result.time || '';
+    document.getElementById('result-pace').value  = race.result.pace || '';
+    document.getElementById('result-pr').checked  = !!race.result.pr;
+    document.getElementById('result-notes').value = race.result.notes || '';
+  } else {
+    document.getElementById('result-time').value  = '';
+    document.getElementById('result-pace').value  = '';
+    document.getElementById('result-pr').checked  = false;
+    document.getElementById('result-notes').value = '';
+  }
+});
+
+document.getElementById('result-modal-save').addEventListener('click', async () => {
+  const id    = document.getElementById('result-race-id').value;
+  const time  = document.getElementById('result-time').value.trim();
+  const pace  = document.getElementById('result-pace').value.trim();
+  const pr    = document.getElementById('result-pr').checked;
+  const notes = document.getElementById('result-notes').value.trim();
+
+  if (!id || !time) {
+    resultStatus.textContent = 'RACE AND FINISH TIME ARE REQUIRED';
+    resultStatus.className = 'modal-status err';
+    return;
+  }
+  resultStatus.textContent = 'SAVING...';
+  resultStatus.className = 'modal-status';
+  try {
+    await saveRaceResult(id, time, pace, pr, notes);
+    resultStatus.textContent = '✓ SAVED — UPDATING CALENDAR';
+    resultStatus.className = 'modal-status ok';
+    await loadRaces();
+    setTimeout(closeResultModal, 1200);
+  } catch(e) {
+    resultStatus.textContent = 'ERROR: ' + e.message.substring(0,60);
+    resultStatus.className = 'modal-status err';
+  }
+});
+
 // ─── INIT: Load live data from Supabase ──────────────────
 loadRunningData();
+loadRaces();
 
 // ─── RACE CARDS ───────────────────────────────────────────────
 
-const raceGrid = document.getElementById('race-grid');
-const nextIdx = RACES.findIndex(r=>daysUntil(r.date)>=0);
+function renderRaceCards() {
+  const raceGrid = document.getElementById('race-grid');
+  raceGrid.innerHTML = '';
+  const nextIdx = RACES.findIndex(r=>daysUntil(r.date)>=0);
 
-RACES.forEach((race,i) => {
+  RACES.forEach((race,i) => {
   const days = daysUntil(race.date);
   const isPast = days < 0;
   const isNext = i === nextIdx;
@@ -1244,15 +1377,42 @@ RACES.forEach((race,i) => {
   card.className = 'panel panel-sm';
   card.style.background = isNext ? '#0f0a0a' : 'var(--bg2)';
   if(isNext) card.style.borderLeft = `2px solid ${race.color}`;
-  card.innerHTML = `
-    ${isNext?`<div class="next-tag">Next up</div>`:''}
-    <div class="race-type-bar" style="background:${race.color};opacity:${isPast?0.25:1}"></div>
-    <div class="race-name" style="color:${isPast?'#444':'#fff'}">${race.name}</div>
-    <div class="race-date-txt">${fmtDate(race.date)}</div>
-    ${cdHtml}
-    <div class="type-pill" style="background:${race.color}18;color:${isPast?'#444':race.color}">${race.label}</div>`;
+
+  let cardInner = '';
+  if(isPast && race.result) {
+    const r = race.result;
+    cardInner = `
+      <div class="result-header">
+        <div>
+          <div class="race-type-bar" style="background:${race.color};opacity:0.35"></div>
+          <div class="race-name" style="color:#444;min-height:unset;font-size:13px">${race.name}</div>
+          <div class="race-date-txt" style="margin-bottom:0">${fmtDate(race.date)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <div style="font-size:18px;line-height:1">🏅</div>
+          ${r.pr ? '<div class="result-pr-badge">PR</div>' : ''}
+        </div>
+      </div>
+      <div class="result-finish-line"></div>
+      <div class="result-stat-row">
+        <div class="result-stat"><div class="result-stat-l">Time</div><div class="result-stat-v" style="color:#00e676">${r.time}</div></div>
+        <div class="result-stat"><div class="result-stat-l">Pace</div><div class="result-stat-v" style="color:#fff">${(r.pace||'').replace(' / mi','')}</div></div>
+        <div class="result-stat"><div class="result-stat-l">Dist</div><div class="result-stat-v" style="color:${race.color}">${race.label}</div></div>
+      </div>`;
+  } else {
+    cardInner = `
+      ${isNext?`<div class="next-tag">Next up</div>`:''}
+      <div class="race-type-bar" style="background:${race.color};opacity:${isPast?0.25:1}"></div>
+      <div class="race-name" style="color:${isPast?'#444':'#fff'}">${race.name}</div>
+      <div class="race-date-txt">${fmtDate(race.date)}</div>
+      ${cdHtml}
+      <div class="type-pill" style="background:${race.color}18;color:${isPast?'#444':race.color}">${race.label}</div>`;
+  }
+  card.innerHTML = cardInner;
   raceGrid.appendChild(card);
-});
+  });
+}
+renderRaceCards();
 
 // ─── TIMELINE ─────────────────────────────────────────────────
 
@@ -1452,6 +1612,43 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
   });
 })();
 </script>
+<!-- RACE RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-title">
+      Log Race Result
+      <button class="modal-close" id="result-modal-close">✕</button>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Race</div>
+      <select class="modal-input" id="result-race-id" style="appearance:auto"></select>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Finish Time (e.g. 1:34:19)</div>
+      <input class="modal-input" id="result-time" type="text" placeholder="h:mm:ss">
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Pace (e.g. 7:11 / mi)</div>
+      <input class="modal-input" id="result-pace" type="text" placeholder="m:ss / mi">
+    </div>
+    <div class="modal-row" style="display:flex;align-items:center;gap:12px">
+      <input type="checkbox" id="result-pr" style="width:18px;height:18px;accent-color:#ff2d20;cursor:pointer">
+      <div>
+        <div class="modal-label" style="margin:0">Personal Record (PR)</div>
+      </div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Notes (optional)</div>
+      <input class="modal-input" id="result-notes" type="text" placeholder="e.g. Windy day, negative split">
+    </div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-cancel" id="result-modal-cancel">Cancel</button>
+      <button class="modal-btn modal-btn-save" id="result-modal-save">Save Result</button>
+    </div>
+    <div class="modal-status" id="result-modal-status"></div>
+  </div>
+</div>
+
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
   <div class="modal">
