@@ -633,6 +633,15 @@
   .edit-btn:hover { border-color:#ff2d20; color:#ff2d20; }
   .sb-sync { font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1.5px; color:#1e1e1e; }
   .sb-sync.loaded { color:#1a3a1a; }
+
+  /* ─── RESULT TROPHY CARD ─── */
+  .result-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:6px; }
+  .result-pr-badge { background:var(--red); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:9px; font-weight:900; letter-spacing:1.5px; padding:2px 7px; border-radius:2px; text-transform:uppercase; margin-top:2px; }
+  .result-finish-line { height:3px; background:repeating-linear-gradient(90deg,#fff 0,#fff 5px,#000 5px,#000 10px); margin:10px 0; opacity:0.1; border-radius:1px; }
+  .result-stat-row { display:flex; gap:5px; }
+  .result-stat { flex:1; background:var(--bg4); border-radius:3px; padding:6px 8px; }
+  .result-stat-l { font-family:'Barlow Condensed',sans-serif; font-size:8px; color:var(--text4); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:2px; }
+  .result-stat-v { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:900; line-height:1; }
 </style>
 </head>
 <body>
@@ -698,11 +707,11 @@
 <!-- SECTION: OVERVIEW -->
 <div class="section-label">Overview</div>
 <div class="grid-gap g5">
-  <div class="hero-stat"><div class="hsl">VO2 Max Peak</div><div class="hsv">57.1</div><div class="hss grn">All-time high · Apr 2026</div></div>
-  <div class="hero-stat"><div class="hsl">Resting HR</div><div class="hsv">60</div><div class="hss blu">bpm avg · Mar 2026</div></div>
-  <div class="hero-stat"><div class="hsl">HRV</div><div class="hsv">55</div><div class="hss yel">ms avg · Mar 2026</div></div>
-  <div class="hero-stat"><div class="hsl">HR Recovery</div><div class="hsv">41</div><div class="hss prp">bpm drop · Mar 2026</div></div>
-  <div class="hero-stat"><div class="hsl">2026 Runs</div><div class="hsv">55</div><div class="hss grn">workouts logged</div></div>
+  <div class="hero-stat"><div class="hsl">VO2 Max Peak</div><div class="hsv">56.7</div><div class="hss grn">All-time high · Mar 2026</div></div>
+  <div class="hero-stat"><div class="hsl">Resting HR</div><div class="hsv">59</div><div class="hss blu">bpm avg · May 2026</div></div>
+  <div class="hero-stat"><div class="hsl">HRV</div><div class="hsv">49</div><div class="hss yel">ms avg · May 2026</div></div>
+  <div class="hero-stat"><div class="hsl">HR Recovery</div><div class="hsv">43</div><div class="hss prp">bpm drop · Apr 2026</div></div>
+  <div class="hero-stat"><div class="hsl">2026 Miles</div><div class="hsv">467</div><div class="hss grn">through April 2026</div></div>
 </div>
 
 <!-- SECTION: FITNESS METRICS -->
@@ -711,11 +720,11 @@
 
   <!-- VO2 MAX -->
   <div class="panel">
-    <div class="ptitle">VO2 Max — 810 Apple Watch readings</div>
+    <div class="ptitle">VO2 Max — Apple Watch readings (2022–2026)</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
-      <div class="mini-stat" style="flex:1"><div class="msl">Apr 2026 avg</div><div class="msv grn">56.5</div></div>
-      <div class="mini-stat" style="flex:1"><div class="msl">Peak ever</div><div class="msv yel">57.1</div></div>
-      <div class="mini-stat" style="flex:1"><div class="msl">vs Jun 2021</div><div class="msv grn">+52%</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Apr 2026 avg</div><div class="msv grn">55.6</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Peak ever</div><div class="msv yel">56.7</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">vs Jan 2022</div><div class="msv grn">+26%</div></div>
     </div>
     <div class="chart-wrap" style="height:150px">
       <canvas id="vo2Chart" role="img" aria-label="VO2 max trend from 37.5 in 2021 to 57.1 in 2026 showing steady improvement">VO2 max improving from 37.5 in 2021 to 57.1 in 2026.</canvas>
@@ -754,8 +763,8 @@
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-      <div class="mini-stat"><div class="msl">HRV today</div><div class="msv yel" id="rd-hrv">121</div></div>
-      <div class="mini-stat"><div class="msl">Resting HR</div><div class="msv blu" id="rd-rhr">64</div></div>
+      <div class="mini-stat"><div class="msl">HRV today</div><div class="msv yel" id="rd-hrv">49</div></div>
+      <div class="mini-stat"><div class="msl">Resting HR</div><div class="msv blu" id="rd-rhr">59</div></div>
       <div class="mini-stat"><div class="msl">TSB (form)</div><div class="msv" id="rd-tsb" style="color:#fff">2.6</div></div>
       <div class="mini-stat"><div class="msl">Fatigue (ATL)</div><div class="msv" id="rd-atl" style="color:#ff7043">32</div></div>
     </div>
@@ -805,7 +814,7 @@
     <div class="mbars-wrap" id="mbars"></div>
     <div style="display:flex;gap:3px" id="mlbls"></div>
     <div style="display:flex;align-items:baseline;gap:8px;margin-top:10px">
-      <span class="big-num" id="ytotal" style="font-size:40px">332.6</span>
+      <span class="big-num" id="ytotal" style="font-size:40px">467.4</span>
       <span style="font-size:12px;color:var(--text3)">total miles</span>
     </div>
   </div>
@@ -871,6 +880,80 @@
 
 
 <div style="height:40px"></div>
+
+
+<!-- RACE RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-title">
+      Log Race Result
+      <button class="modal-close" id="result-modal-close">✕</button>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Race</div>
+      <select class="modal-input" id="result-race-id" style="appearance:auto"></select>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Finish Time (e.g. 1:34:19)</div>
+      <input class="modal-input" id="result-time" type="text" placeholder="h:mm:ss">
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Pace (e.g. 7:11 / mi)</div>
+      <input class="modal-input" id="result-pace" type="text" placeholder="m:ss / mi">
+    </div>
+    <div class="modal-row" style="display:flex;align-items:center;gap:12px">
+      <input type="checkbox" id="result-pr" style="width:18px;height:18px;accent-color:#ff2d20;cursor:pointer">
+      <div>
+        <div class="modal-label" style="margin:0">Personal Record (PR)</div>
+      </div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Notes (optional)</div>
+      <input class="modal-input" id="result-notes" type="text" placeholder="e.g. Windy day, negative split">
+    </div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-cancel" id="result-modal-cancel">Cancel</button>
+      <button class="modal-btn modal-btn-save" id="result-modal-save">Save Result</button>
+    </div>
+    <div class="modal-status" id="result-modal-status"></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">
+      Log Monthly Data
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Year</div>
+      <input class="modal-input" id="edit-year" type="number" min="2020" max="2030" value="2026">
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Month (1–12)</div>
+      <input class="modal-input" id="edit-month" type="number" min="1" max="12" value="5">
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Miles <span style="color:#444;font-weight:400">(leave blank to update VO2 only)</span></div>
+      <input class="modal-input" id="edit-miles" type="number" step="0.01" placeholder="e.g. 98.66">
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">VO2 Max <span style="color:#444;font-weight:400">(optional)</span></div>
+      <input class="modal-input" id="edit-vo2" type="number" step="0.1" placeholder="e.g. 55.6">
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">Notes (optional)</div>
+      <input class="modal-input" id="edit-notes" type="text" placeholder="e.g. Ironman June">
+    </div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+      <button class="modal-btn modal-btn-save" id="modal-save">Save to Supabase</button>
+    </div>
+    <div class="modal-status" id="modal-status"></div>
+  </div>
+</div>
+
 
 <script>
 // ─── DATA ───────────────────────────────────────────────────
@@ -1237,6 +1320,9 @@ document.getElementById('ytabs').addEventListener('click', e => {
   activeYear = parseInt(btn.dataset.y);
   renderMbars(activeYear);
 });
+
+// ─── MODALS: wrapped in DOMContentLoaded so HTML elements exist ─────────
+document.addEventListener('DOMContentLoaded', function() {
 
 // ─── EDIT MODAL ───────────────────────────────────────────
 const modal     = document.getElementById('editModal');
@@ -1636,82 +1722,13 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
   });
 })();
 
+// ─── END DOMCONTENTLOADED ───────────────────────────────────
+}); // end DOMContentLoaded
+
 // ─── INIT: fire after all functions defined ──────────
 loadRunningData();
 loadRaces();
 
 </script>
-<!-- RACE RESULT MODAL -->
-<div class="modal-overlay" id="resultModal">
-  <div class="modal">
-    <div class="modal-title">
-      Log Race Result
-      <button class="modal-close" id="result-modal-close">✕</button>
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Race</div>
-      <select class="modal-input" id="result-race-id" style="appearance:auto"></select>
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Finish Time (e.g. 1:34:19)</div>
-      <input class="modal-input" id="result-time" type="text" placeholder="h:mm:ss">
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Pace (e.g. 7:11 / mi)</div>
-      <input class="modal-input" id="result-pace" type="text" placeholder="m:ss / mi">
-    </div>
-    <div class="modal-row" style="display:flex;align-items:center;gap:12px">
-      <input type="checkbox" id="result-pr" style="width:18px;height:18px;accent-color:#ff2d20;cursor:pointer">
-      <div>
-        <div class="modal-label" style="margin:0">Personal Record (PR)</div>
-      </div>
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Notes (optional)</div>
-      <input class="modal-input" id="result-notes" type="text" placeholder="e.g. Windy day, negative split">
-    </div>
-    <div class="modal-btn-row">
-      <button class="modal-btn modal-btn-cancel" id="result-modal-cancel">Cancel</button>
-      <button class="modal-btn modal-btn-save" id="result-modal-save">Save Result</button>
-    </div>
-    <div class="modal-status" id="result-modal-status"></div>
-  </div>
-</div>
-
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="editModal">
-  <div class="modal">
-    <div class="modal-title">
-      Log Monthly Data
-      <button class="modal-close" id="modal-close">✕</button>
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Year</div>
-      <input class="modal-input" id="edit-year" type="number" min="2020" max="2030" value="2026">
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Month (1–12)</div>
-      <input class="modal-input" id="edit-month" type="number" min="1" max="12" value="5">
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Miles <span style="color:#444;font-weight:400">(leave blank to update VO2 only)</span></div>
-      <input class="modal-input" id="edit-miles" type="number" step="0.01" placeholder="e.g. 98.66">
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">VO2 Max <span style="color:#444;font-weight:400">(optional)</span></div>
-      <input class="modal-input" id="edit-vo2" type="number" step="0.1" placeholder="e.g. 55.6">
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">Notes (optional)</div>
-      <input class="modal-input" id="edit-notes" type="text" placeholder="e.g. Ironman June">
-    </div>
-    <div class="modal-btn-row">
-      <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
-      <button class="modal-btn modal-btn-save" id="modal-save">Save to Supabase</button>
-    </div>
-    <div class="modal-status" id="modal-status"></div>
-  </div>
-</div>
-
 </body>
 </html>
