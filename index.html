@@ -1,1156 +1,1140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MercyU Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="StayHard">
+<meta name="theme-color" content="#080808">
+<title>StayHard — Matt's Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --p: #4A2C6B;
-      --pd: #2E1A42;
-      --pm: #5D3880;
-      --pl: #F0EBF8;
-      --g: #5A8C3C;
-      --gd: #3A5C26;
-      --gl: #7AB558;
-      --gold: #C8A84B;
-      --w: #fff;
-      --off: #F7F5F2;
-      --bdr: #E8E4DF;
-      --tx: #1A1A1A;
-      --txm: #666;
-      --txl: #999;
-      --li: #0A66C2;
-      --fb: #1877F2;
-      --ig: #C13584;
-      --slate: #E8500A;
-      --wp: #21759B;
-      --serif: 'Libre Baskerville', Georgia, serif;
-      --sans: 'Source Sans 3', Arial, sans-serif;
-    }
+:root {
+  --black:   #080808;
+  --black2:  #0f0f0f;
+  --black3:  #161616;
+  --black4:  #1e1e1e;
+  --white:   #ffffff;
+  --off:     #f5f4f0;
+  --red:     #e8351a;
+  --red2:    #ff4f30;
+  --gold:    #c9a84c;
+  --gold2:   #f0c96a;
+  --text:    #ffffff;
+  --text2:   #aaaaaa;
+  --text3:   #666666;
+  --text4:   #3a3a3a;
+  --border:  #222222;
+  --border2: #2e2e2e;
+}
 
-    body {
-      font-family: var(--sans);
-      background: #EDEAE6;
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 24px 16px;
-    }
+html { background: var(--black); scroll-behavior: smooth; }
 
-    .d {
-      font-family: var(--sans);
-      background: var(--w);
-      border: 0.5px solid var(--bdr);
-      border-radius: 12px;
-      overflow: hidden;
-      width: 100%;
-      max-width: 1100px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    }
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--black);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
-    /* ── Top Nav ── */
-    .topnav {
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 52px;
-      border-bottom: 0.5px solid var(--bdr);
-    }
-    .tn-logo { display: flex; align-items: center; gap: 10px; }
-    .tn-logomark { width: 22px; height: 26px; flex-shrink: 0; }
-    .tn-brand { font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--tx); letter-spacing: -0.02em; }
-    .tn-brand em { color: var(--p); font-style: normal; }
-    .tn-links { display: flex; gap: 2px; }
-    .tn-link { font-size: 11px; font-weight: 600; color: var(--txm); padding: 5px 10px; border-radius: 5px; text-decoration: none; transition: background 0.1s; }
-    .tn-link:hover { background: var(--off); color: var(--tx); }
-    .tn-link.active { background: var(--pl); color: var(--p); }
-    .tn-right { display: flex; align-items: center; gap: 8px; }
-    .tn-date { font-size: 11px; color: var(--txl); }
-    .tn-badge { background: var(--g); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 4px; letter-spacing: 0.04em; }
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(48px + env(safe-area-inset-top)) 48px 48px;
+  position: relative;
+  overflow: hidden;
+}
 
-    /* ── Hero ── */
-    .hero {
-      background: var(--p);
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .hero-greeting { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 3px; font-family: var(--sans); }
-    .hero-title { font-family: var(--serif); font-size: 17px; color: #fff; font-style: italic; line-height: 1.25; }
-    .hero-actions { display: flex; gap: 8px; align-items: center; }
-    .hbtn {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
-      padding: 7px 14px; border-radius: 5px; text-decoration: none; cursor: pointer;
-      white-space: nowrap; border: none; display: inline-block;
-    }
-    .hbtn-g { background: var(--g); color: #fff; }
-    .hbtn-o { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
-    .hbtn:hover { opacity: 0.9; }
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(232,53,26,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 0% 100%, rgba(201,168,76,0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
 
-    /* ── Metrics Strip ── */
-    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 0.5px solid var(--bdr); }
-    .metric { padding: 12px 18px; border-right: 0.5px solid var(--bdr); }
-    .metric:last-child { border-right: none; }
-    .metric-val { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--p); line-height: 1; margin-bottom: 2px; }
-    .metric-val.placeholder { font-size: 18px; color: #CCC; letter-spacing: 0.05em; }
-    .metric-lbl { font-size: 10px; color: var(--txl); letter-spacing: 0.02em; margin-bottom: 3px; }
-    .metric-note { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px; display: inline-block; background: var(--pl); color: var(--p); opacity: 0.75; }
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
 
-    /* ── Tool Tiles ── */
-    .section { padding: 14px 20px; }
-    .section-hd { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txl); margin-bottom: 10px; }
-    .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-    .tile {
-      background: var(--w); border: 0.5px solid var(--bdr); border-radius: 9px;
-      padding: 12px; text-decoration: none; display: block; cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .tile:hover { border-color: var(--p); background: var(--pl); }
-    .tile-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-    .tile-name { font-size: 12px; font-weight: 700; color: var(--tx); margin-bottom: 2px; line-height: 1.3; }
-    .tile-sub { font-size: 10px; color: var(--txm); line-height: 1.35; }
-    .tile-chip { display: inline-block; margin-top: 5px; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; }
-    .chip-crm { background: #FCE8E0; color: #8B2A00; }
-    .chip-wp { background: #E0EEF5; color: #0D4F6E; }
-    .chip-live { background: #E6F0FB; color: #0C447C; }
-    .chip-brand { background: var(--pl); color: var(--p); }
-    .chip-funnel { background: #EAF4E0; color: #2E5E18; }
-    .chip-forecast { background: #FEF4E0; color: #7A4A00; }
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
 
-    /* ── Mid Row ── */
-    .mid { display: grid; grid-template-columns: 1fr 1fr; border-top: 0.5px solid var(--bdr); border-bottom: 0.5px solid var(--bdr); }
-    .pane { padding: 14px 20px; border-right: 0.5px solid var(--bdr); }
-    .pane:last-child { border-right: none; }
-    .pane-hd { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--p); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-    .pane-badge { font-size: 9px; font-weight: 700; border-radius: 3px; padding: 2px 7px; }
-    .bg { background: #EAF4E0; color: #2E5E18; }
-    .ba { background: #FEF4E0; color: #7A4A00; }
-    .bb { background: #E6F0FB; color: #0C447C; }
-    .bp { background: var(--pl); color: var(--p); }
-    .br { background: #FDECEA; color: #8B1A1A; }
+.hero-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--text3);
+  text-transform: uppercase;
+}
 
-    /* ── Task System v2 (Supabase) ── */
-    .task-filters { display: flex; gap: 5px; padding: 0 0 8px; flex-wrap: wrap; }
-    .tf-btn { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; border: 0.5px solid var(--bdr); cursor: pointer; color: var(--txm); background: var(--w); font-family: var(--sans); transition: all 0.12s; }
-    .tf-btn.active { background: var(--p); color: #fff; border-color: var(--p); }
-    .task-r { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid var(--bdr); transition: background 0.1s; cursor: pointer; }
-    .task-r:last-child { border-bottom: none; }
-    .task-r.rolling { animation: taskRollOff 0.32s ease forwards; overflow: hidden; }
-    @keyframes taskRollOff { 0% { opacity:1; max-height:60px; transform:translateX(0); } 100% { opacity:0; max-height:0; padding:0; transform:translateX(18px); } }
-    .t-prio { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-    .prio-high { background: #E24B4A; }
-    .prio-med  { background: #EF9F27; }
-    .prio-low  { background: #97C459; }
-    .tchk { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid var(--bdr); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 1px; transition: all 0.15s; }
-    .tchk.done { background: var(--g); border-color: var(--g); }
-    .tchk.done::after { content: ''; display: block; width: 5px; height: 3px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translateY(-1px); }
-    .t-body { flex: 1; min-width: 0; }
-    .ttx { font-size: 12px; color: var(--tx); line-height: 1.3; }
-    .ttx.done { text-decoration: line-through; color: var(--txl); }
-    .t-meta { display: flex; align-items: center; gap: 5px; margin-top: 2px; flex-wrap: wrap; }
-    .tch { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
-    .tch-dev      { background: #E6F0FB; color: #0C447C; }
-    .tch-mktg     { background: #FBEAF0; color: #993556; }
-    .tch-analytics{ background: #EAF3DE; color: #27500A; }
-    .tch-events   { background: #FAEEDA; color: #633806; }
-    .tch-default  { background: var(--pl); color: var(--p); }
-    .t-due { font-size: 9px; color: var(--txl); }
-    .t-due.overdue { color: #A32D2D; font-weight: 600; }
-    .t-due.today   { color: #854F0B; font-weight: 600; }
-    .t-due.soon    { color: #5A8C3C; }
-    .task-actions { display: flex; align-items: center; opacity: 0; transition: opacity 0.1s; gap: 2px; }
-    .task-r:hover .task-actions { opacity: 1; }
-    .t-del { width: 18px; height: 18px; border-radius: 4px; border: none; background: transparent; color: var(--txl); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1; }
-    .t-del:hover { background: #FDECEA; color: #8B1A1A; }
-    .task-empty { font-size: 11px; color: var(--txl); text-align: center; padding: 16px 0; }
-    .comp-toggle { width: 100%; text-align: left; font-size: 10px; font-weight: 600; color: var(--txm); background: var(--off); border: none; border-top: 0.5px solid var(--bdr); padding: 6px 0; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: var(--sans); }
-    .comp-toggle:hover { color: var(--tx); }
-    .comp-body { display: none; }
-    .comp-body.open { display: block; }
-    .task-add-row { display: flex; gap: 5px; padding: 8px 0 2px; border-top: 0.5px solid var(--bdr); margin-top: 2px; flex-wrap: wrap; }
-    .task-input { flex: 1; min-width: 120px; font-size: 12px; font-family: var(--sans); border: 0.5px solid var(--bdr); border-radius: 5px; padding: 5px 9px; color: var(--tx); background: var(--off); outline: none; }
-    .task-input:focus { border-color: var(--p); background: var(--w); }
-    .task-input::placeholder { color: var(--txl); }
-    .task-sel { font-size: 11px; font-family: var(--sans); border: 0.5px solid var(--bdr); border-radius: 5px; padding: 5px 7px; color: var(--txm); background: var(--off); outline: none; cursor: pointer; }
-    .task-sel:focus { border-color: var(--p); }
-    .task-date-inp { font-size: 11px; font-family: var(--sans); border: 0.5px solid var(--bdr); border-radius: 5px; padding: 5px 7px; color: var(--txm); background: var(--off); outline: none; width: 120px; }
-    .task-date-inp:focus { border-color: var(--p); }
-    .task-add-btn { font-size: 11px; font-weight: 700; background: var(--p); color: #fff; border: none; border-radius: 5px; padding: 5px 12px; cursor: pointer; white-space: nowrap; font-family: var(--sans); }
-    .task-add-btn:hover { opacity: 0.88; }
-    .task-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 6px; }
-    .tf-note { font-size: 10px; color: var(--txl); }
-    .tf-lk { font-size: 10px; font-weight: 700; color: var(--p); text-decoration: none; }
-    .t-sync-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--g); margin-right: 4px; vertical-align: middle; }
-    .t-sync-dot.loading { background: var(--gold); animation: pulse 1s infinite; }
-    .t-sync-dot.error { background: #E24B4A; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.hero-date-time {
+  text-align: right;
+}
 
-    /* Events */
-    .ev-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--bdr); align-items: flex-start; }
-    .ev-item:last-child { border-bottom: none; }
-    .ev-box { width: 38px; flex-shrink: 0; text-align: center; background: var(--off); border: 0.5px solid var(--bdr); border-radius: 6px; padding: 3px 0; }
-    .ev-mo { font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g); }
-    .ev-dy { font-family: var(--serif); font-size: 17px; font-weight: 700; color: var(--p); line-height: 1.1; }
-    .ev-title { font-size: 12px; font-weight: 700; color: var(--tx); margin-bottom: 2px; }
-    .ev-meta { font-size: 10px; color: var(--txm); }
-    .ev-chip { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; margin-top: 3px; }
-    .ec-ac { background: var(--pl); color: var(--p); }
-    .ec-ev { background: #EAF4E0; color: #2E5E18; }
-    .ec-ad { background: #FEF4E0; color: #7A4A00; }
-    .ec-fa { background: #FCE8E0; color: #8B2A00; }
-    .ev-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
-    .ev-note { font-size: 10px; color: var(--txl); }
-    .ev-cal { font-size: 10px; font-weight: 700; color: var(--p); text-decoration: none; }
+.hero-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text3);
+  letter-spacing: 1px;
+}
 
-    .auth-err {
-      display: none; background: #FDECEA; border: 0.5px solid #F5C6C6;
-      border-radius: 7px; padding: 10px 12px; margin-bottom: 10px;
-    }
-    .ae-t { font-size: 11px; font-weight: 700; color: #8B1A1A; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
-    .ae-b { font-size: 10px; color: #6B1212; line-height: 1.5; margin-bottom: 7px; }
-    .ae-btn { display: inline-block; background: #8B1A1A; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 12px; border-radius: 4px; text-decoration: none; }
+.hero-date {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text4);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
 
-    /* ── Bottom Row ── */
-    .bottom { display: grid; grid-template-columns: 1fr 220px; border-top: 0.5px solid var(--bdr); }
-    .social-pane { padding: 14px 20px; border-right: 0.5px solid var(--bdr); }
 
-    /* Social Tabs */
-    .stabs { display: flex; border-bottom: 0.5px solid var(--bdr); margin-bottom: 10px; }
-    .stab { flex: 1; text-align: center; padding: 6px 0; font-size: 11px; font-weight: 600; color: var(--txm); cursor: pointer; border-bottom: 2px solid transparent; }
-    .stab.act-li { color: var(--li); border-bottom-color: var(--li); }
-    .stab.act-fb { color: var(--fb); border-bottom-color: var(--fb); }
-    .stab.act-ig { color: var(--ig); border-bottom-color: var(--ig); }
-    .post { padding: 8px 0; border-bottom: 0.5px solid var(--bdr); }
-    .post:last-child { border-bottom: none; }
-    .post-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
-    .post-ava { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
-    .post-name { font-size: 11px; font-weight: 700; color: var(--tx); }
-    .post-time { font-size: 10px; color: var(--txl); }
-    .post-body { font-size: 11px; color: var(--tx); line-height: 1.45; margin-bottom: 5px; }
-    .post-stats { display: flex; gap: 10px; }
-    .ps { font-size: 10px; color: var(--txm); }
-    .ps span { font-weight: 700; color: var(--tx); }
-    .plat-row { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
-    .plat-lbl { font-size: 10px; color: var(--txl); }
-    .plat-btn { font-size: 10px; font-weight: 700; text-decoration: none; padding: 3px 9px; border-radius: 4px; color: #fff; }
-    .hidden { display: none; }
 
-    /* Right sidebar */
-    .link-sb { padding: 14px 16px; background: var(--off); }
-    .lsb-section { margin-bottom: 14px; }
-    .lsb-hd { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txl); margin-bottom: 6px; }
-    .lsb-lk { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: 6px; text-decoration: none; margin-bottom: 1px; transition: background 0.1s; }
-    .lsb-lk:hover { background: #EDEBE8; }
-    .lsb-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-    .lsb-tx { font-size: 11px; color: var(--tx); font-weight: 500; flex: 1; }
-    .lsb-ar { font-size: 10px; color: var(--txl); }
-    .lsb-chip { font-size: 8px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+.hero-greeting {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.2s forwards;
+}
 
-    /* Footer */
-    .ftr { background: var(--pd); padding: 8px 20px; display: flex; align-items: center; justify-content: space-between; }
-    .fc { font-size: 10px; color: rgba(255,255,255,0.35); }
-    .flinks { display: flex; gap: 14px; }
-    .flinks a { font-size: 10px; color: rgba(255,255,255,0.35); text-decoration: none; }
-    .flinks a:hover { color: rgba(255,255,255,0.65); }
+.hero-headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(72px, 12vw, 160px);
+  line-height: 0.88;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: var(--white);
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.35s forwards;
+}
 
-    @media (max-width: 768px) {
-      body { padding: 0; }
-      .d { border-radius: 0; border: none; }
-      .metrics { grid-template-columns: repeat(2, 1fr); }
-      .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .mid { grid-template-columns: 1fr; }
-      .pane { border-right: none; border-bottom: 0.5px solid var(--bdr); }
-      .bottom { grid-template-columns: 1fr; }
-      .link-sb { border-top: 0.5px solid var(--bdr); }
-      .tn-links { display: none; }
-    }
-  </style>
+.hero-headline em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+}
+
+.hero-sub {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.55s forwards;
+}
+
+.hero-mantra {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero-sub-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent);
+  max-width: 200px;
+}
+
+.hero-scroll-hint {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--text4);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-scroll-line {
+  width: 40px;
+  height: 1px;
+  background: var(--text4);
+  animation: expandLine 1.5s ease 1.5s both;
+}
+
+@keyframes expandLine {
+  from { width: 0; opacity: 0; }
+  to { width: 40px; opacity: 1; }
+}
+
+.hero-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+/* ── QUICK STATS BAR ─────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  gap: 32px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.8s forwards;
+}
+
+.stat-item {}
+.stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--white);
+}
+.stat-lbl {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ── BOOKMARK BAR ────────────────────────────────────────── */
+.bookmark-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.7s forwards;
+}
+
+.bookmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text3);
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.bookmark:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.18);
+  color: var(--white);
+}
+
+.bookmark-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── SECTION STRUCTURE ───────────────────────────────────── */
+.section { padding: 80px 48px; border-top: 1px solid var(--border); }
+
+.section-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  max-width: 80px;
+}
+
+/* ── DASHBOARDS ─────────────────────────────────────────── */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.dash-card {
+  background: var(--black2);
+  padding: 36px 36px 32px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+}
+
+.dash-card:hover {
+  background: var(--black3);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,.6);
+}
+
+.dash-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transition: height 0.2s ease;
+}
+
+.dash-card:hover .dash-card-accent { height: 3px; }
+
+.dash-card-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text4);
+  margin-bottom: auto;
+}
+
+.dash-card-body { margin-top: 24px; }
+
+.dash-card-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.dash-card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  color: var(--white);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.dash-card-desc {
+  font-size: 13px;
+  color: var(--text3);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+
+.dash-card:hover {
+  background: var(--black3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+}
+
+.dash-card-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  padding: 5px 10px;
+  background: var(--black4);
+  border-radius: 4px;
+}
+
+.dash-card-stat span { color: var(--white); font-weight: 500; }
+
+/* ── COMING SOON CARD ────────────────────────────────────── */
+.dash-card-soon {
+  opacity: 0.4;
+  cursor: default;
+}
+.dash-card-soon:hover { background: var(--black2); }
+.soon-badge {
+  display: inline-block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text3);
+  text-transform: uppercase;
+  border: 1px solid var(--border2);
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-top: 14px;
+}
+
+/* ── GOALS ──────────────────────────────────────────────── */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.goal-card {
+  background: var(--black2);
+  padding: 28px 28px 24px;
+}
+
+.goal-category {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.goal-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.goal-bar-outer {
+  height: 2px;
+  background: var(--black4);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.goal-bar-inner { height: 100%; border-radius: 1px; }
+
+.goal-progress {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text4);
+}
+
+/* ── QUOTES ─────────────────────────────────────────────── */
+.quotes-stack { display: flex; flex-direction: column; gap: 2px; }
+
+.quote-row {
+  background: var(--black2);
+  padding: 32px 40px;
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  border-radius: 0;
+  transition: background 0.15s;
+}
+
+.quote-row:first-child { border-radius: 14px 14px 0 0; }
+.quote-row:last-child  { border-radius: 0 0 14px 14px; }
+.quote-row:only-child  { border-radius: 14px; }
+.quote-row:hover { background: var(--black3); }
+
+.quote-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text4);
+  min-width: 24px;
+  margin-top: 4px;
+}
+
+.quote-body { flex: 1; }
+
+.quote-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--white);
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+.quote-author {
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  color: var(--text3);
+  font-style: italic;
+}
+
+/* ── LINKS ──────────────────────────────────────────────── */
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.link-card {
+  background: var(--black2);
+  padding: 24px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background 0.15s;
+}
+
+.link-card:hover { background: var(--black3); }
+
+.link-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.link-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.link-desc {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.4;
+  margin-top: auto;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+.footer {
+  padding: 32px 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: var(--text4);
+  text-transform: uppercase;
+}
+
+.footer-logo span { color: var(--red); }
+
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text4);
+}
+
+/* ── HERO CENTER ─────────────────────────────────────────── */
+.hero-center {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 0 24px;
+}
+.hero-left {}
+
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── GOAL MODAL ──────────────────────────────────────────── */
+.g-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+.g-modal-overlay.open { display: flex; }
+.g-modal {
+  background: var(--black2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  overflow-y: auto;
+  margin: 20px;
+}
+.g-modal::-webkit-scrollbar { width: 3px; }
+.g-modal::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.g-modal-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.g-modal-sub { font-size: 12px; color: var(--text3); margin-bottom: 24px; }
+.g-goal-block {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 10px;
+  background: var(--black3);
+}
+.g-goal-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.g-goal-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text4);
+  text-transform: uppercase;
+}
+.g-remove-btn {
+  font-size: 11px;
+  color: var(--text4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0;
+  transition: color 0.15s;
+}
+.g-remove-btn:hover { color: var(--red); }
+.g-field { margin-bottom: 10px; }
+.g-field label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 5px;
+}
+.g-field input, .g-field select {
+  width: 100%;
+  padding: 8px 11px;
+  background: var(--black4);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.g-field input:focus, .g-field select:focus { border-color: var(--text3); }
+.g-field select option { background: var(--black2); }
+.g-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.g-add-btn {
+  width: 100%;
+  padding: 11px;
+  background: var(--black3);
+  border: 1px dashed var(--border2);
+  border-radius: 10px;
+  color: var(--text3);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.g-add-btn:hover { color: var(--white); border-color: var(--text3); }
+.g-modal-actions { display: flex; gap: 10px; }
+.g-btn {
+  flex: 1;
+  padding: 11px;
+  border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+}
+.g-btn-save { background: var(--white); color: var(--black); }
+.g-btn-save:hover { background: var(--off); }
+.g-btn-cancel { background: var(--black3); color: var(--text2); border: 1px solid var(--border2); }
+.g-btn-cancel:hover { background: var(--black4); }
+
+/* ── GOAL MODAL ──────────────────────────────────────────── */
+.g-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:500; align-items:center; justify-content:center; }
+.g-overlay.open { display:flex; }
+.g-modal { background:var(--black2); border:1px solid var(--border2); border-radius:14px; padding:28px; width:100%; max-width:540px; max-height:88vh; overflow-y:auto; margin:20px; }
+.g-modal::-webkit-scrollbar { width:3px; }
+.g-modal::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+.g-modal-title { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--white); margin-bottom:4px; }
+.g-modal-sub { font-size:12px; color:var(--text3); margin-bottom:22px; }
+.g-block { border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:10px; background:var(--black3); }
+.g-block-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.g-block-num { font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; color:var(--text4); text-transform:uppercase; }
+.g-rm { font-size:11px; color:var(--text4); background:none; border:none; cursor:pointer; font-family:'Barlow Condensed',sans-serif; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:0; transition:color 0.15s; }
+.g-rm:hover { color:var(--red); }
+.gf { margin-bottom:10px; }
+.gf label { display:block; font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-bottom:5px; }
+.gf input, .gf select { width:100%; padding:8px 11px; background:var(--black4); border:1px solid var(--border2); border-radius:6px; color:var(--white); font-family:'Barlow',sans-serif; font-size:13px; outline:none; transition:border-color 0.15s; }
+.gf input:focus, .gf select:focus { border-color:var(--text3); }
+.gf select option { background:var(--black2); }
+.gf-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.g-add { width:100%; padding:11px; background:var(--black3); border:1px dashed var(--border2); border-radius:10px; color:var(--text3); font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; margin-bottom:20px; transition:color 0.15s,border-color 0.15s; }
+.g-add:hover { color:var(--white); border-color:var(--text3); }
+.g-actions { display:flex; gap:10px; }
+.g-btn { flex:1; padding:11px; border-radius:8px; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; }
+.g-save { background:var(--white); color:var(--black); }
+.g-save:hover { background:var(--off); }
+.g-cancel { background:var(--black3); color:var(--text2); border:1px solid var(--border2); }
+.g-cancel:hover { background:var(--black4); }
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero { padding: calc(32px + env(safe-area-inset-top)) 24px 32px; }
+  .hero-headline { font-size: clamp(56px, 16vw, 100px); }
+  .stats-bar { gap: 20px; }
+  .stat-num { font-size: 22px; }
+  .section { padding: 56px 24px; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .goals-grid { grid-template-columns: 1fr; }
+  .links-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+  .quote-row { padding: 24px; }
+  .quote-text { font-size: 18px; }
+}
+</style>
 </head>
 <body>
-<div class="d">
 
-  <!-- Top Nav -->
-  <div class="topnav">
-    <div class="tn-logo">
-      <img src="data:image/jpeg;base64,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nkXVqGquWdjqZKl1YI5z5y6ZmBhcQ0xZHc6XV9M93SelpPUdFWjDOKc0srJaiywUVXFFvHWGamMjN7radCPsV3V8Z6SlqCDPTQykcxewO0+1dq1HBHhkso7TquCPBJZRWPJOpzXxVmZHia4vq4aEexqTPGY4nR/stafwHOvltfWS93LG1untlouFaxlLoX09M+QA682rQVaWONkbAyNjWNHMGjQLkurU4s40iS1eLFNR2KXWzHud9ut8FBSUN4ZT08bY42/klx0aBoB7VTVgK6ZlYkyXus07ZIsRumkjg9UwGB25ut00BA46k6FTOi5PUKS7RSOWamM12gkUvtGYWcGA2SWaeCuc1hIDaqlMu6f7riDqO4V9Mu8DYxzOx+zEGJKepjpOWbLUzzxlgeBp7FoPc04K409JS1BBnpoZSObfYHeVfSONkbAyNjWNHMGjQBTer7PhjhssetwnwxSb9z8gibDAyFg0axoaB2guaIsZgCIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiACIiAP/Z" alt="Mercy University of Health Sciences" style="height:36px;width:auto;display:block;" />
-    </div>
-    <div class="tn-links">
-      <a href="https://www.mchs.edu" class="tn-link active">Dashboard</a>
-      <a href="admissions-funnel.html" class="tn-link">Admissions Funnel</a>
-      <a href="student-forecast.html" class="tn-link">New Student Forecast</a>
-      <a href="enrollment-forecast.html" class="tn-link">Total Enrollment Forecast</a>
-      <a href="https://analytics.google.com" class="tn-link">Analytics</a>
-      <a href="https://mercycollege.sharepoint.com/sites/PulseCampusCalendar/SitePages/Campus-Calendar.aspx" class="tn-link">Calendar</a>
-    </div>
-    <div class="tn-right">
-      <div class="tn-date" id="tn-date"></div>
-      <div class="tn-badge">Staff</div>
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+
+  <div class="hero-top">
+    <div class="hero-logo">StayHard</div>
+    <div class="hero-date-time">
+      <div class="hero-time" id="hero-time">—</div>
+      <div class="hero-date" id="hero-date">—</div>
     </div>
   </div>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div>
-      <div class="hero-greeting" id="hero-greeting">Good morning, Matt</div>
-      <div class="hero-title">Your Work Command Center</div>
-    </div>
+  <div class="hero-center">
+    <!-- LEFT: headline + bookmarks -->
+    <div class="hero-left">
+      <div class="hero-greeting">Good morning, Matt</div>
+      <div class="hero-headline">Go<br><em>One</em><br>More.</div>
+      <div class="hero-sub">
+        <div class="hero-mantra">Stay Hard · Des Moines, IA</div>
+        <div class="hero-sub-line"></div>
+      </div>
+      <div style="margin-top:20px">
+        <div class="bookmark-bar">
+          <a href="https://www.marketwatch.com/investing/future/es00" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#22c55e"></div>Futures
+          </a>
+          <a href="https://auth.ecornell.com/cas/login?service=https%3A%2F%2Flms.ecornell.com%2Flogin%2Fcas" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#e8351a"></div>eCornell
+          </a>
+          <a href="https://ace.instructure.com/" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#38bdf8"></div>ACE
+          </a>
+          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#f97316"></div>Gmail
+          </a>
+          <a href="https://romkeymm.github.io/MercyU/" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#a855f7"></div>Work
+          </a>
+          <a href="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fcanvas.asu.edu%2Flogin%2Fcas" target="_blank" class="bookmark">
+            <div class="bookmark-dot" style="background:#ffc627"></div>ASU
+          </a>
+        </div>
+      </div>
+    </div><!-- end hero-left -->
 
-  </div>
 
-  <!-- Metrics -->
-  <div class="metrics">
-    <div class="metric">
-      <div class="metric-val placeholder" id="m-total-enr">—</div>
-      <div class="metric-lbl" id="m-total-enr-lbl">Total Enrollment</div>
-      <div class="metric-note">Pulls from Enrollment dashboard</div>
-    </div>
-    <div class="metric">
-      <div class="metric-val" id="m-new-students" style="font-size:22px;">—</div>
-      <div class="metric-lbl">AY Total New Students</div>
-      <div class="metric-note" id="m-new-students-note">Pulls from Admissions Funnel</div>
-    </div>
-    <div class="metric">
-      <div class="metric-val placeholder" id="m-forecast-total">—</div>
-      <div class="metric-lbl" id="m-forecast-total-lbl">Forecast Total Enrollment</div>
-      <div class="metric-note" id="m-forecast-total-note">Pulls from Enrollment Forecast</div>
-    </div>
-    <div class="metric">
-      <div class="metric-val placeholder" id="m-forecast-new" style="font-size:16px;line-height:1.35;">—</div>
-      <div class="metric-lbl" id="m-forecast-new-lbl">Forecast New Enrollment</div>
-      <div class="metric-note" id="m-forecast-new-note">Pulls from New Student Forecast</div>
-    </div>
-  </div>
 
-  <!-- Tool Tiles -->
-  <div class="section">
-    <div class="section-hd">Tools &amp; Pages</div>
-    <div class="tiles">
-      <a href="admissions-funnel.html" class="tile">
-        <div class="tile-icon" style="background:#EAF4E0;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 13L6 9l3 3 5-6" stroke="#2E5E18" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="9" r="1" fill="#2E5E18"/><circle cx="9" cy="12" r="1" fill="#2E5E18"/></svg>
-        </div>
-        <div class="tile-name">Admissions Funnel</div>
-        <div class="tile-sub">Inquiry → Enrolled</div>
-        <span class="tile-chip chip-funnel">Live Data</span>
-      </a>
-      <a href="enrollment-forecast.html" class="tile">
-        <div class="tile-icon" style="background:var(--pl);">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#4A2C6B" stroke-width="1.5"/><path d="M5 10l2-3 2 2 2-4" stroke="#4A2C6B" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="tile-name">Total Enrollment Forecast</div>
-        <div class="tile-sub">Reconciliation &amp; projection</div>
-        <span class="tile-chip chip-brand">Enrollment</span>
-      </a>
-      <a href="student-forecast.html" class="tile">
-        <div class="tile-icon" style="background:#FEF4E0;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11l3-4 3 2 3-5 3 2" stroke="#7A4A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4l2 0 0 2" stroke="#7A4A00" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="tile-name">New Student Forecast</div>
-        <div class="tile-sub">Trend-based projection</div>
-        <span class="tile-chip chip-forecast">Forecast</span>
-      </a>
-      <a href="https://apply.mchs.edu/manage/" class="tile">
-        <div class="tile-icon" style="background:#FCE8E0;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="#8B2A00" stroke-width="1.5"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="#8B2A00" stroke-width="1.5" stroke-linecap="round"/><path d="M11 9l1.5 1.5 2.5-2" stroke="#8B2A00" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="tile-name">Slate CRM</div>
-        <div class="tile-sub">Applicants &amp; pipeline</div>
-        <span class="tile-chip chip-crm">CRM</span>
-      </a>
-      <a href="https://www.mchs.edu/wp-login.php?redirect_to=https%3A%2F%2Fwww.mchs.edu%2Fwp-admin%2F&reauth=1" class="tile">
-        <div class="tile-icon" style="background:#E0EEF5;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="11" rx="2" stroke="#0D4F6E" stroke-width="1.5"/><path d="M4 6h8M4 9h5" stroke="#0D4F6E" stroke-width="1.3" stroke-linecap="round"/><circle cx="12" cy="9" r="1.5" fill="#21759B"/></svg>
-        </div>
-        <div class="tile-name">Website Admin</div>
-        <div class="tile-sub">WordPress dashboard</div>
-        <span class="tile-chip chip-wp">WordPress</span>
-      </a>
-      <a href="https://analytics.google.com" class="tile">
-        <div class="tile-icon" style="background:#E6F0FB;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="9" width="3" height="5" rx="1" fill="#0C447C"/><rect x="6.5" y="6" width="3" height="8" rx="1" fill="#0C447C"/><rect x="11" y="3" width="3" height="11" rx="1" fill="#0C447C"/></svg>
-        </div>
-        <div class="tile-name">Marketing Analytics</div>
-        <div class="tile-sub">GA4 &amp; campaigns</div>
-        <span class="tile-chip chip-live">GA4 ready</span>
-      </a>
-      <a href="https://www.mchs.edu/marketing" class="tile">
-        <div class="tile-icon" style="background:#F0EBF8;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="1.5" stroke="#4A2C6B" stroke-width="1.5"/><path d="M6 8h4M8 6v4" stroke="#4A2C6B" stroke-width="1.3" stroke-linecap="round"/></svg>
-        </div>
-        <div class="tile-name">Brand Resources</div>
-        <div class="tile-sub">Visual identity guide</div>
-        <span class="tile-chip chip-brand">MCHS Brand</span>
-      </a>
+  </div><!-- end hero-center -->
+
+  <div class="hero-bottom">
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-num" id="next-race-days">—</div>
+        <div class="stat-lbl">Days to next race</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">57.1</div>
+        <div class="stat-lbl">VO2 Max</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">332.6</div>
+        <div class="stat-lbl">Miles in 2026</div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <div class="hero-scroll-line"></div>
+      Scroll
     </div>
   </div>
+</section>
 
-  <!-- Mid: Tasks + Events -->
-  <div class="mid">
-    <div class="pane">
-      <div class="pane-hd">
-        Tasks
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span class="pane-badge ba" id="open-count">— open</span>
-          <span class="pane-badge bg" id="done-count" style="display:none;"></span>
-        </div>
-      </div>
-      <div class="task-filters" id="task-filters">
-        <button class="tf-btn active" onclick="setTaskFilter('all',this)">All</button>
-        <button class="tf-btn" onclick="setTaskFilter('Dev',this)">Dev</button>
-        <button class="tf-btn" onclick="setTaskFilter('Mktg',this)">Mktg</button>
-        <button class="tf-btn" onclick="setTaskFilter('Analytics',this)">Analytics</button>
-        <button class="tf-btn" onclick="setTaskFilter('Events',this)">Events</button>
-      </div>
-      <div id="task-list"></div>
-      <div id="comp-section" style="display:none;">
-        <button class="comp-toggle" id="comp-toggle" onclick="toggleCompleted()">
-          <span id="comp-arrow">&#9658;</span><span id="comp-lbl">Show completed</span>
-        </button>
-        <div class="comp-body" id="comp-body"></div>
-      </div>
-      <div class="task-add-row">
-        <input class="task-input" id="task-input" type="text" placeholder="Add a task…" maxlength="120" onkeydown="if(event.key==='Enter')addTask()" />
-        <select class="task-sel" id="task-tag">
-          <option value="">Tag</option>
-          <option value="Dev">Dev</option>
-          <option value="Mktg">Mktg</option>
-          <option value="Analytics">Analytics</option>
-          <option value="Events">Events</option>
-        </select>
-        <select class="task-sel" id="task-prio">
-          <option value="med">Med</option>
-          <option value="high">High</option>
-          <option value="low">Low</option>
-        </select>
-        <input class="task-date-inp" id="task-due" type="date" title="Due date (optional)" />
-        <button class="task-add-btn" onclick="addTask()">+ Add</button>
-      </div>
-      <div class="task-foot">
-        <div class="tf-note"><span class="t-sync-dot loading" id="sync-dot"></span><span id="tf-note">Connecting…</span></div>
-        <a href="x-apple-reminderkit://" class="tf-lk">Open Reminders →</a>
-      </div>
-    </div>
+<!-- ── DASHBOARDS ─────────────────────────────────────────── -->
+<section class="section reveal">
+  <div class="section-eyebrow">01 — Dashboards</div>
+  <div class="dash-grid">
 
-    <div class="pane">
-      <div class="pane-hd">
-        Upcoming Events
-        <span class="pane-badge bp" id="ev-badge">Pulse Campus Calendar</span>
+    <!-- FITNESS -->
+    <a href="fitness.html" class="dash-card">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#e8351a,#ff4f30)"></div>
+      <div class="dash-card-num">01 / FITNESS</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">StayHard<br>Fitness</div>
+        <div class="dash-card-desc">Training load, VO2 Max trends, Apple Health data, race calendar, and marathon plan.</div>
+        <div class="dash-card-stat">Next race <span id="dd-next-race">—</span></div>
       </div>
-      <div id="auth-err" class="auth-err">
-        <div class="ae-t">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#8B1A1A" stroke-width="1.5"/><path d="M8 5v3.5M8 10.5v.5" stroke="#8B1A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
-          SharePoint authentication required
-        </div>
-        <div class="ae-b">Your Microsoft 365 session may have expired. Sign in to restore live event data.</div>
-        <a href="https://mercycollege.sharepoint.com/sites/PulseCampusCalendar/SitePages/Campus-Calendar.aspx" class="ae-btn">Sign in to SharePoint →</a>
+
+    </a>
+
+    <!-- FINANCE -->
+    <a href="finance.html" class="dash-card">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#c9a84c,#f0c96a)"></div>
+      <div class="dash-card-num">02 / FINANCE</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">Finance<br>Dashboard</div>
+        <div class="dash-card-desc">Net worth, investment accounts, home equity, crypto holdings, and market data.</div>
+        <div class="dash-card-stat">Net Worth <span id="dd-nw">—</span></div>
       </div>
-      <div id="ev-feed">
-        <div class="ev-item"><div class="ev-box"><div class="ev-mo">Apr</div><div class="ev-dy">22</div></div><div><div class="ev-title">Campus Visit Day</div><div class="ev-meta">9:00 AM · Downtown Campus</div><span class="ev-chip ec-ad">Admissions</span></div></div>
-        <div class="ev-item"><div class="ev-box"><div class="ev-mo">Apr</div><div class="ev-dy">25</div></div><div><div class="ev-title">Campus Ministry Mass</div><div class="ev-meta">12:00 PM · Chapel</div><span class="ev-chip ec-fa">Ministry</span></div></div>
-        <div class="ev-item"><div class="ev-box"><div class="ev-mo">Apr</div><div class="ev-dy">28</div></div><div><div class="ev-title">Final Exams Begin</div><div class="ev-meta">All day · Spring 2026</div><span class="ev-chip ec-ac">Academic</span></div></div>
-        <div class="ev-item"><div class="ev-box"><div class="ev-mo">May</div><div class="ev-dy">3</div></div><div><div class="ev-title">Nursing Pinning Ceremony</div><div class="ev-meta">2:00 PM · Civic Center</div><span class="ev-chip ec-ev">Ceremony</span></div></div>
-        <div class="ev-item"><div class="ev-box"><div class="ev-mo">May</div><div class="ev-dy">9</div></div><div><div class="ev-title">Commencement — Class of 2026</div><div class="ev-meta">10:00 AM · Jennie Baranczyk</div><span class="ev-chip ec-ev">Commencement</span></div></div>
+
+    </a>
+
+    <!-- TRAVEL -->
+    <a href="travel.html" class="dash-card">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#3b82f6,#60a5fa)"></div>
+      <div class="dash-card-num">03 / TRAVEL</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">Austria<br>&amp; Slovenia</div>
+        <div class="dash-card-desc">Itinerary, route map, confirmations, weather, expenses, and countdown.</div>
+        <div class="dash-card-stat">Departs <span>June 23, 2026</span></div>
       </div>
-      <div class="ev-foot">
-        <div class="ev-note" id="ev-note">Sample events · SharePoint login for live data</div>
-        <a href="https://mercycollege.sharepoint.com/sites/PulseCampusCalendar/SitePages/Campus-Calendar.aspx" class="ev-cal">Full calendar →</a>
+
+    </a>
+
+    <!-- MUSIC -->
+    <a href="music.html" class="dash-card">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#6ee7b7,#34d399)"></div>
+      <div class="dash-card-num">04 / MUSIC</div>
+      <div class="dash-card-body">
+        <div class="dash-card-title">Music<br>Dashboard</div>
+        <div class="dash-card-desc">New releases, top charts, upcoming shows, and your tracked artists.</div>
+        <div class="dash-card-stat">Powered by <span>Apple Music</span></div>
       </div>
+    </a>
+
+
+  </div>
+</section>
+
+<!-- ── GOALS ──────────────────────────────────────────────── -->
+<section class="section reveal">
+  <div class="section-eyebrow" style="justify-content:space-between;max-width:100%">
+    <span style="display:flex;align-items:center;gap:14px">
+      02 — Goals &amp; Vision
+      <span style="flex:none;width:40px;height:1px;background:var(--border);display:inline-block"></span>
+    </span>
+    <button onclick="openGoalModal()" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);background:none;border:1px solid var(--border2);padding:5px 12px;border-radius:4px;cursor:pointer;transition:color 0.15s,border-color 0.15s" onmouseover="this.style.color='#fff';this.style.borderColor='#555'" onmouseout="this.style.color='';this.style.borderColor=''">Edit Goals ↗</button>
+  </div>
+  <div class="goals-grid" id="goals-grid"></div>
+</section>
+
+<!-- ── GROWTH ─────────────────────────────────────────────── -->
+<section class="section reveal">
+  <div class="section-eyebrow">03 — Growth in Progress</div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;text-align:center;background:var(--black2);border:1px solid var(--border);border-radius:16px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,8vw,96px);font-weight:900;line-height:0.9;letter-spacing:-1px;color:var(--white);text-transform:uppercase;margin-bottom:24px">Growth<br><span style="-webkit-text-stroke:1px rgba(255,255,255,0.2);color:transparent">in Progress</span></div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--text3)">More coming soon — stay hard.</div>
+  </div>
+</section>
+
+<!-- ── GOAL MODAL ──────────────────────────────────────────── -->
+<div class="g-overlay" id="goalModal" onclick="if(event.target===this)closeGoalModal()">
+  <div class="g-modal">
+    <div class="g-modal-title">Edit Goals</div>
+    <div class="g-modal-sub">Changes save to your browser and persist across visits. Add, edit, or remove freely.</div>
+    <div id="g-fields"></div>
+    <button class="g-add" onclick="addGoalField()">+ Add Goal</button>
+    <div class="g-actions">
+      <button class="g-btn g-cancel" onclick="closeGoalModal()">Cancel</button>
+      <button class="g-btn g-save" onclick="saveGoals()">Save Goals</button>
     </div>
   </div>
-
-  <!-- Bottom: Social + Links -->
-  <div class="bottom">
-    <div class="social-pane">
-      <div class="pane-hd" style="margin-bottom:0;">
-        Social Media
-        <span class="pane-badge bb">API ready</span>
-      </div>
-      <div class="stabs">
-        <div class="stab act-li" id="tab-li" onclick="showTab('li')">
-          <svg style="width:10px;height:10px;vertical-align:middle;margin-right:3px;" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn
-        </div>
-        <div class="stab" id="tab-fb" onclick="showTab('fb')">
-          <svg style="width:10px;height:10px;vertical-align:middle;margin-right:3px;" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook
-        </div>
-        <div class="stab" id="tab-ig" onclick="showTab('ig')">
-          <svg style="width:10px;height:10px;vertical-align:middle;margin-right:3px;" viewBox="0 0 24 24" fill="#C13584"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>Instagram
-        </div>
-      </div>
-
-      <div id="feed-li">
-        <div class="post">
-          <div class="post-head"><div class="post-ava" style="background:#F0EBF8;color:#4A2C6B;">MC</div><div><div class="post-name">Mercy College of Health Sciences</div><div class="post-time">2 hours ago</div></div></div>
-          <div class="post-body">Thrilled to announce Jennie Baranczyk as our 2026 Commencement Speaker! #MercyCollegeLife #MCgrad26</div>
-          <div class="post-stats"><div class="ps"><span>142</span> likes</div><div class="ps"><span>18</span> comments</div><div class="ps"><span>9</span> reposts</div></div>
-        </div>
-        <div class="post">
-          <div class="post-head"><div class="post-ava" style="background:#F0EBF8;color:#4A2C6B;">MC</div><div><div class="post-name">Mercy College of Health Sciences</div><div class="post-time">3 days ago</div></div></div>
-          <div class="post-body">Signing Day 2026 — 47 future healthcare heroes committed! #ChartYourCourse #MCSigningDay26</div>
-          <div class="post-stats"><div class="ps"><span>289</span> likes</div><div class="ps"><span>34</span> comments</div><div class="ps"><span>22</span> reposts</div></div>
-        </div>
-        <div class="plat-row"><div class="plat-lbl">2,400+ followers</div><a href="https://www.linkedin.com/school/mercy-college-of-health-sciences/" class="plat-btn" style="background:#0A66C2;">Open LinkedIn →</a></div>
-      </div>
-
-      <div class="hidden" id="feed-fb">
-        <div class="post">
-          <div class="post-head"><div class="post-ava" style="background:#E6F0FB;color:#0C447C;">MC</div><div><div class="post-name">Mercy College Iowa</div><div class="post-time">1 day ago</div></div></div>
-          <div class="post-body">Join us for Campus Visit Day on April 22! Meet faculty and explore our downtown campus. #MercyCollegeLife</div>
-          <div class="post-stats"><div class="ps"><span>67</span> likes</div><div class="ps"><span>12</span> comments</div><div class="ps"><span>31</span> shares</div></div>
-        </div>
-        <div class="post">
-          <div class="post-head"><div class="post-ava" style="background:#E6F0FB;color:#0C447C;">MC</div><div><div class="post-name">Mercy College Iowa</div><div class="post-time">5 days ago</div></div></div>
-          <div class="post-body">Congrats to our Radiologic Technology students completing clinical rotations at UnityPoint Health!</div>
-          <div class="post-stats"><div class="ps"><span>113</span> likes</div><div class="ps"><span>19</span> comments</div><div class="ps"><span>8</span> shares</div></div>
-        </div>
-        <div class="plat-row"><div class="plat-lbl">3,800+ followers</div><a href="https://www.facebook.com/MercyCollegeIowa" class="plat-btn" style="background:#1877F2;">Open Facebook →</a></div>
-      </div>
-
-      <div class="hidden" id="feed-ig">
-        <div class="post">
-          <div class="post-head"><div class="post-ava" style="background:#FCE8EF;color:#8B1050;">MC</div><div><div class="post-name">mercycollegeiowa</div><div class="post-time">6 hours ago</div></div></div>
-          <div class="post-body">Nothing beats Signing Day! 47 future Guardians on their way. Welcome to the Mercy family! #ChartingMyCourse</div>
-          <div class="post-stats"><div class="ps"><span>204</span> likes</div><div class="ps"><span>27</span> comments</div></div>
-        </div>
-        <div class="post">
-          <div class="post-head"><div class="post-ava" style="background:#FCE8EF;color:#8B1050;">MC</div><div><div class="post-name">mercycollegeiowa</div><div class="post-time">2 days ago</div></div></div>
-          <div class="post-body">Meet Justin Putzier — volunteer, mentor, inspiration to our future nurses. #NursingEducation</div>
-          <div class="post-stats"><div class="ps"><span>178</span> likes</div><div class="ps"><span>14</span> comments</div></div>
-        </div>
-        <div class="plat-row"><div class="plat-lbl">@mercycollegeiowa · 1,900+</div><a href="https://www.instagram.com/mercycollegeiowa/" class="plat-btn" style="background:#C13584;">Open Instagram →</a></div>
-      </div>
-    </div>
-
-    <div class="link-sb">
-      <div class="lsb-section">
-        <div class="lsb-hd">Dashboards</div>
-        <a href="admissions-funnel.html" class="lsb-lk">
-          <div class="lsb-dot" style="background:var(--g)"></div>
-          <div class="lsb-tx">Admissions Funnel</div>
-          <span class="lsb-chip" style="background:#EAF4E0;color:#2E5E18;">Live</span>
-        </a>
-        <a href="enrollment-forecast.html" class="lsb-lk">
-          <div class="lsb-dot" style="background:var(--pm)"></div>
-          <div class="lsb-tx">Total Enrollment Forecast</div>
-          <span class="lsb-chip" style="background:var(--pl);color:var(--p);">Forecast</span>
-        </a>
-        <a href="student-forecast.html" class="lsb-lk">
-          <div class="lsb-dot" style="background:var(--gold)"></div>
-          <div class="lsb-tx">Enrollment Forecast</div>
-          <span class="lsb-chip" style="background:#FEF4E0;color:#7A4A00;">Forecast</span>
-        </a>
-      </div>
-      <div class="lsb-section">
-        <div class="lsb-hd">Quick Nav</div>
-        <a href="https://www.mchs.edu" class="lsb-lk"><div class="lsb-dot" style="background:#4A2C6B"></div><div class="lsb-tx">MCHS Homepage</div><div class="lsb-ar">→</div></a>
-        <a href="https://www.mchs.edu/staff" class="lsb-lk"><div class="lsb-dot" style="background:#5A8C3C"></div><div class="lsb-tx">Staff Portal</div><div class="lsb-ar">→</div></a>
-        <a href="https://www.mchs.edu/students" class="lsb-lk"><div class="lsb-dot" style="background:#C8A84B"></div><div class="lsb-tx">Student Portal</div><div class="lsb-ar">→</div></a>
-        <a href="https://www.mchs.edu/admissions/lets-get-started/" class="lsb-lk"><div class="lsb-dot" style="background:#999"></div><div class="lsb-tx">Admissions</div><div class="lsb-ar">→</div></a>
-        <a href="https://www.mchs.edu/about/campus-map/" class="lsb-lk"><div class="lsb-dot" style="background:#999"></div><div class="lsb-tx">Campus Map</div><div class="lsb-ar">→</div></a>
-      </div>
-      <div class="lsb-section">
-        <div class="lsb-hd">CRM &amp; Admin</div>
-        <a href="https://apply.mchs.edu/manage/" class="lsb-lk"><div class="lsb-dot" style="background:#E8500A"></div><div class="lsb-tx">Slate CRM</div><span class="lsb-chip" style="background:#FCE8E0;color:#8B2A00;">CRM</span></a>
-        <a href="https://www.mchs.edu/wp-login.php?redirect_to=https%3A%2F%2Fwww.mchs.edu%2Fwp-admin%2F&reauth=1" class="lsb-lk"><div class="lsb-dot" style="background:#21759B"></div><div class="lsb-tx">Website Admin</div><span class="lsb-chip" style="background:#E0EEF5;color:#0D4F6E;">WP</span></a>
-        <a href="https://mercycollege.sharepoint.com" class="lsb-lk"><div class="lsb-dot" style="background:#0078D4"></div><div class="lsb-tx">SharePoint</div><div class="lsb-ar">→</div></a>
-        <a href="https://outlook.office.com" class="lsb-lk"><div class="lsb-dot" style="background:#0078D4"></div><div class="lsb-tx">Outlook</div><div class="lsb-ar">→</div></a>
-      </div>
-      <div class="lsb-section">
-        <div class="lsb-hd">Social &amp; Analytics</div>
-        <a href="https://www.linkedin.com/school/mercy-college-of-health-sciences/" class="lsb-lk"><div class="lsb-dot" style="background:#0A66C2"></div><div class="lsb-tx">LinkedIn</div><div class="lsb-ar">→</div></a>
-        <a href="https://www.instagram.com/mercycollegeiowa/" class="lsb-lk"><div class="lsb-dot" style="background:#C13584"></div><div class="lsb-tx">Instagram</div><div class="lsb-ar">→</div></a>
-        <a href="https://www.facebook.com/MercyCollegeIowa" class="lsb-lk"><div class="lsb-dot" style="background:#1877F2"></div><div class="lsb-tx">Facebook</div><div class="lsb-ar">→</div></a>
-        <a href="https://analytics.google.com" class="lsb-lk"><div class="lsb-dot" style="background:#E8710A"></div><div class="lsb-tx">Google Analytics</div><div class="lsb-ar">→</div></a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="ftr">
-    <div class="fc">© 2026 Mercy College of Health Sciences · 928 6th Ave, Des Moines, IA 50309</div>
-    <div class="flinks">
-      <a href="https://www.mchs.edu/privacy-terms">Privacy</a>
-      <a href="https://www.mchs.edu/about/accreditation/">Accreditation</a>
-      <a href="https://apply.mchs.edu/manage/">Slate CRM</a>
-    </div>
-  </div>
-
 </div>
 
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-logo">Stay<span>Hard</span></div>
+  <div class="footer-copy" id="footer-year">© 2026 Matt · Personal OS</div>
+</footer>
+
 <script>
-  // ── Live KPI data from Supabase ──────────────────────────────────────────
-  const SB_URL = 'https://zeidgpqiczdwnuupnozm.supabase.co';
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWRncHFpY3pkd251dXBub3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MjU5NzIsImV4cCI6MjA5MjAwMTk3Mn0.VKRADdN5pdLAbYOS099e1yVdAkh2RY2tUo00119lciM';
-  const SB_HDR = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
-  const fmt = n => n != null ? Math.round(n).toLocaleString() : '—';
+// ── CLOCK ─────────────────────────────────────────────────
+function updateClock() {
+  const now  = new Date();
+  const time = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  const date = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('hero-time').textContent = time;
+  document.getElementById('hero-date').textContent = date.toUpperCase();
+  const h = now.getHours();
+  document.querySelector('.hero-greeting').textContent =
+    (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + ', Matt';
+}
+updateClock();
+setInterval(updateClock, 1000);
 
-  // Seed census data (mirrors student-forecast.html) — used for forecast range
-  // when Supabase is offline
-  const SEED = [
-    { academic_year:'AY17-18', term:'Fall',   enrolled:259, admissions:543,  confirmed:294 },
-    { academic_year:'AY18-19', term:'Fall',   enrolled:325, admissions:708,  confirmed:387 },
-    { academic_year:'AY19-20', term:'Fall',   enrolled:284, admissions:629,  confirmed:344 },
-    { academic_year:'AY20-21', term:'Fall',   enrolled:309, admissions:656,  confirmed:346 },
-    { academic_year:'AY21-22', term:'Fall',   enrolled:294, admissions:604,  confirmed:361 },
-    { academic_year:'AY22-23', term:'Fall',   enrolled:292, admissions:624,  confirmed:333 },
-    { academic_year:'AY23-24', term:'Fall',   enrolled:376, admissions:856,  confirmed:458 },
-    { academic_year:'AY16-17', term:'Spring', enrolled:93,  admissions:158,  confirmed:106 },
-    { academic_year:'AY17-18', term:'Spring', enrolled:66,  admissions:143,  confirmed:77  },
-    { academic_year:'AY18-19', term:'Spring', enrolled:110, admissions:214,  confirmed:124 },
-    { academic_year:'AY19-20', term:'Spring', enrolled:128, admissions:287,  confirmed:153 },
-    { academic_year:'AY20-21', term:'Spring', enrolled:151, admissions:336,  confirmed:186 },
-    { academic_year:'AY21-22', term:'Spring', enrolled:113, admissions:283,  confirmed:140 },
-    { academic_year:'AY22-23', term:'Spring', enrolled:128, admissions:287,  confirmed:153 },
-    { academic_year:'AY23-24', term:'Spring', enrolled:128, admissions:263,  confirmed:149 },
-    { academic_year:'AY24-25', term:'Spring', enrolled:159, admissions:354,  confirmed:190 },
-    { academic_year:'AY20-21', term:'Summer', enrolled:108, admissions:272,  confirmed:130 },
-    { academic_year:'AY21-22', term:'Summer', enrolled:77,  admissions:232,  confirmed:103 },
-    { academic_year:'AY22-23', term:'Summer', enrolled:99,  admissions:248,  confirmed:130 },
-    { academic_year:'AY23-24', term:'Summer', enrolled:164, admissions:426,  confirmed:193 },
-  ];
+// ── NEXT RACE ─────────────────────────────────────────────
+const RACES = [
+  {short:'DM Half',     date:'2026-05-03'},
+  {short:'M2M Relay',   date:'2026-05-09'},
+  {short:'Ironman 70.3',date:'2026-06-07'},
+  {short:'Mile Night',  date:'2026-06-20'},
+  {short:'Whiterock 50k',date:'2026-07-25'},
+  {short:'Marine Corps',date:'2026-10-25'},
+];
+function daysUntil(ds) {
+  const t=new Date(); t.setHours(0,0,0,0);
+  const d=new Date(ds+'T12:00:00'); d.setHours(0,0,0,0);
+  return Math.ceil((d-t)/86400000);
+}
+const nr = RACES.find(r=>daysUntil(r.date)>=0);
+if (nr) {
+  const days = daysUntil(nr.date);
+  document.getElementById('next-race-days').textContent = days;
+  document.getElementById('dd-next-race').textContent   = days+'d · '+nr.short;
+}
 
-  function calcEnrolledRange(censusRows, windowYears) {
-    const sorted = [...censusRows].sort((a,b) => a.academic_year > b.academic_year ? 1 : -1);
-    const window = windowYears >= 99 ? sorted : sorted.slice(-windowYears);
-    const confRates = window.map(r => r.confirmed && r.enrolled ? r.enrolled / r.confirmed : null).filter(Boolean);
-    if (!confRates.length) return null;
-    const avgConf = confRates.reduce((a,b)=>a+b,0) / confRates.length;
-    const minConf = Math.min(...confRates);
-    const maxConf = Math.max(...confRates);
-    const avgFcConf = window.map(r=>r.confirmed).filter(Boolean).reduce((a,b)=>a+b,0) / (window.filter(r=>r.confirmed).length || 1);
-    // Adm→Enr kept for reference but not used for high
-    const admRates = window.map(r => r.admissions && r.enrolled ? r.enrolled / r.admissions : null).filter(Boolean);
-    const avgAdm   = admRates.length ? admRates.reduce((a,b)=>a+b,0) / admRates.length : null;
-    return {
-      low:  Math.round(avgFcConf * minConf),
-      mid:  Math.round(avgFcConf * avgConf),
-      high: Math.round(avgFcConf * maxConf),
-      confRate: (avgConf * 100).toFixed(1) + '%',
-      admRate:  avgAdm ? (avgAdm * 100).toFixed(1) + '%' : '—',
-    };
-  }
-
-  async function loadKPIs() {
-    try {
-      // ── Fetch all data sources in parallel ──
-      const [ayRes, reconRes, weeklyRes, termRes] = await Promise.all([
-        fetch(`${SB_URL}/rest/v1/enrollment_funnel_ay?select=*&order=academic_year`, { headers: SB_HDR }),
-        fetch(`${SB_URL}/rest/v1/enrollment_reconciliation?select=academic_year,transition_type,official_start,official_end,is_forecast,budget_target&order=academic_year,transition_type`, { headers: SB_HDR }),
-        fetch(`${SB_URL}/rest/v1/funnel_weekly_tracking?select=academic_year,term,snapshot_date,confirmed,enrolled,is_current_year&order=term,academic_year,snapshot_date`, { headers: SB_HDR }),
-        fetch(`${SB_URL}/rest/v1/enrollment_funnel_term?select=academic_year,term,enrolled,confirmed,admissions&order=academic_year`, { headers: SB_HDR }),
-      ]);
-      const rows    = ayRes.ok    ? await ayRes.json()    : [];
-      const recon   = reconRes.ok ? await reconRes.json() : [];
-      const weekly  = weeklyRes.ok? await weeklyRes.json(): [];
-      const termRows= termRes.ok  ? await termRes.json()  : [];
-      // Use enrollment_funnel_term for per-term census (has term breakdown)
-      // Fall back to SEED if Supabase offline
-      const census  = termRows.length ? termRows : SEED;
-
-      // ─────────────────────────────────────────────────────────────────────────
-      // Transition ordering within an AY: summer_to_fall → fall_to_spring → spring_to_summer
-      // Their official_end represents: Fall, Spring, Summer respectively
-      // ─────────────────────────────────────────────────────────────────────────
-      const termFromTransition  = { fall_to_spring:'Spring', spring_to_summer:'Summer', summer_to_fall:'Fall' };
-      const chronoOrder         = { summer_to_fall:0, fall_to_spring:1, spring_to_summer:2 };
-      const nextTransition      = { summer_to_fall:'fall_to_spring', fall_to_spring:'spring_to_summer', spring_to_summer:'summer_to_fall' };
-      const nextAY = ay => {
-        // spring_to_summer loops to the SAME AY's summer_to_fall
-        // summer_to_fall is the last in an AY; "next" wraps to next AY's fall_to_spring
-        return ay; // handled below by checking transition type
-      };
-
-      // Sort all recon rows chronologically
-      const sortedRecon = [...recon].sort((a, b) => {
-        if (a.academic_year !== b.academic_year) return a.academic_year > b.academic_year ? 1 : -1;
-        return (chronoOrder[a.transition_type] ?? 9) - (chronoOrder[b.transition_type] ?? 9);
-      });
-
-      // ── KPI 1: Total Enrollment — most recent actual ──
-      const actualRows = sortedRecon.filter(r => r.is_forecast === false && r.official_end != null);
-      const mostRecent = actualRows.length ? actualRows[actualRows.length - 1] : null;
-      const elTotalEnr    = document.getElementById('m-total-enr');
-      const elTotalEnrLbl = document.getElementById('m-total-enr-lbl');
-      let mostRecentTerm = null;
-      let mostRecentAY   = null;
-      if (mostRecent && elTotalEnr) {
-        mostRecentTerm = termFromTransition[mostRecent.transition_type];
-        mostRecentAY   = mostRecent.academic_year;
-        elTotalEnr.textContent = fmt(mostRecent.official_end);
-        elTotalEnr.classList.remove('placeholder');
-        elTotalEnr.style.color = 'var(--p)';
-        if (elTotalEnrLbl) elTotalEnrLbl.textContent = `Total ${mostRecentTerm} Enrollment`;
-      }
-
-      // ── KPI 2: Forecast Total Enrollment — next term after most recent actual ──
-      // Find the row immediately after mostRecent in the chronological sorted list
-      const elFcTotal     = document.getElementById('m-forecast-total');
-      const elFcTotalLbl  = document.getElementById('m-forecast-total-lbl');
-      const elFcTotalNote = document.getElementById('m-forecast-total-note');
-      if (mostRecent && elFcTotal) {
-        // Next transition: within same AY if possible, else next AY
-        let nextRow = null;
-        const mostRecentIdx = sortedRecon.findIndex(
-          r => r.academic_year === mostRecent.academic_year && r.transition_type === mostRecent.transition_type
-        );
-        if (mostRecentIdx >= 0 && mostRecentIdx < sortedRecon.length - 1) {
-          nextRow = sortedRecon[mostRecentIdx + 1];
-        }
-
-        if (nextRow) {
-          const nextTerm = termFromTransition[nextRow.transition_type];
-          const nextAYLabel = nextRow.academic_year;
-          elFcTotalLbl.textContent = `Forecast ${nextTerm} Enrollment`;
-
-          if (nextRow.official_end != null) {
-            // Already saved — use it directly
-            elFcTotal.textContent = fmt(nextRow.official_end);
-            elFcTotal.classList.remove('placeholder');
-            elFcTotal.style.color = 'var(--summer)';
-            if (elFcTotalNote) elFcTotalNote.textContent = `${nextAYLabel} · Saved forecast`;
-          } else if (nextRow.official_start != null) {
-            // Not saved yet — compute from reconciliation start + 3-yr avg rates
-            // Use the same seed data averages as the enrollment forecast dashboard
-            // Fallback: show the official_start as a lower bound with "est." label
-            elFcTotal.textContent = `~${fmt(nextRow.official_start)}`;
-            elFcTotal.classList.remove('placeholder');
-            elFcTotal.style.color = 'var(--summer)';
-            if (elFcTotalNote) elFcTotalNote.textContent = `${nextAYLabel} · Starting count (save forecast to update)`;
-          } else {
-            if (elFcTotalNote) elFcTotalNote.textContent = `${nextAYLabel} · Save from Enrollment Forecast to populate`;
-          }
-        }
-      }
-
-      // ── KPI 3: AY Total New Students — from annual table ──
-      const ayRows = rows.length ? rows : SEED;
-      const latestAY = ayRows.map(r => r.academic_year).sort().pop();
-      const latestRows = ayRows.filter(r => r.academic_year === latestAY);
-      const totalNew = latestRows.reduce((sum, r) => sum + (r.enrolled || 0), 0);
-      const elNew = document.getElementById('m-new-students');
-      const elNewNote = document.getElementById('m-new-students-note');
-      if (totalNew > 0) {
-        elNew.textContent = fmt(totalNew);
-        elNew.classList.remove('placeholder');
-        elNew.style.color = 'var(--p)';
-        elNewNote.textContent = latestAY + ' · ' + latestRows.length + ' term' + (latestRows.length !== 1 ? 's' : '');
-      }
-
-      // ── KPI 4: Forecast New Enrollment — next term only, from student forecast logic ──
-      // Determine which term is the "next" term to forecast
-      const elFcNew     = document.getElementById('m-forecast-new');
-      const elFcNewLbl  = document.getElementById('m-forecast-new-lbl');
-      const elFcNewNote = document.getElementById('m-forecast-new-note');
-
-      // Use same term as Forecast Total Enrollment
-      let forecastTerm = null;
-      if (mostRecentTerm) {
-        const termSequence = { 'Spring':'Summer', 'Summer':'Fall', 'Fall':'Spring' };
-        forecastTerm = termSequence[mostRecentTerm];
-      }
-
-      if (forecastTerm && elFcNew) {
-        if (elFcNewLbl) elFcNewLbl.textContent = `Forecast ${forecastTerm} New Enrollment`;
-
-        // Get historical census rows for this term (from enrollment_funnel_ay)
-        const termCensus = census.filter(r => r.term === forecastTerm);
-
-        // Check if there's a current-year weekly snapshot to use for date-matched lift
-        const today = new Date();
-        const todayDOY = Math.floor((today - new Date(today.getFullYear(),0,0)) / 86400000);
-        const curYearWeekly = weekly.filter(r => r.term === forecastTerm && r.is_current_year);
-
-        // Find snapshot within 14 days of today's DOY for lift calculation
-        let liftNote = '3-yr avg';
-        let fcConfirmed = null;
-
-        if (curYearWeekly.length) {
-          // Find closest snapshot to today
-          let bestSnap = null, bestDiff = Infinity;
-          for (const s of curYearWeekly) {
-            const d = new Date(s.snapshot_date + 'T12:00:00');
-            const doy = Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000);
-            const diff = Math.abs(doy - todayDOY);
-            if (diff < bestDiff) { bestSnap = s; bestDiff = diff; }
-          }
-          if (bestSnap && bestDiff <= 14) {
-            fcConfirmed = bestSnap.confirmed;
-            liftNote = `date-matched · ${new Date(bestSnap.snapshot_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
-          }
-        }
-
-        const range = calcEnrolledRange(termCensus, 3);
-        if (range) {
-          let low = range.low, mid = range.mid, high = range.high;
-
-          // If we have a live confirmed count, compute range using avg rates × live confirmed
-          if (fcConfirmed != null && termCensus.length >= 2) {
-            const sorted = [...termCensus].sort((a,b) => a.academic_year > b.academic_year ? 1 : -1).slice(-3);
-            const confRates = sorted.map(r => r.confirmed && r.enrolled ? r.enrolled/r.confirmed : null).filter(Boolean);
-            const admRates  = sorted.map(r => r.admissions && r.enrolled ? r.enrolled/r.admissions : null).filter(Boolean);
-            if (confRates.length) {
-              const avgConf = confRates.reduce((a,b)=>a+b,0)/confRates.length;
-              const minConf = Math.min(...confRates);
-              const maxConf = Math.max(...confRates);
-              low  = Math.round(fcConfirmed * minConf);
-              mid  = Math.round(fcConfirmed * avgConf);
-              high = Math.round(fcConfirmed * maxConf);
-            }
-          }
-
-          elFcNew.innerHTML =
-            `<span style="font-size:11px;color:var(--txl);font-weight:400;">low </span>${fmt(low)}<br>` +
-            `<span style="font-size:11px;color:var(--txl);font-weight:400;">mid </span>${fmt(mid)}<br>` +
-            (high ? `<span style="font-size:11px;color:var(--txl);font-weight:400;">high </span>${fmt(high)}` : '');
-          elFcNew.classList.remove('placeholder');
-          elFcNew.style.color = 'var(--gd)';
-          if (elFcNewNote) elFcNewNote.textContent = `${forecastTerm} · 3-yr avg rates · ${liftNote}`;
-        }
-      }
-
-    } catch(e) {
-      console.warn('KPI fetch error:', e);
-    }
-  }
-
-  loadKPIs();
-  const now = new Date();
-  const dateEl = document.getElementById('tn-date');
-  if (dateEl) dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-
-  const greetEl = document.getElementById('hero-greeting');
-  if (greetEl) {
-    const h = now.getHours();
-    const period = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-    greetEl.textContent = period + ', Matt';
-  }
-
-  // SharePoint calendar
-  async function tryLoadCalendar() {
-    const today = new Date().toISOString().split('T')[0] + 'T00:00:00Z';
-    const url = `https://mercycollege.sharepoint.com/sites/PulseCampusCalendar/_api/web/lists(guid'ef70d658-1933-4819-9c48-5275b870a5e1')/items?$orderby=EventDate&$filter=EventDate ge datetime'${today}'&$top=8&$select=Title,EventDate,EndDate,Location,Category`;
-    try {
-      const res = await fetch(url, { headers: { 'Accept': 'application/json;odata=verbose' }, credentials: 'include' });
-      if (res.status === 401 || res.status === 403) { showAuthErr(); return; }
-      if (!res.ok) return;
-      const data = await res.json();
-      const items = data?.d?.results;
-      if (items && items.length > 0) renderEvents(items);
-    } catch (e) {}
-  }
-
-  function showAuthErr() {
-    document.getElementById('auth-err').style.display = 'block';
-    document.getElementById('ev-feed').style.display = 'none';
-    const b = document.getElementById('ev-badge');
-    b.textContent = 'Auth required'; b.className = 'pane-badge br';
-  }
-
-  function renderEvents(items) {
-    const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const feed = document.getElementById('ev-feed');
-    const chipMap = {
-      'Academic': 'ec-ac', 'Admissions': 'ec-ad', 'Campus Visit': 'ec-ad',
-      'Campus Ministry': 'ec-fa', 'Holiday/Closure': 'ec-fa',
-      'Event': 'ec-ev', 'Social Committee': 'ec-ev', 'Board': 'ec-ev',
-      'Human Resources': 'ec-ac', 'Meeting': 'ec-ac', 'Student Success': 'ec-ev'
-    };
-    feed.innerHTML = items.map(item => {
-      const dt = new Date(item.EventDate);
-      const time = dt.getHours() === 0 ? 'All day' : dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-      const loc = item.Location ? ' · ' + item.Location : '';
-      const cat = item.Category || 'Event';
-      const chipClass = chipMap[cat] || 'ec-ev';
-      return `<div class="ev-item"><div class="ev-box"><div class="ev-mo">${mo[dt.getMonth()]}</div><div class="ev-dy">${dt.getDate()}</div></div><div><div class="ev-title">${item.Title}</div><div class="ev-meta">${time}${loc}</div><span class="ev-chip ${chipClass}">${cat}</span></div></div>`;
-    }).join('');
-    document.getElementById('ev-note').textContent = 'Live from Pulse Campus Calendar';
-    const b = document.getElementById('ev-badge');
-    b.textContent = 'Live'; b.className = 'pane-badge bg';
-  }
-
-  tryLoadCalendar();
-
-  // Social tabs
-  function showTab(p) {
-    ['li', 'fb', 'ig'].forEach(x => {
-      const f = document.getElementById('feed-' + x); if (f) f.classList.add('hidden');
-      const t = document.getElementById('tab-' + x); if (t) t.className = 'stab';
-    });
-    document.getElementById('feed-' + p).classList.remove('hidden');
-    document.getElementById('tab-' + p).classList.add('act-' + p);
-  }
-
-  // ═══════════════════════════════════════════════════════════════
-  // TASK SYSTEM v2 — Supabase-backed with localStorage fallback
-  // Table: dashboard_tasks
-  //   id uuid, text text, done bool, tag text, priority text,
-  //   due_date date, created_at timestamptz, completed_at timestamptz
-  // ═══════════════════════════════════════════════════════════════
-  const TASK_HDR = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
-  const TASK_URL = SB_URL + '/rest/v1/dashboard_tasks';
-
-  let _tasks = [];        // in-memory cache
-  let _taskFilter = 'all';
-  let _compOpen = false;
-  let _taskOnline = false;
-
-  function escHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // ── Sync status indicator ─────────────────────────────────────
-  function setTaskStatus(state, msg) {
-    const dot = document.getElementById('sync-dot');
-    const note = document.getElementById('tf-note');
-    if (dot) { dot.className = 't-sync-dot' + (state === 'loading' ? ' loading' : state === 'error' ? ' error' : ''); }
-    if (note) note.textContent = msg;
-  }
-
-  // ── Due date helpers ──────────────────────────────────────────
-  function dueMeta(due_date) {
-    if (!due_date) return { label: '', cls: '' };
-    const today = new Date(); today.setHours(0,0,0,0);
-    const due   = new Date(due_date + 'T00:00:00');
-    const diff  = Math.round((due - today) / 86400000);
-    if (diff < 0)  return { label: 'Overdue',    cls: 'overdue' };
-    if (diff === 0) return { label: 'Due today',  cls: 'today'   };
-    if (diff === 1) return { label: 'Due tomorrow', cls: 'soon'  };
-    if (diff <= 7)  return { label: `Due in ${diff}d`, cls: 'soon' };
-    return { label: due.toLocaleDateString('en-US',{month:'short',day:'numeric'}), cls: '' };
-  }
-
-  function tagChipClass(tag) {
-    const map = { Dev:'tch-dev', Mktg:'tch-mktg', Analytics:'tch-analytics', Events:'tch-events' };
-    return 'tch ' + (map[tag] || 'tch-default');
-  }
-
-  // ── Render ────────────────────────────────────────────────────
-  function renderTasks() {
-    const open = _tasks.filter(t => !t.done && (_taskFilter === 'all' || t.tag === _taskFilter));
-    const done = _tasks.filter(t => t.done);
-    const list = document.getElementById('task-list');
-    if (!list) return;
-
-    list.innerHTML = open.length
-      ? open.map(taskRowHtml).join('')
-      : '<div class="task-empty">No open tasks — add one below!</div>';
-
-    const compSec  = document.getElementById('comp-section');
-    const compBody = document.getElementById('comp-body');
-    const compLbl  = document.getElementById('comp-lbl');
-    const compArr  = document.getElementById('comp-arrow');
-    if (compSec) compSec.style.display = done.length ? '' : 'none';
-    if (compBody) compBody.innerHTML = done.map(taskRowHtml).join('');
-    if (compLbl)  compLbl.textContent = (_compOpen ? 'Hide ' : 'Show ') + done.length + ' completed';
-    if (compArr)  compArr.innerHTML   = _compOpen ? '&#9660;' : '&#9658;';
-
-    const openEl = document.getElementById('open-count');
-    const doneEl = document.getElementById('done-count');
-    if (openEl) { openEl.textContent = open.length + ' open'; openEl.className = 'pane-badge ' + (open.length > 0 ? 'ba' : 'bg'); }
-    if (doneEl) { doneEl.textContent = done.length + ' done'; doneEl.style.display = done.length ? '' : 'none'; }
-  }
-
-  function taskRowHtml(t) {
-    const dm = dueMeta(t.due_date);
-    const prioClass = t.priority === 'high' ? 'prio-high' : t.priority === 'low' ? 'prio-low' : 'prio-med';
-    return `<div class="task-r" id="tr-${t.id}">
-      <div class="t-prio ${prioClass}"></div>
-      <div class="tchk${t.done?' done':''}" onclick="toggleTask('${t.id}')"></div>
-      <div class="t-body" onclick="toggleTask('${t.id}')">
-        <div class="ttx${t.done?' done':''}">${escHtml(t.text)}</div>
-        <div class="t-meta">
-          ${t.tag ? `<span class="${tagChipClass(t.tag)}">${escHtml(t.tag)}</span>` : ''}
-          ${dm.label ? `<span class="t-due ${dm.cls}">${dm.label}</span>` : ''}
-        </div>
-      </div>
-      <div class="task-actions">
-        <button class="t-del" onclick="deleteTask('${t.id}')" title="Delete">&#215;</button>
-      </div>
-    </div>`;
-  }
-
-  // ── Load from Supabase ────────────────────────────────────────
-  async function loadTasks() {
-    setTaskStatus('loading', 'Loading tasks…');
-    try {
-      const res = await fetch(TASK_URL + '?select=*&order=created_at.asc', { headers: TASK_HDR });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      _tasks = await res.json();
-      _taskOnline = true;
-      // Migrate any localStorage tasks on first load
-      await migrateLocalStorage();
-      setTaskStatus('ok', 'Synced to Supabase · ' + new Date().toLocaleTimeString());
-    } catch(e) {
-      _taskOnline = false;
+// ── NET WORTH DISPLAY (live from Supabase) ────────────────
+(async function() {
+  const SB_URL = 'https://urqcldfagszngbxtdmck.supabase.co';
+  const SB_KEY = 'sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo';
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+  const el  = document.getElementById('dd-nw');
+  try {
+    const res  = await fetch(
+      `${SB_URL}/rest/v1/finance_snapshots?order=created_at.desc&limit=1&select=net_worth,central_bank,vanguard,fidelity,bitcoin,ethereum,home_value,mortgage,other_liabilities`,
+      { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
+    );
+    const rows = await res.json();
+    if (rows && rows.length > 0) {
+      const r = rows[0];
+      // Recalculate from raw columns to avoid any stale stored net_worth
+      const accounts = (r.central_bank||0) + (r.vanguard||0) + (r.fidelity||0) + (r.bitcoin||0) + (r.ethereum||0);
+      const nw = accounts + (r.home_value||0) - (r.mortgage||0) - (r.other_liabilities||0);
+      el.textContent = fmt(nw);
+    } else {
       // Fall back to localStorage
-      try { _tasks = JSON.parse(localStorage.getItem('mercyu-tasks-v2') || '[]'); } catch(_) { _tasks = []; }
-      // Seed defaults if completely empty
-      if (!_tasks.length) _tasks = getDefaultTasks();
-      setTaskStatus('error', 'Offline — changes saved locally');
+      const saved = JSON.parse(localStorage.getItem('stayhard_finance_v1'));
+      if (saved) {
+        const acctTotal = saved.accounts.reduce((s,a)=>s+(a.balance||0),0);
+        const nw = acctTotal + (saved.home?.current_value||0) - (saved.liabilities?.mortgage||0) - (saved.liabilities?.other||0);
+        el.textContent = fmt(nw);
+      } else {
+        el.textContent = '—';
+      }
     }
-    renderTasks();
-  }
-
-  function getDefaultTasks() {
-    const today = new Date().toISOString().slice(0,10);
-    return [
-      { id: 'seed-1', text: 'Build admissions funnel tool', done: false, tag: 'Dev', priority: 'high', due_date: today, created_at: new Date().toISOString() },
-      { id: 'seed-2', text: 'Finalize Spring 2026 flyer templates', done: false, tag: 'Mktg', priority: 'med', due_date: null, created_at: new Date().toISOString() },
-      { id: 'seed-3', text: 'Connect GA4 to marketing dashboard', done: false, tag: 'Analytics', priority: 'low', due_date: null, created_at: new Date().toISOString() },
-      { id: 'seed-4', text: 'Review commencement speaker content', done: false, tag: 'Events', priority: 'med', due_date: null, created_at: new Date().toISOString() },
-    ];
-  }
-
-  // Migrate old localStorage tasks to Supabase (runs once)
-  async function migrateLocalStorage() {
-    if (!_taskOnline) return;
-    const alreadyMigrated = localStorage.getItem('mercyu-tasks-migrated');
-    if (alreadyMigrated) return;
-    let old = [];
-    try { old = JSON.parse(localStorage.getItem('mercyu-tasks') || '[]'); } catch(_) {}
-    if (!old.length) { localStorage.setItem('mercyu-tasks-migrated', '1'); return; }
-    const toInsert = old.filter(t => t.text).map(t => ({
-      text: t.text, done: t.done || false, tag: t.tag || '',
-      priority: 'med', due_date: null,
-    }));
-    if (toInsert.length) {
-      try {
-        await fetch(TASK_URL, { method: 'POST', headers: TASK_HDR, body: JSON.stringify(toInsert) });
-        localStorage.setItem('mercyu-tasks-migrated', '1');
-        await loadTasksQuiet();
-      } catch(_) {}
-    } else {
-      localStorage.setItem('mercyu-tasks-migrated', '1');
-    }
-  }
-
-  async function loadTasksQuiet() {
+  } catch(e) {
     try {
-      const res = await fetch(TASK_URL + '?select=*&order=created_at.asc', { headers: TASK_HDR });
-      if (res.ok) { _tasks = await res.json(); }
-    } catch(_) {}
-  }
-
-  // ── Toggle (complete / uncomplete) ───────────────────────────
-  async function toggleTask(id) {
-    const t = _tasks.find(x => String(x.id) === String(id));
-    if (!t) return;
-    const nowDone = !t.done;
-    t.done = nowDone;
-    if (nowDone) { t.completed_at = new Date().toISOString(); }
-    else          { t.completed_at = null; }
-
-    // Animate roll-off when completing
-    if (nowDone) {
-      const el = document.getElementById('tr-' + id);
-      if (el) {
-        el.classList.add('rolling');
-        setTimeout(() => renderTasks(), 330);
+      const saved = JSON.parse(localStorage.getItem('stayhard_finance_v1'));
+      if (saved) {
+        const acctTotal = saved.accounts.reduce((s,a)=>s+(a.balance||0),0);
+        const nw = acctTotal + (saved.home?.current_value||0) - (saved.liabilities?.mortgage||0) - (saved.liabilities?.other||0);
+        el.textContent = fmt(nw);
       }
-    } else {
-      renderTasks();
-    }
-
-    // Persist
-    if (_taskOnline) {
-      try {
-        await fetch(`${TASK_URL}?id=eq.${id}`, {
-          method: 'PATCH',
-          headers: TASK_HDR,
-          body: JSON.stringify({ done: nowDone, completed_at: t.completed_at })
-        });
-        setTaskStatus('ok', 'Synced · ' + new Date().toLocaleTimeString());
-      } catch(e) { setTaskStatus('error', 'Sync error — changes saved locally'); }
-    } else {
-      lsBackup();
-    }
+    } catch(e2) { el.textContent = '—'; }
   }
+})();
 
-  // ── Add task ─────────────────────────────────────────────────
-  async function addTask() {
-    const inp  = document.getElementById('task-input');
-    const tag  = document.getElementById('task-tag');
-    const prio = document.getElementById('task-prio');
-    const due  = document.getElementById('task-due');
-    const text = inp.value.trim();
+// ── GOALS ─────────────────────────────────────────────────
+const CAT_COLORS = {
+  Fitness: '#e8351a',
+  Work:    '#c9a84c',
+  Personal:'#6366f1',
+  Finance: '#22c55e',
+};
+
+// Fixed card colors by position — cycles if more than 6 goals
+const CARD_COLORS = ['#e8351a','#c9a84c','#6366f1','#22c55e','#3b82f6','#a855f7'];
+
+const CATS = Object.keys(CAT_COLORS);
+const STORAGE_KEY = 'stayhard_goals_v1';
+
+const DEFAULT_GOALS = [
+  {category:'Fitness',  text:'Run Marine Corps Marathon sub-4:00',  current:65,  note:'In training',   target:'Oct 25'},
+  {category:'Fitness',  text:'Push VO2 Max above 60',               current:94,  note:'57.1 / 60',     target:'2026'  },
+  {category:'Finance',  text:'Grow net worth to $500k',             current:72,  note:'$361k / $500k', target:'2026'  },
+  {category:'Finance',  text:'Max 401k contribution this year',     current:30,  note:'In progress',   target:'Dec 31'},
+  {category:'Fitness',  text:'Complete Whiterock Ultra 50k strong', current:40,  note:'Training',      target:'Jul 25'},
+  {category:'Personal', text:'Go One More — every single day',      current:100, note:'Always',        target:'∞'     },
+];
+
+function loadGoals() {
+  try { const s=localStorage.getItem(STORAGE_KEY); return s?JSON.parse(s):DEFAULT_GOALS; }
+  catch(e){ return DEFAULT_GOALS; }
+}
+
+let GOALS = loadGoals();
+
+function renderGoals() {
+  document.getElementById('goals-grid').innerHTML = GOALS.map((g, i) => {
+    const color = CARD_COLORS[i % CARD_COLORS.length];
+    const pct   = Math.min(100,Math.max(0,g.current));
+    return `<div class="goal-card">
+      <div class="goal-category" style="color:${color}">${g.category}</div>
+      <div class="goal-text">${g.text}</div>
+      <div class="goal-bar-outer"><div class="goal-bar-inner" style="width:${pct}%;background:${color}"></div></div>
+      <div class="goal-progress"><span>${g.note}</span><span>${g.target}</span></div>
+    </div>`;
+  }).join('');
+}
+renderGoals();
+
+// ── GOAL MODAL ────────────────────────────────────────────
+function openGoalModal() {
+  const wrap = document.getElementById('g-fields');
+  wrap.innerHTML = '';
+  GOALS.forEach((g,i) => buildGoalBlock(g,i));
+  document.getElementById('goalModal').classList.add('open');
+}
+
+function closeGoalModal() {
+  document.getElementById('goalModal').classList.remove('open');
+}
+
+function buildGoalBlock(g, idx) {
+  const wrap = document.getElementById('g-fields');
+  const el   = document.createElement('div');
+  el.className = 'g-block';
+  const catOpts = CATS.map(c=>`<option${g&&g.category===c?' selected':''}>${c}</option>`).join('');
+  el.innerHTML = `
+    <div class="g-block-header">
+      <div class="g-block-num">Goal ${typeof idx==='number'?idx+1:'new'}</div>
+      <button class="g-rm" onclick="this.closest('.g-block').remove()">Remove ✕</button>
+    </div>
+    <div class="gf"><label>Goal</label>
+      <input class="gf-text" type="text" placeholder="What are you working toward?" value="${g?g.text:''}">
+    </div>
+    <div class="gf-row">
+      <div class="gf"><label>Category</label><select class="gf-cat">${catOpts}</select></div>
+      <div class="gf"><label>Progress (0–100)</label><input class="gf-pct" type="number" min="0" max="100" value="${g?g.current:0}"></div>
+    </div>
+    <div class="gf-row">
+      <div class="gf"><label>Status note</label><input class="gf-note" type="text" placeholder="e.g. In training" value="${g?g.note:''}"></div>
+      <div class="gf"><label>Target / deadline</label><input class="gf-target" type="text" placeholder="e.g. Dec 31" value="${g?g.target:''}"></div>
+    </div>`;
+  wrap.appendChild(el);
+}
+
+function addGoalField() { buildGoalBlock(null, null); }
+
+function saveGoals() {
+  const newGoals = [];
+  document.querySelectorAll('.g-block').forEach(b => {
+    const text = b.querySelector('.gf-text').value.trim();
     if (!text) return;
-
-    const newTask = {
+    newGoals.push({
       text,
-      done: false,
-      tag:      tag.value  || '',
-      priority: prio.value || 'med',
-      due_date: due.value  || null,
-    };
+      category: b.querySelector('.gf-cat').value,
+      current:  Math.min(100,Math.max(0,parseInt(b.querySelector('.gf-pct').value)||0)),
+      note:     b.querySelector('.gf-note').value.trim()||'—',
+      target:   b.querySelector('.gf-target').value.trim()||'—',
+    });
+  });
+  GOALS = newGoals;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(GOALS)); } catch(e){}
+  renderGoals();
+  closeGoalModal();
+}
 
-    inp.value = ''; tag.value = ''; prio.value = 'med'; due.value = '';
+// ── SCROLL REVEAL ─────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, {threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-    if (_taskOnline) {
-      try {
-        const res = await fetch(TASK_URL, { method: 'POST', headers: TASK_HDR, body: JSON.stringify(newTask) });
-        if (res.ok) {
-          const created = await res.json();
-          _tasks.unshift(Array.isArray(created) ? created[0] : created);
-          setTaskStatus('ok', 'Task saved to Supabase');
-        }
-      } catch(e) {
-        newTask.id = 'local-' + Date.now();
-        newTask.created_at = new Date().toISOString();
-        _tasks.unshift(newTask);
-        lsBackup();
-        setTaskStatus('error', 'Offline — task saved locally');
-      }
-    } else {
-      newTask.id = 'local-' + Date.now();
-      newTask.created_at = new Date().toISOString();
-      _tasks.unshift(newTask);
-      lsBackup();
-    }
-    renderTasks();
-  }
-
-  // ── Delete task ───────────────────────────────────────────────
-  async function deleteTask(id) {
-    _tasks = _tasks.filter(t => String(t.id) !== String(id));
-    renderTasks();
-    if (_taskOnline) {
-      try {
-        await fetch(`${TASK_URL}?id=eq.${id}`, { method: 'DELETE', headers: TASK_HDR });
-        setTaskStatus('ok', 'Synced · ' + new Date().toLocaleTimeString());
-      } catch(e) { lsBackup(); }
-    } else { lsBackup(); }
-  }
-
-  // ── Filter ───────────────────────────────────────────────────
-  function setTaskFilter(f, btn) {
-    _taskFilter = f;
-    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    renderTasks();
-  }
-
-  function toggleCompleted() {
-    _compOpen = !_compOpen;
-    const body = document.getElementById('comp-body');
-    if (body) body.classList.toggle('open', _compOpen);
-    renderTasks();
-  }
-
-  // ── localStorage backup for offline mode ─────────────────────
-  function lsBackup() {
-    try { localStorage.setItem('mercyu-tasks-v2', JSON.stringify(_tasks)); } catch(_) {}
-  }
-
-  // ── Init ─────────────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => { loadTasks(); });
 </script>
 </body>
 </html>
