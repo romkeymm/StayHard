@@ -1057,7 +1057,7 @@ async function upsertRunningRow(year, month, miles, vo2, notes) {
 // RACES populated from Supabase — fallback until loaded
 let RACES = [
   {id:1,name:"Des Moines Women's Half Marathon",date:'2026-05-03',type:'half',label:'13.1 mi',color:'#ff2d20',result:{time:'1:34:19',pace:'7:11 / mi',pr:true}},
-  {id:2,name:'Market to Market Relay',date:'2026-05-09',type:'relay',label:'Relay',color:'#4a9eff'},
+  {id:2,name:'Market to Market Relay',date:'2026-05-09',type:'relay',label:'Relay',color:'#4a9eff',result:{time:'8:56:25',pace:'7:27',pr:true,notes:null}},
   {id:3,name:'Ironman 70.3 Omaha',date:'2026-06-07',type:'triathlon',label:'70.3 mi',color:'#bb86fc'},
   {id:4,name:'Mile Night Run',date:'2026-06-20',type:'run',label:'1 mi',color:'#ffd600'},
   {id:5,name:'Whiterock Ultra 50k',date:'2026-07-25',type:'ultra',label:'50k · 31 mi',color:'#ff7043'},
