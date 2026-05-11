@@ -1529,7 +1529,6 @@ function renderRaceCards() {
   raceGrid.appendChild(card);
   });
 }
-renderRaceCards();
 
 // ─── TIMELINE ─────────────────────────────────────────────────
 
@@ -1735,8 +1734,10 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
 })();
 
 // ─── INIT: load from Supabase after DOM is ready ─────────────
+renderRaceCards(); // Initial render with fallback data
+renderTimeline();
 loadRunningData();
-loadRaces();
+loadRaces(); // This will call renderRaceCards again with real data
 
 // ─── END DOMCONTENTLOADED ───────────────────────────────────
 }); // end DOMContentLoaded
