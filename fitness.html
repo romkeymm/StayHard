@@ -1074,7 +1074,19 @@ async function loadRaces() {
     if (!res.ok) throw new Error('fetch failed');
     const rows = await res.json();
     if (!rows.length) return;
-    RACES = rows.map(r => ({
+    // Deduplicate: for each race name+date combo, keep the row with result data (prefer over empty duplicates)
+    const seen = {};
+    const deduped = [];
+    rows.forEach(r => {
+      const key = r.name + '|' + r.race_date;
+      if (seen[key] === undefined) {
+        seen[key] = deduped.length;
+        deduped.push(r);
+      } else if (r.result_time && !deduped[seen[key]].result_time) {
+        deduped[seen[key]] = r;
+      }
+    });
+    RACES = deduped.map(r => ({
       id:    r.id,
       name:  r.name,
       date:  r.race_date,
