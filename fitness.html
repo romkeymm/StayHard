@@ -1722,12 +1722,13 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
   });
 })();
 
+// ─── INIT: load from Supabase after DOM is ready ─────────────
+loadRunningData();
+loadRaces();
+
 // ─── END DOMCONTENTLOADED ───────────────────────────────────
 }); // end DOMContentLoaded
 
-// ─── INIT: fire after all functions defined ──────────
-loadRunningData();
-loadRaces();
 
 </script>
 </body>
