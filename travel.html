@@ -522,72 +522,242 @@ a.pill:hover { background:var(--cream3); }
     <h2 class="sec-title">Route Map</h2>
     <span class="sec-num">01</span>
   </div>
-  <!-- Leaflet map — free, no API key, all overnight stops labeled -->
-  <div id="trip-map" style="height:500px;border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)"></div>
-  <div style="margin-top:14px;text-align:right">
-    <a href="https://www.google.com/maps/dir/Munich+Airport,+Germany/Salzburg,+Austria/St.+Wolfgang+am+Wolfgangsee,+Austria/Hallstatt,+Austria/Bad+Gastein,+Austria/Millst%C3%A4tter+See,+Austria/Klagenfurt+Airport,+Austria/Maribor,+Slovenia/Zagreb,+Croatia" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;padding:7px 14px;background:rgba(43,77,143,.07);border:1px solid rgba(43,77,143,.15);border-radius:7px;transition:background .15s" onmouseover="this.style.background='rgba(43,77,143,.13)'" onmouseout="this.style.background='rgba(43,77,143,.07)'">
-      <span style="font-size:14px">🗺️</span> Open Full Route in Google Maps
+
+  <!-- Status bar -->
+  <div id="map-status" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div id="map-status-dot" style="width:9px;height:9px;border-radius:50%;background:var(--ink4);flex-shrink:0"></div>
+      <div>
+        <div id="map-status-label" style="font-size:12px;font-weight:600;color:var(--ink2)">Loading…</div>
+        <div id="map-status-sub" style="font-size:11px;color:var(--ink3);margin-top:1px"></div>
+      </div>
+    </div>
+    <a id="gmap-btn" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;padding:7px 14px;background:rgba(43,77,143,.07);border:1px solid rgba(43,77,143,.15);border-radius:7px;white-space:nowrap;">
+      <span style="font-size:14px">🗺️</span> <span id="gmap-btn-label">Open in Google Maps</span>
     </a>
   </div>
+
+  <!-- Leaflet map -->
+  <div id="trip-map" style="height:500px;border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)"></div>
+
+  <!-- Day slider -->
+  <div style="margin-top:18px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;box-shadow:var(--shadow)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Day</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="sliderStep(-1)" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--cream);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--ink2)">‹</button>
+        <div id="slider-label" style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--ink);min-width:180px;text-align:center"></div>
+        <button onclick="sliderStep(1)"  style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--cream);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--ink2)">›</button>
+      </div>
+      <button id="today-btn" onclick="resetToToday()" style="font-size:10px;font-weight:600;letter-spacing:.5px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:var(--cream);cursor:pointer;color:var(--ink3)">Today</button>
+    </div>
+    <input type="range" id="day-slider" min="0" max="10" step="1" value="0"
+      oninput="onSlider(this.value)"
+      style="width:100%;accent-color:var(--accent);cursor:pointer;">
+    <!-- Stop tick labels -->
+    <div id="slider-ticks" style="display:flex;justify-content:space-between;margin-top:6px;padding:0 2px"></div>
+  </div>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
   (function() {
+
+    // ── STOP DATA ────────────────────────────────────────────────────────────
+    // arrivalDate = date you arrive/are at this stop
+    // departDate  = date you leave (exclusive)
+    const STOPS = [
+      { name:'Salzburg',       short:'SZG', lat:47.8095, lon:13.0550, color:'#2b4d8f', arrive:'2026-06-24', depart:'2026-06-25', nights:'Nights 2–3', days:'June 24–25', gmaps:'Salzburg,+Austria' },
+      { name:'St. Wolfgang',   short:'STW', lat:47.7334, lon:13.4453, color:'#0369a1', arrive:'2026-06-25', depart:'2026-06-26', nights:'Night 3',    days:'June 25–26', gmaps:'St.+Wolfgang+am+Wolfgangsee,+Austria' },
+      { name:'Hallstatt',      short:'HLT', lat:47.5623, lon:13.6493, color:'#b08d4a', arrive:'2026-06-26', depart:'2026-06-27', nights:'Night 4',    days:'June 26–27', gmaps:'Hallstatt,+Austria' },
+      { name:'Bad Gastein',    short:'BGS', lat:47.1167, lon:13.1333, color:'#7c3aed', arrive:'2026-06-27', depart:'2026-06-28', nights:'Nights 5–6', days:'June 27–28', gmaps:'Bad+Gastein,+Austria' },
+      { name:'Millstätter See',short:'MIL', lat:46.7990, lon:13.5800, color:'#64748b', arrive:'2026-06-28', depart:'2026-06-28', nights:'Transit',    days:'June 28',     gmaps:'Millst%C3%A4tter+See,+Austria' },
+      { name:'Klagenfurt',     short:'KLU', lat:46.6228, lon:14.3050, color:'#64748b', arrive:'2026-06-28', depart:'2026-06-28', nights:'Transit',    days:'June 28',     gmaps:'Klagenfurt+Airport,+Austria' },
+      { name:'Maribor',        short:'MBX', lat:46.5547, lon:15.6459, color:'#2e6b4f', arrive:'2026-06-28', depart:'2026-07-02', nights:'Nights 6–10',days:'June 28 – July 2', gmaps:'Maribor,+Slovenia' },
+      { name:'Zagreb',         short:'ZAG', lat:45.8150, lon:15.9819, color:'#dc2626', arrive:'2026-07-02', depart:'2026-07-03', nights:'Night 10',   days:'July 2–3',    gmaps:'Zagreb,+Croatia' },
+    ];
+
+    const TRIP_START = new Date('2026-06-23T00:00:00');
+    const TRIP_END   = new Date('2026-07-03T23:59:59');
+    const TOTAL_DAYS = 11; // Day 1–11
+    const FULL_ROUTE = 'https://www.google.com/maps/dir/Munich+Airport,+Germany/Salzburg,+Austria/St.+Wolfgang+am+Wolfgangsee,+Austria/Hallstatt,+Austria/Bad+Gastein,+Austria/Millst%C3%A4tter+See,+Austria/Klagenfurt+Airport,+Austria/Maribor,+Slovenia/Zagreb,+Croatia';
+
+    // ── LEAFLET SETUP ────────────────────────────────────────────────────────
     const map = L.map('trip-map', { zoomControl: true, scrollWheelZoom: false });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 14
     }).addTo(map);
 
-    const stops = [
-      { name: 'Salzburg',       nights: 'Nights 1–2', lat: 47.8095, lon: 13.0550, color: '#2b4d8f', days: 'June 24–25' },
-      { name: 'St. Wolfgang',   nights: 'Night 3',    lat: 47.7334, lon: 13.4453, color: '#0369a1', days: 'June 25–26' },
-      { name: 'Hallstatt',      nights: 'Night 4',    lat: 47.5623, lon: 13.6493, color: '#b08d4a', days: 'June 26–27' },
-      { name: 'Bad Gastein',    nights: 'Nights 5–6', lat: 47.1167, lon: 13.1333, color: '#7c3aed', days: 'June 27–28' },
-      { name: 'Klagenfurt',     nights: 'Transit',    lat: 46.6228, lon: 14.3050, color: '#64748b', days: 'June 28' },
-      { name: 'Rače / Maribor', nights: 'Nights 7–10',lat: 46.5547, lon: 15.6459, color: '#2e6b4f', days: 'June 28 – July 2' },
-      { name: 'Zagreb',         nights: 'Night 11',   lat: 45.8150, lon: 15.9819, color: '#dc2626', days: 'July 2–3' },
-    ];
+    const coords = STOPS.map(s => [s.lat, s.lon]);
 
-    // Draw route polyline
-    const coords = stops.map(s => [s.lat, s.lon]);
-    L.polyline(coords, { color: '#1a1714', weight: 2, opacity: 0.35, dashArray: '6 6' }).addTo(map);
+    // Two polylines: done (solid) + ahead (dashed)
+    let polyDone = L.polyline([], { color:'#2b4d8f', weight:3, opacity:.7 }).addTo(map);
+    let polyAhead= L.polyline([], { color:'#1a1714', weight:2, opacity:.25, dashArray:'6 6' }).addTo(map);
 
-    // Add markers
-    stops.forEach((s, i) => {
-      const num = i + 1;
-      const icon = L.divIcon({
-        className: '',
-        html: `<div style="
-          background:${s.color};
-          color:#fff;
-          border:2px solid #fff;
-          border-radius:50%;
-          width:30px;height:30px;
-          display:flex;align-items:center;justify-content:center;
-          font-family:'Outfit',sans-serif;
-          font-size:12px;font-weight:700;
-          box-shadow:0 2px 8px rgba(0,0,0,.3);
-          cursor:pointer;
-        ">${num}</div>`,
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-        popupAnchor: [0, -18],
-      });
-
+    // Markers array
+    const markers = [];
+    STOPS.forEach((s, i) => {
+      const icon = L.divIcon({ className:'', html:'', iconSize:[30,30], iconAnchor:[15,15], popupAnchor:[0,-18] });
       const marker = L.marker([s.lat, s.lon], { icon }).addTo(map);
       marker.bindPopup(`
-        <div style="font-family:'Outfit',sans-serif;min-width:140px">
+        <div style="font-family:'Outfit',sans-serif;min-width:150px">
           <div style="font-size:14px;font-weight:700;color:#1a1714;margin-bottom:2px">${s.name}</div>
           <div style="font-size:11px;color:#7a7570;margin-bottom:3px">${s.nights}</div>
           <div style="font-size:11px;font-weight:600;color:${s.color}">${s.days}</div>
-        </div>
-      `, { maxWidth: 200 });
+        </div>`, { maxWidth:220 });
+      markers.push(marker);
     });
 
-    // Fit map to all stops
-    map.fitBounds(L.latLngBounds(coords), { padding: [40, 40] });
-    // Fade map in
+    map.fitBounds(L.latLngBounds(coords), { padding:[40,40] });
     setTimeout(() => document.getElementById('trip-map').classList.add('loaded'), 300);
+
+    // ── SLIDER TICKS ─────────────────────────────────────────────────────────
+    const tickEl = document.getElementById('slider-ticks');
+    // Show day numbers 1–11
+    for (let d = 0; d <= TOTAL_DAYS - 1; d++) {
+      const t = document.createElement('div');
+      t.style.cssText = 'font-size:9px;color:var(--ink4);font-family:"DM Mono",monospace;text-align:center;min-width:0;flex:1';
+      t.textContent = d + 1;
+      tickEl.appendChild(t);
+    }
+
+    // ── CORE RENDER FUNCTION ─────────────────────────────────────────────────
+    // dayIndex = 0-based trip day (0 = Day 1 = June 23)
+    function render(dayIndex) {
+      const dayDate = new Date(TRIP_START);
+      dayDate.setDate(TRIP_START.getDate() + dayIndex);
+      const dayStr = dayDate.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+
+      // Which stop is "current" — last stop whose arrivalDate <= dayStr
+      let currentStopIdx = -1;
+      STOPS.forEach((s, i) => { if (s.arrive <= dayStr) currentStopIdx = i; });
+
+      // Classify each stop
+      // past: arrived and departed before today's date
+      // current: currently at (or the last stop arrived at)
+      // future: haven't arrived yet
+      STOPS.forEach((s, i) => {
+        let state; // 'past' | 'current' | 'future'
+        if (i < currentStopIdx) state = 'past';
+        else if (i === currentStopIdx) state = 'current';
+        else state = 'future';
+
+        let html = '';
+        if (state === 'past') {
+          html = `<div style="background:#e2e8f0;color:#94a3b8;border:2px solid #fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.15)">✓</div>`;
+        } else if (state === 'current') {
+          html = `<div style="position:relative">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:${s.color};opacity:.2;animation:mapPulse 1.8s ease-out infinite"></div>
+            <div style="background:${s.color};color:#fff;border:3px solid #fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,.35);position:relative">${i+1}</div>
+          </div>`;
+        } else {
+          html = `<div style="background:${s.color};color:#fff;border:2px solid #fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.2);opacity:.45">${i+1}</div>`;
+        }
+        const sz = state === 'current' ? [46,46] : [28,28];
+        const anch = state === 'current' ? [23,23] : [14,14];
+        markers[i].setIcon(L.divIcon({ className:'', html, iconSize:sz, iconAnchor:anch, popupAnchor:[0,-20] }));
+      });
+
+      // Update polylines
+      const doneCoords  = currentStopIdx >= 0 ? coords.slice(0, currentStopIdx + 1) : [];
+      const aheadCoords = currentStopIdx >= 0 ? coords.slice(currentStopIdx) : coords;
+      polyDone.setLatLngs(doneCoords);
+      polyAhead.setLatLngs(aheadCoords);
+
+      // ── STATUS BAR ──
+      const dot   = document.getElementById('map-status-dot');
+      const lbl   = document.getElementById('map-status-label');
+      const sub   = document.getElementById('map-status-sub');
+      const btn   = document.getElementById('gmap-btn');
+      const btnLbl= document.getElementById('gmap-btn-label');
+      const today = new Date();
+      const isLive= today >= TRIP_START && today <= TRIP_END;
+      const isPre = today < TRIP_START;
+
+      const monthDay = dayDate.toLocaleDateString('en-US', { month:'long', day:'numeric' });
+
+      if (currentStopIdx < 0) {
+        // In transit to first stop
+        dot.style.background = '#94a3b8';
+        lbl.textContent = `Day ${dayIndex+1} · ${monthDay} — In transit`;
+        sub.textContent = 'En route to Salzburg';
+        btn.href = FULL_ROUTE;
+        btnLbl.textContent = 'Full Route in Google Maps';
+      } else {
+        const cur = STOPS[currentStopIdx];
+        const next = STOPS[currentStopIdx + 1];
+        dot.style.background = cur.color;
+        lbl.textContent = `Day ${dayIndex+1} · ${monthDay} — ${cur.name}`;
+        sub.textContent = cur.days + ' · ' + cur.nights;
+        if (next) {
+          btn.href = `https://www.google.com/maps/dir/${cur.gmaps}/${next.gmaps}`;
+          btnLbl.textContent = `Directions to ${next.name} →`;
+        } else {
+          btn.href = `https://www.google.com/maps/dir/Zagreb,+Croatia/Zagreb+Airport,+Croatia`;
+          btnLbl.textContent = 'Directions to Zagreb Airport →';
+        }
+      }
+
+      // Status dot pulse only if live and this is today's actual day
+      if (isLive && dayIndex === getTodayDayIndex()) {
+        dot.style.animation = 'mapPulse 1.8s ease-out infinite';
+      } else {
+        dot.style.animation = 'none';
+      }
+
+      // Slider label
+      const names = currentStopIdx >= 0 ? STOPS[currentStopIdx].name : 'In Transit';
+      document.getElementById('slider-label').textContent = `Day ${dayIndex+1} · ${names}`;
+
+      // Today button — highlight if viewing today
+      const todayBtn = document.getElementById('today-btn');
+      if (dayIndex === getTodayDayIndex()) {
+        todayBtn.style.background = 'var(--accent)';
+        todayBtn.style.color = '#fff';
+        todayBtn.style.borderColor = 'var(--accent)';
+      } else {
+        todayBtn.style.background = 'var(--cream)';
+        todayBtn.style.color = 'var(--ink3)';
+        todayBtn.style.borderColor = 'var(--border)';
+      }
+    }
+
+    // ── HELPERS ──────────────────────────────────────────────────────────────
+    function getTodayDayIndex() {
+      const now  = new Date();
+      const diff = Math.floor((now - TRIP_START) / 86400000);
+      return Math.max(0, Math.min(diff, TOTAL_DAYS - 1));
+    }
+
+    let currentDayIndex = getTodayDayIndex();
+
+    window.onSlider = function(val) {
+      currentDayIndex = parseInt(val);
+      render(currentDayIndex);
+    };
+
+    window.sliderStep = function(dir) {
+      currentDayIndex = Math.max(0, Math.min(TOTAL_DAYS - 1, currentDayIndex + dir));
+      document.getElementById('day-slider').value = currentDayIndex;
+      render(currentDayIndex);
+    };
+
+    window.resetToToday = function() {
+      currentDayIndex = getTodayDayIndex();
+      document.getElementById('day-slider').value = currentDayIndex;
+      render(currentDayIndex);
+    };
+
+    // Inject pulse keyframe
+    const style = document.createElement('style');
+    style.textContent = `@keyframes mapPulse { 0%{transform:translate(-50%,-50%) scale(.6);opacity:.5} 100%{transform:translate(-50%,-50%) scale(1.6);opacity:0} }`;
+    document.head.appendChild(style);
+
+    // Init slider to today
+    document.getElementById('day-slider').max = TOTAL_DAYS - 1;
+    document.getElementById('day-slider').value = currentDayIndex;
+    render(currentDayIndex);
+
   })();
   </script>
 </section>
