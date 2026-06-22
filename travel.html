@@ -393,7 +393,7 @@ a.pill:hover { background:var(--cream3); }
     <div class="masthead-stats">
       <div><div class="ms-n">11</div><div class="ms-l">Days</div></div>
       <div><div class="ms-n">4</div><div class="ms-l">Countries</div></div>
-      <div><div class="ms-n">6</div><div class="ms-l">Hotels</div></div>
+      <div><div class="ms-n">7</div><div class="ms-l">Hotels</div></div>
       <div><div class="ms-n">3</div><div class="ms-l">Dinners</div></div>
     </div>
     <div class="masthead-byline">June 23 – July 3, 2026 &nbsp;·&nbsp; Matt &amp; Katie</div>
@@ -417,7 +417,7 @@ a.pill:hover { background:var(--cream3); }
     <div class="qi-trigger" onclick="togQI('qi-conf')">
       <div class="qi-trigger-left">
         <div class="qi-trigger-label">Confirmation Numbers</div>
-        <div class="qi-trigger-preview">8 reservations</div>
+        <div class="qi-trigger-preview">7 reservations</div>
       </div>
       <div class="qi-trigger-right">
         <div class="qi-chev">▾</div>
@@ -430,7 +430,6 @@ a.pill:hover { background:var(--cream3); }
         <div class="conf-row"><div class="conf-name">Hotel Seevilla Wolfgangsee</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">14771007</div></div>
         <div class="conf-row"><div class="conf-name">Seewirt - Zauner, Hallstatt</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">cbm2692412534</div></div>
         <div class="conf-row"><div class="conf-name">Staubinger Grand Hotel</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">STR00418461</div></div>
-        <div class="conf-row"><div class="conf-name">Amadria Park Hotel Capital, Zagreb</div><div class="conf-type" style="background:#eff6ff;color:#1d4ed8">Hotel</div><div class="conf-num">61023406</div></div>
         <div class="conf-row"><div class="conf-name">Johanneskeller, Salzburg — Dinner Jun 24</div><div class="conf-type" style="background:#dcfce7;color:#166534">Dinner</div><div class="conf-num">Confirmed</div></div>
         <div class="conf-row"><div class="conf-name">Jägerhäusl, Bad Gastein — Dinner Jun 27</div><div class="conf-type" style="background:#dcfce7;color:#166534">Dinner</div><div class="conf-num">Confirmed</div></div>
       </div>
@@ -523,242 +522,67 @@ a.pill:hover { background:var(--cream3); }
     <h2 class="sec-title">Route Map</h2>
     <span class="sec-num">01</span>
   </div>
-
-  <!-- Status bar -->
-  <div id="map-status" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div id="map-status-dot" style="width:9px;height:9px;border-radius:50%;background:var(--ink4);flex-shrink:0"></div>
-      <div>
-        <div id="map-status-label" style="font-size:12px;font-weight:600;color:var(--ink2)">Loading…</div>
-        <div id="map-status-sub" style="font-size:11px;color:var(--ink3);margin-top:1px"></div>
-      </div>
-    </div>
-    <a id="gmap-btn" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;padding:7px 14px;background:rgba(43,77,143,.07);border:1px solid rgba(43,77,143,.15);border-radius:7px;white-space:nowrap;">
-      <span style="font-size:14px">🗺️</span> <span id="gmap-btn-label">Open in Google Maps</span>
-    </a>
-  </div>
-
-  <!-- Leaflet map -->
+  <!-- Leaflet map — free, no API key, all overnight stops labeled -->
   <div id="trip-map" style="height:500px;border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)"></div>
-
-  <!-- Day slider -->
-  <div style="margin-top:18px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;box-shadow:var(--shadow)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Day</div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="sliderStep(-1)" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--cream);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--ink2)">‹</button>
-        <div id="slider-label" style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--ink);min-width:180px;text-align:center"></div>
-        <button onclick="sliderStep(1)"  style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--cream);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--ink2)">›</button>
-      </div>
-      <button id="today-btn" onclick="resetToToday()" style="font-size:10px;font-weight:600;letter-spacing:.5px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:var(--cream);cursor:pointer;color:var(--ink3)">Today</button>
-    </div>
-    <input type="range" id="day-slider" min="0" max="10" step="1" value="0"
-      oninput="onSlider(this.value)"
-      style="width:100%;accent-color:var(--accent);cursor:pointer;">
-    <!-- Stop tick labels -->
-    <div id="slider-ticks" style="display:flex;justify-content:space-between;margin-top:6px;padding:0 2px"></div>
-  </div>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
   (function() {
-
-    // ── STOP DATA ────────────────────────────────────────────────────────────
-    // arrivalDate = date you arrive/are at this stop
-    // departDate  = date you leave (exclusive)
-    const STOPS = [
-      { name:'Salzburg',       short:'SZG', lat:47.8095, lon:13.0550, color:'#2b4d8f', arrive:'2026-06-24', depart:'2026-06-25', nights:'Nights 2–3', days:'June 24–25', gmaps:'Salzburg,+Austria' },
-      { name:'St. Wolfgang',   short:'STW', lat:47.7334, lon:13.4453, color:'#0369a1', arrive:'2026-06-25', depart:'2026-06-26', nights:'Night 3',    days:'June 25–26', gmaps:'St.+Wolfgang+am+Wolfgangsee,+Austria' },
-      { name:'Hallstatt',      short:'HLT', lat:47.5623, lon:13.6493, color:'#b08d4a', arrive:'2026-06-26', depart:'2026-06-27', nights:'Night 4',    days:'June 26–27', gmaps:'Hallstatt,+Austria' },
-      { name:'Bad Gastein',    short:'BGS', lat:47.1167, lon:13.1333, color:'#7c3aed', arrive:'2026-06-27', depart:'2026-06-28', nights:'Nights 5–6', days:'June 27–28', gmaps:'Bad+Gastein,+Austria' },
-      { name:'Millstätter See',short:'MIL', lat:46.7990, lon:13.5800, color:'#64748b', arrive:'2026-06-28', depart:'2026-06-28', nights:'Transit',    days:'June 28',     gmaps:'Millst%C3%A4tter+See,+Austria' },
-      { name:'Klagenfurt',     short:'KLU', lat:46.6228, lon:14.3050, color:'#64748b', arrive:'2026-06-28', depart:'2026-06-28', nights:'Transit',    days:'June 28',     gmaps:'Klagenfurt+Airport,+Austria' },
-      { name:'Maribor',        short:'MBX', lat:46.5547, lon:15.6459, color:'#2e6b4f', arrive:'2026-06-28', depart:'2026-07-02', nights:'Nights 6–10',days:'June 28 – July 2', gmaps:'Maribor,+Slovenia' },
-      { name:'Zagreb',         short:'ZAG', lat:45.8150, lon:15.9819, color:'#dc2626', arrive:'2026-07-02', depart:'2026-07-03', nights:'Night 10',   days:'July 2–3',    gmaps:'Zagreb,+Croatia' },
-    ];
-
-    const TRIP_START = new Date('2026-06-23T00:00:00');
-    const TRIP_END   = new Date('2026-07-03T23:59:59');
-    const TOTAL_DAYS = 11; // Day 1–11
-    const FULL_ROUTE = 'https://www.google.com/maps/dir/Munich+Airport,+Germany/Salzburg,+Austria/St.+Wolfgang+am+Wolfgangsee,+Austria/Hallstatt,+Austria/Bad+Gastein,+Austria/Millst%C3%A4tter+See,+Austria/Klagenfurt+Airport,+Austria/Maribor,+Slovenia/Zagreb,+Croatia';
-
-    // ── LEAFLET SETUP ────────────────────────────────────────────────────────
     const map = L.map('trip-map', { zoomControl: true, scrollWheelZoom: false });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 14
     }).addTo(map);
 
-    const coords = STOPS.map(s => [s.lat, s.lon]);
+    const stops = [
+      { name: 'Salzburg',       nights: 'Nights 1–2', lat: 47.8095, lon: 13.0550, color: '#2b4d8f', days: 'June 24–25' },
+      { name: 'St. Wolfgang',   nights: 'Night 3',    lat: 47.7334, lon: 13.4453, color: '#0369a1', days: 'June 25–26' },
+      { name: 'Hallstatt',      nights: 'Night 4',    lat: 47.5623, lon: 13.6493, color: '#b08d4a', days: 'June 26–27' },
+      { name: 'Bad Gastein',    nights: 'Nights 5–6', lat: 47.1167, lon: 13.1333, color: '#7c3aed', days: 'June 27–28' },
+      { name: 'Klagenfurt',     nights: 'Transit',    lat: 46.6228, lon: 14.3050, color: '#64748b', days: 'June 28' },
+      { name: 'Rače / Maribor', nights: 'Nights 7–10',lat: 46.5547, lon: 15.6459, color: '#2e6b4f', days: 'June 28 – July 2' },
+      { name: 'Zagreb',         nights: 'Night 11',   lat: 45.8150, lon: 15.9819, color: '#dc2626', days: 'July 2–3' },
+    ];
 
-    // Two polylines: done (solid) + ahead (dashed)
-    let polyDone = L.polyline([], { color:'#2b4d8f', weight:3, opacity:.7 }).addTo(map);
-    let polyAhead= L.polyline([], { color:'#1a1714', weight:2, opacity:.25, dashArray:'6 6' }).addTo(map);
+    // Draw route polyline
+    const coords = stops.map(s => [s.lat, s.lon]);
+    L.polyline(coords, { color: '#1a1714', weight: 2, opacity: 0.35, dashArray: '6 6' }).addTo(map);
 
-    // Markers array
-    const markers = [];
-    STOPS.forEach((s, i) => {
-      const icon = L.divIcon({ className:'', html:'', iconSize:[30,30], iconAnchor:[15,15], popupAnchor:[0,-18] });
+    // Add markers
+    stops.forEach((s, i) => {
+      const num = i + 1;
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="
+          background:${s.color};
+          color:#fff;
+          border:2px solid #fff;
+          border-radius:50%;
+          width:30px;height:30px;
+          display:flex;align-items:center;justify-content:center;
+          font-family:'Outfit',sans-serif;
+          font-size:12px;font-weight:700;
+          box-shadow:0 2px 8px rgba(0,0,0,.3);
+          cursor:pointer;
+        ">${num}</div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, -18],
+      });
+
       const marker = L.marker([s.lat, s.lon], { icon }).addTo(map);
       marker.bindPopup(`
-        <div style="font-family:'Outfit',sans-serif;min-width:150px">
+        <div style="font-family:'Outfit',sans-serif;min-width:140px">
           <div style="font-size:14px;font-weight:700;color:#1a1714;margin-bottom:2px">${s.name}</div>
           <div style="font-size:11px;color:#7a7570;margin-bottom:3px">${s.nights}</div>
           <div style="font-size:11px;font-weight:600;color:${s.color}">${s.days}</div>
-        </div>`, { maxWidth:220 });
-      markers.push(marker);
+        </div>
+      `, { maxWidth: 200 });
     });
 
-    map.fitBounds(L.latLngBounds(coords), { padding:[40,40] });
+    // Fit map to all stops
+    map.fitBounds(L.latLngBounds(coords), { padding: [40, 40] });
+    // Fade map in
     setTimeout(() => document.getElementById('trip-map').classList.add('loaded'), 300);
-
-    // ── SLIDER TICKS ─────────────────────────────────────────────────────────
-    const tickEl = document.getElementById('slider-ticks');
-    // Show day numbers 1–11
-    for (let d = 0; d <= TOTAL_DAYS - 1; d++) {
-      const t = document.createElement('div');
-      t.style.cssText = 'font-size:9px;color:var(--ink4);font-family:"DM Mono",monospace;text-align:center;min-width:0;flex:1';
-      t.textContent = d + 1;
-      tickEl.appendChild(t);
-    }
-
-    // ── CORE RENDER FUNCTION ─────────────────────────────────────────────────
-    // dayIndex = 0-based trip day (0 = Day 1 = June 23)
-    function render(dayIndex) {
-      const dayDate = new Date(TRIP_START);
-      dayDate.setDate(TRIP_START.getDate() + dayIndex);
-      const dayStr = dayDate.toISOString().split('T')[0]; // 'YYYY-MM-DD'
-
-      // Which stop is "current" — last stop whose arrivalDate <= dayStr
-      let currentStopIdx = -1;
-      STOPS.forEach((s, i) => { if (s.arrive <= dayStr) currentStopIdx = i; });
-
-      // Classify each stop
-      // past: arrived and departed before today's date
-      // current: currently at (or the last stop arrived at)
-      // future: haven't arrived yet
-      STOPS.forEach((s, i) => {
-        let state; // 'past' | 'current' | 'future'
-        if (i < currentStopIdx) state = 'past';
-        else if (i === currentStopIdx) state = 'current';
-        else state = 'future';
-
-        let html = '';
-        if (state === 'past') {
-          html = `<div style="background:#e2e8f0;color:#94a3b8;border:2px solid #fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.15)">✓</div>`;
-        } else if (state === 'current') {
-          html = `<div style="position:relative">
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:${s.color};opacity:.2;animation:mapPulse 1.8s ease-out infinite"></div>
-            <div style="background:${s.color};color:#fff;border:3px solid #fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,.35);position:relative">${i+1}</div>
-          </div>`;
-        } else {
-          html = `<div style="background:${s.color};color:#fff;border:2px solid #fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.2);opacity:.45">${i+1}</div>`;
-        }
-        const sz = state === 'current' ? [46,46] : [28,28];
-        const anch = state === 'current' ? [23,23] : [14,14];
-        markers[i].setIcon(L.divIcon({ className:'', html, iconSize:sz, iconAnchor:anch, popupAnchor:[0,-20] }));
-      });
-
-      // Update polylines
-      const doneCoords  = currentStopIdx >= 0 ? coords.slice(0, currentStopIdx + 1) : [];
-      const aheadCoords = currentStopIdx >= 0 ? coords.slice(currentStopIdx) : coords;
-      polyDone.setLatLngs(doneCoords);
-      polyAhead.setLatLngs(aheadCoords);
-
-      // ── STATUS BAR ──
-      const dot   = document.getElementById('map-status-dot');
-      const lbl   = document.getElementById('map-status-label');
-      const sub   = document.getElementById('map-status-sub');
-      const btn   = document.getElementById('gmap-btn');
-      const btnLbl= document.getElementById('gmap-btn-label');
-      const today = new Date();
-      const isLive= today >= TRIP_START && today <= TRIP_END;
-      const isPre = today < TRIP_START;
-
-      const monthDay = dayDate.toLocaleDateString('en-US', { month:'long', day:'numeric' });
-
-      if (currentStopIdx < 0) {
-        // In transit to first stop
-        dot.style.background = '#94a3b8';
-        lbl.textContent = `Day ${dayIndex+1} · ${monthDay} — In transit`;
-        sub.textContent = 'En route to Salzburg';
-        btn.href = FULL_ROUTE;
-        btnLbl.textContent = 'Full Route in Google Maps';
-      } else {
-        const cur = STOPS[currentStopIdx];
-        const next = STOPS[currentStopIdx + 1];
-        dot.style.background = cur.color;
-        lbl.textContent = `Day ${dayIndex+1} · ${monthDay} — ${cur.name}`;
-        sub.textContent = cur.days + ' · ' + cur.nights;
-        if (next) {
-          btn.href = `https://www.google.com/maps/dir/${cur.gmaps}/${next.gmaps}`;
-          btnLbl.textContent = `Directions to ${next.name} →`;
-        } else {
-          btn.href = `https://www.google.com/maps/dir/Zagreb,+Croatia/Zagreb+Airport,+Croatia`;
-          btnLbl.textContent = 'Directions to Zagreb Airport →';
-        }
-      }
-
-      // Status dot pulse only if live and this is today's actual day
-      if (isLive && dayIndex === getTodayDayIndex()) {
-        dot.style.animation = 'mapPulse 1.8s ease-out infinite';
-      } else {
-        dot.style.animation = 'none';
-      }
-
-      // Slider label
-      const names = currentStopIdx >= 0 ? STOPS[currentStopIdx].name : 'In Transit';
-      document.getElementById('slider-label').textContent = `Day ${dayIndex+1} · ${names}`;
-
-      // Today button — highlight if viewing today
-      const todayBtn = document.getElementById('today-btn');
-      if (dayIndex === getTodayDayIndex()) {
-        todayBtn.style.background = 'var(--accent)';
-        todayBtn.style.color = '#fff';
-        todayBtn.style.borderColor = 'var(--accent)';
-      } else {
-        todayBtn.style.background = 'var(--cream)';
-        todayBtn.style.color = 'var(--ink3)';
-        todayBtn.style.borderColor = 'var(--border)';
-      }
-    }
-
-    // ── HELPERS ──────────────────────────────────────────────────────────────
-    function getTodayDayIndex() {
-      const now  = new Date();
-      const diff = Math.floor((now - TRIP_START) / 86400000);
-      return Math.max(0, Math.min(diff, TOTAL_DAYS - 1));
-    }
-
-    let currentDayIndex = getTodayDayIndex();
-
-    window.onSlider = function(val) {
-      currentDayIndex = parseInt(val);
-      render(currentDayIndex);
-    };
-
-    window.sliderStep = function(dir) {
-      currentDayIndex = Math.max(0, Math.min(TOTAL_DAYS - 1, currentDayIndex + dir));
-      document.getElementById('day-slider').value = currentDayIndex;
-      render(currentDayIndex);
-    };
-
-    window.resetToToday = function() {
-      currentDayIndex = getTodayDayIndex();
-      document.getElementById('day-slider').value = currentDayIndex;
-      render(currentDayIndex);
-    };
-
-    // Inject pulse keyframe
-    const style = document.createElement('style');
-    style.textContent = `@keyframes mapPulse { 0%{transform:translate(-50%,-50%) scale(.6);opacity:.5} 100%{transform:translate(-50%,-50%) scale(1.6);opacity:0} }`;
-    document.head.appendChild(style);
-
-    // Init slider to today
-    document.getElementById('day-slider').max = TOTAL_DAYS - 1;
-    document.getElementById('day-slider').value = currentDayIndex;
-    render(currentDayIndex);
-
   })();
   </script>
 </section>
@@ -1006,6 +830,29 @@ a.pill:hover { background:var(--cream3); }
           </div>
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">5:00–6:00 PM — Dinner</div>
+              <div class="rest-chip">
+                <div class="rc-name">Nana Bistro</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#dcfce7;color:#166534">Confirmed</span><span class="rc-tag" style="background:#fef9c3;color:#92400e">17:00–18:00</span></div>
+                <div class="rc-desc">Dinner in Maribor on arrival evening</div>
+              </div>
+              <a href="https://nana-bistro.si/meni/" target="_blank" class="map-btn">Menu ↗</a>
+              <a href="https://maps.google.com/?q=Nana+Bistro,+Maribor,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
+            <div class="step-right"><div class="step-lbl">Transport — Taxi</div>
+              <div class="rest-chip">
+                <div class="rc-name">Taxi Plus</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#e0f2fe;color:#0369a1">Credit card only</span></div>
+                <div class="rc-desc">All taxi rides must be paid by credit card</div>
+              </div>
+              <a href="https://taxi-plus.com/en/" target="_blank" class="map-btn">Taxi Plus ↗</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
             <div class="step-right"><div class="step-lbl">Hotel</div>
               <div class="hotel-chip"><div class="hc-name">City Maribor</div><div class="hc-addr">Ulica kneza Koclja 22, 2000 Maribor, Slovenia</div><div class="hc-conf">hotelcitymb.si</div></div>
               <a href="https://maps.google.com/?q=City+Maribor,+Ulica+kneza+Koclja+22,+2000+Maribor" target="_blank" class="map-btn">Open in Maps</a>
@@ -1018,12 +865,12 @@ a.pill:hover { background:var(--cream3); }
     <!-- DAYS 7–10 -->
     <!-- DAY 7 — June 28 arrival in Maribor (handled in Day 6 card above) -->
 
-    <!-- DAY 7 — June 29 -->
-    <div class="day-card" id="d7">
-      <div class="day-hdr" onclick="tog('d7')">
+    <!-- DAY 8 — June 29 -->
+    <div class="day-card" id="d8">
+      <div class="day-hdr" onclick="tog('d8')">
         <div class="day-bar" style="background:#2e6b4f"></div>
         <div class="day-hdr-inner">
-          <div class="day-badge">Day 7</div>
+          <div class="day-badge">Day 8</div>
           <div class="day-info"><div class="day-date">June 29 — Maribor</div><div class="day-sub">Chocolate workshop · Dinner by the River Drava</div></div>
           <div class="day-tag" style="background:#f0fdf4;color:#166534">🍫 Chocolate Workshop</div>
           <div class="day-chev">▾</div>
@@ -1043,11 +890,18 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">Activity — Chocolate Workshop (~2 hrs)</div>
+              <div class="step-lbl">4:40 PM — Depart Hotel</div>
+              <div class="step-val">Leave for Limbuš area (~20 min from city centre)</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
+            <div class="step-right">
+              <div class="step-lbl">5:00 PM — Chocolate Workshop (~1 hr 45 min)</div>
               <div class="rest-chip">
                 <div class="rc-name">Aunt Frida Chocolate Workshop</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€39.90 / person</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">2 hours</span></div>
-                <div class="rc-desc">Hands-on chocolate making experience in Maribor</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€39.90 / person</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">~1 hr 45 min</span></div>
+                <div class="rc-desc">Hands-on chocolate making experience · ends ~6:45 PM</div>
               </div>
               <a href="https://www.auntfrida.eu/chocolate-workshops" target="_blank" class="map-btn">Book Workshop ↗</a>
               <a href="https://maps.google.com/?q=Aunt+Frida,+Maribor,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
@@ -1056,26 +910,33 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">Dinner — Jack &amp; Joe Limbuš</div>
+              <div class="step-lbl">7:00 PM — Dinner</div>
               <div class="rest-chip">
                 <div class="rc-name">Jack &amp; Joe Limbuš</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#e0f2fe;color:#0369a1">🌊 River Drava</span></div>
-                <div class="rc-desc">Beautiful, peaceful setting by the River Drava · next to the chocolate workshop · ~10 min from city centre</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#e0f2fe;color:#0369a1">River Drava</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">Next to workshop</span></div>
+                <div class="rc-desc">Beautiful, peaceful setting by the River Drava · ~10 min from city centre</div>
               </div>
               <a href="https://r.venuo.net/jackjoe-limbus/" target="_blank" class="map-btn">Restaurant ↗</a>
               <a href="https://maps.google.com/?q=Jack+and+Joe+Limbuš,+Maribor,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
+            <div class="step-right">
+              <div class="step-lbl">9:00 PM — Return to Hotel</div>
+              <div class="step-val">Taxi back to city centre · credit card required</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- DAY 8 — June 30 -->
-    <div class="day-card" id="d8">
-      <div class="day-hdr" onclick="tog('d8')">
+    <!-- DAY 9 — June 30 -->
+    <div class="day-card" id="d9">
+      <div class="day-hdr" onclick="tog('d9')">
         <div class="day-bar" style="background:#2e6b4f"></div>
         <div class="day-hdr-inner">
-          <div class="day-badge">Day 8</div>
+          <div class="day-badge">Day 9</div>
           <div class="day-info"><div class="day-date">June 30 — Maribor</div><div class="day-sub">City tour · Vinag wine cellar · Dinner at Rožmarin</div></div>
           <div class="day-tag" style="background:#f0fdf4;color:#166534">🍷 Vinag Wine Cellar</div>
           <div class="day-chev">▾</div>
@@ -1086,11 +947,11 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">Guided City Tour (~1.5 hrs)</div>
+              <div class="step-lbl">4:30 PM — Guided City Tour (~1.5 hrs)</div>
               <div class="rest-chip">
                 <div class="rc-name">Maribor Guided Walking Tour</div>
                 <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€140 / group</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">1.5 hours</span></div>
-                <div class="rc-desc">Guided tour of Maribor city centre</div>
+                <div class="rc-desc">Guide: Mr. David Kramberger · 031 787 590</div>
               </div>
               <a href="https://maps.google.com/?q=Maribor+City+Centre,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
             </div>
@@ -1098,11 +959,11 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">Wine Tasting — Vinag Wine Cellar (~1.5 hrs)</div>
+              <div class="step-lbl">6:00 PM — Wine Tasting — Vinag Wine Cellar (~1.5 hrs)</div>
               <div class="rest-chip">
                 <div class="rc-name">Vinag 1847</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€20 / person</span><span class="rc-tag" style="background:#f5f3ff;color:#6d28d9">🍾 Est. 1847</span></div>
-                <div class="rc-desc">Three wine tastings in the oldest classical wine cellar in this part of Europe</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€23 / person</span><span class="rc-tag" style="background:#f5f3ff;color:#6d28d9">Est. 1847</span></div>
+                <div class="rc-desc">Three wines · oldest classical wine cellar in this part of Europe</div>
               </div>
               <a href="https://vinag1847.si/" target="_blank" class="map-btn">Vinag Website ↗</a>
               <a href="https://maps.google.com/?q=Vinag,+Trg+svobode+3,+2000+Maribor" target="_blank" class="map-btn">Open in Maps</a>
@@ -1111,10 +972,10 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">Dinner — Restaurant Rožmarin</div>
+              <div class="step-lbl">7:30 PM — Dinner</div>
               <div class="rest-chip">
                 <div class="rc-name">Restaurant Rožmarin</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#f0fdf4;color:#166534">🇸🇮 Slovenian</span></div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#f0fdf4;color:#166534">Slovenian</span></div>
                 <div class="rc-desc">Local Maribor restaurant</div>
               </div>
               <a href="https://www.rozmarin.si/" target="_blank" class="map-btn">Restaurant Website ↗</a>
@@ -1125,12 +986,12 @@ a.pill:hover { background:var(--cream3); }
       </div>
     </div>
 
-    <!-- DAY 9 — July 1 -->
-    <div class="day-card" id="d9">
-      <div class="day-hdr" onclick="tog('d9')">
+    <!-- DAY 10 — July 1 -->
+    <div class="day-card" id="d10">
+      <div class="day-hdr" onclick="tog('d10')">
         <div class="day-bar" style="background:#2e6b4f"></div>
         <div class="day-hdr-inner">
-          <div class="day-badge">Day 9</div>
+          <div class="day-badge">Day 10</div>
           <div class="day-info"><div class="day-date">July 1 — Maribor</div><div class="day-sub">Free day · Dinner at Poper</div></div>
           <div class="day-tag" style="background:#f0fdf4;color:#166534">🌿 Free Day</div>
           <div class="day-chev">▾</div>
@@ -1153,7 +1014,7 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">Dinner — Restaurant Poper</div>
+              <div class="step-lbl">6:00 PM — Dinner</div>
               <div class="rest-chip">
                 <div class="rc-name">Restaurant Poper</div>
                 <div class="rc-tags"><span class="rc-tag" style="background:#f0fdf4;color:#166534">🇸🇮 Slovenian</span></div>
@@ -1167,12 +1028,12 @@ a.pill:hover { background:var(--cream3); }
       </div>
     </div>
 
-    <!-- DAY 10 — July 2 -->
-    <div class="day-card" id="d10">
-      <div class="day-hdr" onclick="tog('d10')">
+    <!-- DAY 11 — July 2 -->
+    <div class="day-card" id="d11-si">
+      <div class="day-hdr" onclick="tog('d11-si')">
         <div class="day-bar" style="background:#2e6b4f"></div>
         <div class="day-hdr-inner">
-          <div class="day-badge">Day 10</div>
+          <div class="day-badge">Day 11</div>
           <div class="day-info"><div class="day-date">July 2 — Maribor → Zagreb</div><div class="day-sub">Maribor Festival · Train to Zagreb · Old Town evening</div></div>
           <div class="day-tag" style="background:#f0fdf4;color:#166534">🎭 Maribor Festival</div>
           <div class="day-chev">▾</div>
@@ -1210,28 +1071,16 @@ a.pill:hover { background:var(--cream3); }
               </div>
             </div>
           </div>
-          <div class="step">
-            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#dc2626"></div></div></div>
-            <div class="step-right">
-              <div class="step-lbl">Hotel</div>
-              <div class="hotel-chip">
-                <div class="hc-name">Amadria Park Hotel Capital Zagreb</div>
-                <div class="hc-addr">Superior Room · City View with Balcony · 2 Adults</div>
-                <div class="hc-conf">Conf #61023406</div>
-              </div>
-              <a href="https://maps.google.com/?q=Amadria+Park+Hotel+Capital,+Zagreb" target="_blank" class="map-btn">Open in Maps</a>
-            </div>
-          </div>
         </div>
       </div>
     </div>
 
     <!-- RETURN — July 3 -->
-    <div class="day-card" id="d11">
-      <div class="day-hdr" onclick="tog('d11')">
+    <div class="day-card" id="d12">
+      <div class="day-hdr" onclick="tog('d12')">
         <div class="day-bar" style="background:#dc2626"></div>
         <div class="day-hdr-inner">
-          <div class="day-badge">Day 11</div>
+          <div class="day-badge">Day 12</div>
           <div class="day-info"><div class="day-date">July 3 — Return Home</div><div class="day-sub">Zagreb Airport → Munich → Chicago → Des Moines</div></div>
           <div class="day-tag" style="background:#fef2f2;color:#991b1b">✈️ Homeward Bound</div>
           <div class="day-chev">▾</div>
@@ -1241,7 +1090,7 @@ a.pill:hover { background:var(--cream3); }
         <div class="step-list">
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#dc2626"></div></div></div>
-            <div class="step-right"><div class="step-lbl">1:20 PM — Flights Home 😢</div><div class="step-val">Zagreb Airport → Munich → Chicago → Des Moines</div><a href="https://maps.google.com/?q=Zagreb+Airport,+Ul.+Rudolfa+Fizira+21,+10410+Velika+Gorica" target="_blank" class="map-btn">Zagreb Airport</a></div>
+            <div class="step-right"><div class="step-lbl">Flights Home 😢</div><div class="step-val">Zagreb Airport → Munich → Chicago → Des Moines</div><a href="https://maps.google.com/?q=Zagreb+Airport,+Ul.+Rudolfa+Fizira+21,+10410+Velika+Gorica" target="_blank" class="map-btn">Zagreb Airport</a></div>
           </div>
         </div>
       </div>
