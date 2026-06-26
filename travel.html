@@ -230,6 +230,19 @@ body { font-family:'Outfit',sans-serif; background:var(--cream); color:var(--ink
 .map-btn:hover { background:rgba(43,77,143,.13); }
 .map-btn::before { content:'↗'; font-size:10px; }
 
+.ticket-btn { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:#166534; text-decoration:none; margin-top:6px; margin-right:6px; padding:4px 10px; background:#dcfce7; border:1px solid #bbf7d0; border-radius:5px; transition:background .15s; }
+.ticket-btn:hover { background:#bbf7d0; }
+.ticket-btn::before { content:'🎟'; font-size:10px; }
+
+/* Completed day styling */
+.day-card.done { opacity:.5; }
+.day-card.done .day-hdr-inner { text-decoration:none; }
+.day-card.done .day-date { color:var(--ink3); }
+.day-card.done .day-badge { color:var(--ink5); }
+.day-card.done .day-tag { opacity:.6; }
+.day-card.done::after { content:'✓ Complete'; position:absolute; right:52px; top:50%; transform:translateY(-50%); font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink4); }
+.day-card.done { position:relative; }
+
 .pill-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
 .pill { font-size:11px; padding:3px 9px; background:var(--cream2); border:1px solid var(--border); border-radius:5px; }
 a.pill { color:var(--accent); text-decoration:none; }
@@ -605,7 +618,7 @@ a.pill:hover { background:var(--cream3); }
   <div class="itin-list">
 
     <!-- DAY 1 -->
-    <div class="day-card" id="d1">
+    <div class="day-card done" id="d1">
       <div class="day-hdr" onclick="tog('d1')">
         <div class="day-bar" style="background:#94a3b8"></div>
         <div class="day-hdr-inner">
@@ -630,7 +643,7 @@ a.pill:hover { background:var(--cream3); }
     </div>
 
     <!-- DAY 2 -->
-    <div class="day-card" id="d2">
+    <div class="day-card done" id="d2">
       <div class="day-hdr" onclick="tog('d2')">
         <div class="day-bar" style="background:#2b4d8f"></div>
         <div class="day-hdr-inner">
@@ -675,7 +688,7 @@ a.pill:hover { background:var(--cream3); }
     </div>
 
     <!-- DAY 3 -->
-    <div class="day-card" id="d3">
+    <div class="day-card done" id="d3">
       <div class="day-hdr" onclick="tog('d3')">
         <div class="day-bar" style="background:#0369a1"></div>
         <div class="day-hdr-inner">
@@ -727,7 +740,7 @@ a.pill:hover { background:var(--cream3); }
         <div class="step-list">
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#b08d4a"></div></div></div>
-            <div class="step-right"><div class="step-lbl">8:00–8:30 AM — Schafbergbahn</div><div class="step-val">Valley Station: Markt 35, St. Wolfgang · Train up + 2 hrs at summit</div><a href="https://maps.google.com/?q=Schafbergbahn+Valley+Station,+Markt+35,+5360+St.+Wolfgang" target="_blank" class="map-btn">Open in Maps</a></div>
+            <div class="step-right"><div class="step-lbl">8:00–8:30 AM — Schafbergbahn</div><div class="step-val">Valley Station: Markt 35, St. Wolfgang · <strong>9:15 AM</strong> departure · <strong>12:05 PM</strong> return · 2 hrs at summit</div><a href="https://romkeymm.github.io/StayHard/Tickets_202605262229384397.pdf" target="_blank" class="ticket-btn">View Ticket</a><a href="https://maps.google.com/?q=Schafbergbahn+Valley+Station,+Markt+35,+5360+St.+Wolfgang" target="_blank" class="map-btn">Open in Maps</a></div>
           </div>
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#b08d4a"></div></div></div>
@@ -767,7 +780,7 @@ a.pill:hover { background:var(--cream3); }
         <div class="step-list">
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
-            <div class="step-right"><div class="step-lbl">8:30 AM — Dachstein Cable Car</div><div class="step-val">Five Fingers Viewing Platform · Parking: Winkl 34, 4831 Obertraun · Allow 3 hrs</div><a href="https://maps.google.com/?q=Dachstein+Krippenstein,+Winkl+34,+4831+Obertraun" target="_blank" class="map-btn">Open in Maps</a></div>
+            <div class="step-right"><div class="step-lbl">8:30 AM — Dachstein Cable Car</div><div class="step-val">Five Fingers Viewing Platform · Parking: Winkl 34, 4831 Obertraun · Allow 3 hrs</div><a href="https://romkeymm.github.io/StayHard/Matt%20Ticket.pdf" target="_blank" class="ticket-btn">Matt's Ticket</a><a href="https://romkeymm.github.io/StayHard/Katie%20Ticket.pdf" target="_blank" class="ticket-btn">Katie's Ticket</a><a href="https://maps.google.com/?q=Dachstein+Krippenstein,+Winkl+34,+4831+Obertraun" target="_blank" class="map-btn">Open in Maps</a></div>
           </div>
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
@@ -830,29 +843,6 @@ a.pill:hover { background:var(--cream3); }
           </div>
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
-            <div class="step-right"><div class="step-lbl">5:00–6:00 PM — Dinner</div>
-              <div class="rest-chip">
-                <div class="rc-name">Nana Bistro</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#dcfce7;color:#166534">Confirmed</span><span class="rc-tag" style="background:#fef9c3;color:#92400e">17:00–18:00</span></div>
-                <div class="rc-desc">Dinner in Maribor on arrival evening</div>
-              </div>
-              <a href="https://nana-bistro.si/meni/" target="_blank" class="map-btn">Menu ↗</a>
-              <a href="https://maps.google.com/?q=Nana+Bistro,+Maribor,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
-            <div class="step-right"><div class="step-lbl">Transport — Taxi</div>
-              <div class="rest-chip">
-                <div class="rc-name">Taxi Plus</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#e0f2fe;color:#0369a1">Credit card only</span></div>
-                <div class="rc-desc">All taxi rides must be paid by credit card</div>
-              </div>
-              <a href="https://taxi-plus.com/en/" target="_blank" class="map-btn">Taxi Plus ↗</a>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#7c3aed"></div></div></div>
             <div class="step-right"><div class="step-lbl">Hotel</div>
               <div class="hotel-chip"><div class="hc-name">City Maribor</div><div class="hc-addr">Ulica kneza Koclja 22, 2000 Maribor, Slovenia</div><div class="hc-conf">hotelcitymb.si</div></div>
               <a href="https://maps.google.com/?q=City+Maribor,+Ulica+kneza+Koclja+22,+2000+Maribor" target="_blank" class="map-btn">Open in Maps</a>
@@ -890,18 +880,11 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">4:40 PM — Depart Hotel</div>
-              <div class="step-val">Leave for Limbuš area (~20 min from city centre)</div>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
-            <div class="step-right">
-              <div class="step-lbl">5:00 PM — Chocolate Workshop (~1 hr 45 min)</div>
+              <div class="step-lbl">Activity — Chocolate Workshop (~2 hrs)</div>
               <div class="rest-chip">
                 <div class="rc-name">Aunt Frida Chocolate Workshop</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€39.90 / person</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">~1 hr 45 min</span></div>
-                <div class="rc-desc">Hands-on chocolate making experience · ends ~6:45 PM</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€39.90 / person</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">2 hours</span></div>
+                <div class="rc-desc">Hands-on chocolate making experience in Maribor</div>
               </div>
               <a href="https://www.auntfrida.eu/chocolate-workshops" target="_blank" class="map-btn">Book Workshop ↗</a>
               <a href="https://maps.google.com/?q=Aunt+Frida,+Maribor,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
@@ -910,21 +893,14 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">7:00 PM — Dinner</div>
+              <div class="step-lbl">Dinner — Jack &amp; Joe Limbuš</div>
               <div class="rest-chip">
                 <div class="rc-name">Jack &amp; Joe Limbuš</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#e0f2fe;color:#0369a1">River Drava</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">Next to workshop</span></div>
-                <div class="rc-desc">Beautiful, peaceful setting by the River Drava · ~10 min from city centre</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#e0f2fe;color:#0369a1">🌊 River Drava</span></div>
+                <div class="rc-desc">Beautiful, peaceful setting by the River Drava · next to the chocolate workshop · ~10 min from city centre</div>
               </div>
               <a href="https://r.venuo.net/jackjoe-limbus/" target="_blank" class="map-btn">Restaurant ↗</a>
               <a href="https://maps.google.com/?q=Jack+and+Joe+Limbuš,+Maribor,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
-            <div class="step-right">
-              <div class="step-lbl">9:00 PM — Return to Hotel</div>
-              <div class="step-val">Taxi back to city centre · credit card required</div>
             </div>
           </div>
         </div>
@@ -947,11 +923,11 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">4:30 PM — Guided City Tour (~1.5 hrs)</div>
+              <div class="step-lbl">Guided City Tour (~1.5 hrs)</div>
               <div class="rest-chip">
                 <div class="rc-name">Maribor Guided Walking Tour</div>
                 <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€140 / group</span><span class="rc-tag" style="background:#f0fdf4;color:#166534">1.5 hours</span></div>
-                <div class="rc-desc">Guide: Mr. David Kramberger · 031 787 590</div>
+                <div class="rc-desc">Guided tour of Maribor city centre</div>
               </div>
               <a href="https://maps.google.com/?q=Maribor+City+Centre,+Slovenia" target="_blank" class="map-btn">Open in Maps</a>
             </div>
@@ -959,11 +935,11 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">6:00 PM — Wine Tasting — Vinag Wine Cellar (~1.5 hrs)</div>
+              <div class="step-lbl">Wine Tasting — Vinag Wine Cellar (~1.5 hrs)</div>
               <div class="rest-chip">
                 <div class="rc-name">Vinag 1847</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€23 / person</span><span class="rc-tag" style="background:#f5f3ff;color:#6d28d9">Est. 1847</span></div>
-                <div class="rc-desc">Three wines · oldest classical wine cellar in this part of Europe</div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#fef9c3;color:#92400e">€20 / person</span><span class="rc-tag" style="background:#f5f3ff;color:#6d28d9">🍾 Est. 1847</span></div>
+                <div class="rc-desc">Three wine tastings in the oldest classical wine cellar in this part of Europe</div>
               </div>
               <a href="https://vinag1847.si/" target="_blank" class="map-btn">Vinag Website ↗</a>
               <a href="https://maps.google.com/?q=Vinag,+Trg+svobode+3,+2000+Maribor" target="_blank" class="map-btn">Open in Maps</a>
@@ -972,10 +948,10 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">7:30 PM — Dinner</div>
+              <div class="step-lbl">Dinner — Restaurant Rožmarin</div>
               <div class="rest-chip">
                 <div class="rc-name">Restaurant Rožmarin</div>
-                <div class="rc-tags"><span class="rc-tag" style="background:#f0fdf4;color:#166534">Slovenian</span></div>
+                <div class="rc-tags"><span class="rc-tag" style="background:#f0fdf4;color:#166534">🇸🇮 Slovenian</span></div>
                 <div class="rc-desc">Local Maribor restaurant</div>
               </div>
               <a href="https://www.rozmarin.si/" target="_blank" class="map-btn">Restaurant Website ↗</a>
@@ -1014,7 +990,7 @@ a.pill:hover { background:var(--cream3); }
           <div class="step">
             <div class="step-left"><div class="step-dot"><div class="step-dot-inner" style="background:#2e6b4f"></div></div></div>
             <div class="step-right">
-              <div class="step-lbl">6:00 PM — Dinner</div>
+              <div class="step-lbl">Dinner — Restaurant Poper</div>
               <div class="rest-chip">
                 <div class="rc-name">Restaurant Poper</div>
                 <div class="rc-tags"><span class="rc-tag" style="background:#f0fdf4;color:#166534">🇸🇮 Slovenian</span></div>
