@@ -898,14 +898,14 @@ body {
 
     </a>
 
-    <!-- MUSIC -->
-    <a href="music.html" class="dash-card">
-      <div class="dash-card-accent" style="background:linear-gradient(to right,#6ee7b7,#34d399)"></div>
-      <div class="dash-card-num">04 / MUSIC</div>
+    <!-- SOURDOUGH -->
+    <a href="sourdough.html" class="dash-card">
+      <div class="dash-card-accent" style="background:linear-gradient(to right,#c98a3e,#f4e7d3)"></div>
+      <div class="dash-card-num">04 / KITCHEN</div>
       <div class="dash-card-body">
-        <div class="dash-card-title">Music<br>Dashboard</div>
-        <div class="dash-card-desc">New releases, top charts, upcoming shows, and your tracked artists.</div>
-        <div class="dash-card-stat">Powered by <span>Apple Music</span></div>
+        <div class="dash-card-title">Sourdough<br>Bake</div>
+        <div class="dash-card-desc">Two-day bake schedule, live step timers, bake mode, formula scaler, and bake journal.</div>
+        <div class="dash-card-stat" id="dd-bake-wrap">Status <span id="dd-bake">Start a bake</span></div>
       </div>
     </a>
 
@@ -1029,6 +1029,29 @@ if (nr) {
       }
     } catch(e2) { el.textContent = '—'; }
   }
+})();
+
+// ── SOURDOUGH STATUS (reads sourdough.html's saved bake) ──
+(function() {
+  const STEPS = [
+    ['Feed starter',0],['Mix dough',510],['Rest',510],['Knead',570],['Bulk rise',585],['Shape',1170],
+    ['Final rise',1175],['Fridge',1205],['Preheat',2580],['Bake',2640],['Bake uncovered',2660],['Cool',2680]
+  ];
+  const wrap = document.getElementById('dd-bake-wrap');
+  const el   = document.getElementById('dd-bake');
+  try {
+    const s = JSON.parse(localStorage.getItem('stayhard.sourdough.v1'));
+    if (!s || !s.feedAt) return;
+    const done = s.done || {};
+    const i = STEPS.findIndex((_, k) => !done[k]);
+    if (i === -1) { wrap.firstChild.textContent = 'Status '; el.textContent = 'Ready to slice'; return; }
+    const at = new Date(s.feedAt + STEPS[i][1] * 60000);
+    const sameDay = at.toDateString() === new Date().toDateString();
+    const when = (sameDay ? '' : at.toLocaleDateString('en-US', {weekday:'short'}) + ' ')
+               + at.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}).toLowerCase();
+    wrap.firstChild.textContent = 'Next ';
+    el.textContent = STEPS[i][0] + ' · ' + when;
+  } catch (e) {}
 })();
 
 // ── GOALS ─────────────────────────────────────────────────
