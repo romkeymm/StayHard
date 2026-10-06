@@ -266,7 +266,7 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
     <div class="card">
       <div class="sec-head" style="margin-bottom:0">
         <h2 style="font-size:26px">Bake journal</h2>
-        <span class="muted" style="font-size:14px">Saved in this browser</span>
+        <span class="muted" id="jsync" style="font-size:14px" aria-live="polite">Saved in this browser</span>
       </div>
       <form class="jform" id="jform">
         <label>Date<input type="date" name="date" required></label>
@@ -494,7 +494,49 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
   }
   $('bulkChecks').addEventListener('change', function(e){ var i = e.target.dataset.b; if (i == null) return; state.bulk[i] = e.target.checked; save(); });
 
-  // ---------- journal ----------
+  // ---------- journal (Supabase, with this browser as a fallback) ----------
+  var SB_URL = 'https://urqcldfagszngbxtdmck.supabase.co';
+  var SB_KEY = 'sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo';
+  var SB_TABLE = 'sourdough_journal';
+  var cloud = false;   // true once Supabase answers
+
+  function sb(path, opts){
+    opts = opts || {};
+    return fetch(SB_URL + '/rest/v1/' + path, {
+      method: opts.method || 'GET',
+      headers: Object.assign({'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json'}, opts.headers || {}),
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function(r){
+      if (!r.ok) return r.text().then(function(t){ throw new Error(r.status + ' ' + t); });
+      return r.status === 204 ? null : r.json();
+    });
+  }
+  function fromRow(r){ return {id:r.id, date:r.bake_date, bulk:r.bulk_hours, temp:r.kitchen_f, rating:r.rating, notes:r.notes}; }
+  function toRow(r){
+    function num(v){ return v === '' || v == null ? null : Number(v); }
+    return {bake_date:r.date, bulk_hours:num(r.bulk), kitchen_f:num(r.temp), rating:num(r.rating), notes:r.notes || null, feed_at:r.feedAt || null};
+  }
+  function setSync(text){ $('jsync').textContent = text; }
+
+  function loadJournal(){
+    setSync('Connecting…');
+    sb(SB_TABLE + '?select=*&order=bake_date.desc,id.desc').then(function(rows){
+      cloud = true;
+      // One-time upload of loaves logged before the database existed.
+      var pending = state.journal.filter(function(r){ return !r.id; });
+      var up = pending.length ? sb(SB_TABLE, {method:'POST', body:pending.map(toRow), headers:{'Prefer':'return=representation'}}) : Promise.resolve([]);
+      return up.then(function(added){
+        state.journal = rows.concat(added || []).map(fromRow)
+          .sort(function(a,b){ return (b.date||'').localeCompare(a.date||'') || (b.id - a.id); });
+        save(); renderJournal(); setSync('Synced');
+      });
+    }).catch(function(err){
+      cloud = false; renderJournal();
+      setSync('Offline · saved in this browser');
+      console.warn('[sourdough] Supabase unavailable:', err.message);
+    });
+  }
+
   function renderJournal(){
     var j = state.journal;
     if (!j.length){ $('jrows').innerHTML = '<tr><td colspan="7" class="empty">No loaves logged yet. Your first one goes here.</td></tr>'; return; }
@@ -503,16 +545,33 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
         + '<td><button class="del" type="button" data-j="'+i+'" aria-label="Delete loaf '+(j.length-i)+'">✕</button></td></tr>';
     }).join('');
   }
+  function todayLocal(){ var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
   $('jform').addEventListener('submit', function(e){
     e.preventDefault();
-    var f = new FormData(e.target);
-    state.journal.unshift({date:f.get('date'), bulk:f.get('bulk'), temp:f.get('temp'), rating:f.get('rating'), notes:f.get('notes')});
-    save(); e.target.reset(); e.target.date.valueAsDate = new Date(); renderJournal();
+    var form = e.target, f = new FormData(form), btn = form.querySelector('button[type=submit]');
+    var entry = {date:f.get('date'), bulk:f.get('bulk'), temp:f.get('temp'), rating:f.get('rating'), notes:f.get('notes'), feedAt: state.feedAt ? new Date(state.feedAt).toISOString() : null};
+    function done(saved){
+      state.journal.unshift(saved); save(); renderJournal();
+      form.reset(); form.date.value = todayLocal(); btn.disabled = false;
+    }
+    if (!cloud){ done(entry); return; }
+    btn.disabled = true; setSync('Saving…');
+    sb(SB_TABLE, {method:'POST', body:toRow(entry), headers:{'Prefer':'return=representation'}})
+      .then(function(rows){ done(fromRow(rows[0])); setSync('Synced'); })
+      .catch(function(err){ done(entry); setSync('Saved here only · will sync next visit'); console.warn(err); });
   });
+
   $('jrows').addEventListener('click', function(e){
     var b = e.target.closest('.del'); if (!b) return;
+    var i = +b.dataset.j, r = state.journal[i];
     if (!confirm('Delete this journal entry?')) return;
-    state.journal.splice(+b.dataset.j, 1); save(); renderJournal();
+    function drop(){ state.journal.splice(i, 1); save(); renderJournal(); }
+    if (!cloud || !r.id){ drop(); return; }
+    setSync('Deleting…');
+    sb(SB_TABLE + '?id=eq.' + encodeURIComponent(r.id), {method:'DELETE'})
+      .then(function(){ drop(); setSync('Synced'); })
+      .catch(function(err){ setSync('Could not delete · try again'); console.warn(err); });
   });
 
   // ---------- reset ----------
@@ -611,8 +670,9 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
     // Never overwrite the picker while someone is using it.
     if (document.activeElement !== $('feedAt')) $('feedAt').value = state.feedAt ? toLocalInput(state.feedAt) : '';
   }
-  var jd = document.querySelector('#jform [name=date]'); if (jd) jd.valueAsDate = new Date();
+  var jd = document.querySelector('#jform [name=date]'); if (jd) jd.value = todayLocal();
   renderAll();
+  loadJournal();
   setInterval(function(){
     renderBoard();
     tickBM();
