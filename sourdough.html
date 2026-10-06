@@ -365,7 +365,7 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
   function at(off){ return state.feedAt ? new Date(state.feedAt + off*60000) : null; }
   function fmtTime(d){ return d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}).toLowerCase(); }
   function fmtDay(d){ return d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}); }
-  function fmtLong(d){ return d.toLocaleDateString([], {weekday:'long'}) + ', ' + fmtTime(d); }
+  function fmtLong(d){ return d.toLocaleDateString([], {weekday:'long', month:'short', day:'numeric'}) + ' · ' + fmtTime(d); }
   function dur(ms){
     if (ms < 0) ms = 0;
     var s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
@@ -395,10 +395,14 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
     });
   }
   function setFeed(ms){
-    if (state.feedAt && Object.keys(state.done).some(function(k){ return state.done[k]; })) {
-      if (!confirm('Change the feed time? Your checked-off steps will be kept.')) { $('feedAt').value = toLocalInput(state.feedAt); return; }
-    }
+    if (!isFinite(ms)) return;
     state.feedAt = ms; save(); renderAll();
+  }
+  // Parse "YYYY-MM-DDTHH:MM" as local time; ignore half-typed values (e.g. year 0002).
+  function parseLocal(v){
+    var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(v || '');
+    if (!m || +m[1] < 2020 || +m[1] > 2100) return NaN;
+    return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5]).getTime();
   }
 
   // ---------- schedule ----------
@@ -517,7 +521,12 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
     state.feedAt = null; state.done = {}; state.bulk = {}; state.timerEnd = null; state.timerLeft = null; state.bm = 0;
     save(); renderAll();
   });
-  $('feedAt').addEventListener('change', function(e){ if (e.target.value) setFeed(new Date(e.target.value).getTime()); });
+  ['input','change'].forEach(function(evt){
+    $('feedAt').addEventListener(evt, function(e){
+      var ms = parseLocal(e.target.value);
+      if (isFinite(ms) && ms !== state.feedAt) setFeed(ms);
+    });
+  });
 
   // ---------- bake mode ----------
   var lastFocus = null;
@@ -599,7 +608,8 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding:26px 0 40px;disp
   // ---------- init ----------
   function renderAll(){
     renderPicks(); renderSteps(); renderBoard(); renderFormula(); renderBulk(); renderJournal();
-    $('feedAt').value = state.feedAt ? toLocalInput(state.feedAt) : '';
+    // Never overwrite the picker while someone is using it.
+    if (document.activeElement !== $('feedAt')) $('feedAt').value = state.feedAt ? toLocalInput(state.feedAt) : '';
   }
   var jd = document.querySelector('#jform [name=date]'); if (jd) jd.valueAsDate = new Date();
   renderAll();
