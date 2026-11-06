@@ -85,17 +85,44 @@ describe('Gemini client', () => {
     assert.equal(second.at(-1).parts[0].functionResponse.name, 'log_food');
   });
 
-  test('retries once on a rate limit, then reports clearly without the key', async () => {
-    let n = 0;
-    const limited = { ok: false, status: 429, json: async () => ({ error: { message: 'Resource exhausted' } }) };
-    const g = createGemini({ apiKey: 'AIza-SECRET', retryDelayMs: 1, fetch: async () => { n++; return limited; } });
-    await assert.rejects(g.messages({ system: 's', messages: [{ role: 'user', content: 'x' }] }),
-      (e) => /429/.test(e.message) && /rate limit/.test(e.message) && !e.message.includes('SECRET'));
-    assert.equal(n, 2);
+  const busy = (status = 503) => ({ ok: false, status, json: async () => ({ error: { message: 'This model is currently experiencing high demand.' } }) });
+  const missing = { ok: false, status: 404, json: async () => ({ error: { message: 'model not found' } }) };
+  const msg = { system: 's', messages: [{ role: 'user', content: 'x' }] };
 
-    let m = 0;
-    const ok = createGemini({ apiKey: 'k', retryDelayMs: 1, fetch: async () => (++m === 1 ? limited : reply([{ text: 'fine' }])) });
-    assert.equal((await ok.messages({ system: 's', messages: [{ role: 'user', content: 'x' }] })).content[0].text, 'fine');
+  test('busy main model: retries once, then falls back to lighter models', async () => {
+    const urls = [];
+    const g = createGemini({ apiKey: 'k', retryDelayMs: 1, fetch: async (u) => {
+      urls.push(u.match(/models\/(.+):/)[1]);
+      return urls.length <= 2 ? busy() : reply([{ text: 'fine' }]);
+    } });
+    assert.equal((await g.messages(msg)).content[0].text, 'fine');
+    assert.deepEqual(urls, ['gemini-flash-latest', 'gemini-flash-latest', 'gemini-flash-lite-latest']);
+  });
+
+  test('skips fallback models this key cannot use (404)', async () => {
+    const urls = [];
+    const g = createGemini({ apiKey: 'k', retryDelayMs: 1, fetch: async (u) => {
+      const m = u.match(/models\/(.+):/)[1]; urls.push(m);
+      if (m === 'gemini-flash-latest') return busy();
+      if (m === 'gemini-flash-lite-latest') return missing;
+      return reply([{ text: 'ok' }]);
+    } });
+    await g.messages(msg);
+    assert.deepEqual(urls, ['gemini-flash-latest', 'gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash']);
+  });
+
+  test('everything busy: clear error, no key in the message', async () => {
+    let n = 0;
+    const g = createGemini({ apiKey: 'AIza-SECRET', retryDelayMs: 1, fetch: async () => { n++; return busy(429); } });
+    await assert.rejects(g.messages(msg), (e) => /429/.test(e.message) && /all free Gemini models are busy/.test(e.message) && !e.message.includes('SECRET'));
+    assert.equal(n, 5); // main ×2 + 3 fallbacks
+  });
+
+  test('a real error (bad request) is reported immediately, no fallback', async () => {
+    let n = 0;
+    const g = createGemini({ apiKey: 'k', retryDelayMs: 1, fetch: async () => { n++; return { ok: false, status: 400, json: async () => ({ error: { message: 'Invalid schema' } }) }; } });
+    await assert.rejects(g.messages(msg), /400: Invalid schema/);
+    assert.equal(n, 1);
   });
 });
 

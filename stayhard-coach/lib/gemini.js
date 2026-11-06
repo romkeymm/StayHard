@@ -64,17 +64,40 @@ export function fromGeminiResponse(data, round = 0) {
   return { stop_reason: usesTools ? 'tool_use' : 'end_turn', content };
 }
 
-export function createGemini({ apiKey, model = DEFAULT_GEMINI_MODEL, fetch: fetchImpl, retryDelayMs = 2000 } = {}) {
+// When the main model is busy (free tier 503/429), these are tried in order.
+export const FALLBACK_MODELS = ['gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+
+const BUSY = new Set([429, 500, 503]);
+
+export function createGemini({ apiKey, model = DEFAULT_GEMINI_MODEL, fallbacks = FALLBACK_MODELS, fetch: fetchImpl, retryDelayMs = 1500 } = {}) {
   if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
   const doFetch = fetchImpl ?? globalThis.fetch;
+  const chain = [...new Set([model, ...fallbacks])];
   let round = 0;
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+  const postTo = (m, body) => doFetch(`${BASE}/${m}:generateContent`, {
+    method: 'POST',
+    headers: { 'x-goog-api-key': apiKey, 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  // Main model: up to 2 tries. Then each fallback once. A model that doesn't
+  // exist for this key (404) is skipped. Returns the first non-busy response.
   async function post(body) {
-    return doFetch(`${BASE}/${model}:generateContent`, {
-      method: 'POST',
-      headers: { 'x-goog-api-key': apiKey, 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    let last = null;
+    for (const [i, m] of chain.entries()) {
+      const tries = i === 0 ? 2 : 1;
+      for (let t = 0; t < tries; t++) {
+        const res = await postTo(m, body);
+        if (res.ok) return res;
+        last = res;
+        if (res.status === 404) break;
+        if (!BUSY.has(res.status)) return res; // real error: report it
+        if (t < tries - 1) await wait(retryDelayMs);
+      }
+    }
+    return last;
   }
 
   return {
@@ -86,15 +109,10 @@ export function createGemini({ apiKey, model = DEFAULT_GEMINI_MODEL, fetch: fetc
         tools: tools.length ? [{ functionDeclarations: tools.map((t) => ({ name: t.name, description: t.description, parameters: toGeminiSchema(t.input_schema) })) }] : undefined,
         generationConfig: { maxOutputTokens: 1500 },
       };
-      let res = await post(body);
-      // Free tier rate limits: one polite retry on 429/503.
-      if (res.status === 429 || res.status === 503) {
-        await new Promise((r) => setTimeout(r, retryDelayMs));
-        res = await post(body);
-      }
+      const res = await post(body);
       const data = await res.json().catch(() => null);
       if (!res.ok) {
-        const hint = res.status === 429 ? ' (free-tier rate limit; try again in a minute)' : '';
+        const hint = BUSY.has(res.status) ? ' (all free Gemini models are busy right now; try again in a minute)' : '';
         throw new Error(`Gemini API ${res.status}: ${data?.error?.message ?? 'request failed'}${hint}`);
       }
       return fromGeminiResponse(data, round++);
