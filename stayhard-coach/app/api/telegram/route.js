@@ -3,6 +3,7 @@
 
 import { buildCoach } from '../../../lib/coach.js';
 import { handleUpdate } from '../../../lib/telegram-handler.js';
+import { createTelegram } from '../../../lib/telegram.js';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,8 +26,16 @@ export async function POST(request) {
     });
     console.log('[telegram]', update?.update_id, result.status);
   } catch (e) {
-    // Setup errors (missing env vars). Still answer 200 so Telegram doesn't retry forever.
+    // Setup errors (missing or mistyped env vars). Tell Matt on Telegram, and
+    // still answer 200 so Telegram doesn't retry forever.
     console.error('[telegram] setup', e);
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    if (chatId && update?.message?.chat?.id && String(update.message.chat.id) === String(chatId)) {
+      try {
+        await createTelegram({ token: process.env.TELEGRAM_BOT_TOKEN })
+          .sendMessage(chatId, `I couldn't process that message. ${String(e.message).slice(0, 300)}`);
+      } catch { /* token itself is broken; logs are the only signal */ }
+    }
   }
   return Response.json({ ok: true });
 }

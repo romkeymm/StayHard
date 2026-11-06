@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createGemini, toGeminiSchema, toGeminiContents, fromGeminiResponse } from '../lib/gemini.js';
 import { runCoachTurn } from '../lib/agent.js';
 import { TOOLS } from '../lib/coach-tools.js';
-import { buildCoach } from '../lib/coach.js';
+import { buildCoach, checkEnv } from '../lib/coach.js';
 
 describe('schema conversion', () => {
   test('strips JSON Schema keywords Gemini rejects, keeps the rest, recursively', () => {
@@ -106,5 +106,16 @@ describe('provider selection', () => {
     assert.equal(buildCoach({ ...base, GEMINI_API_KEY: 'g', GEMINI_MODEL: 'gemini-x' }).claude.model, 'gemini-x');
     assert.equal(buildCoach({ ...base, ANTHROPIC_API_KEY: 'a' }).claude.model, 'claude-sonnet-5-5');
     assert.throws(() => buildCoach(base).claude, /ANTHROPIC_API_KEY is not set/);
+  });
+});
+
+describe('setup checks', () => {
+  const good = { SUPABASE_URL: 'https://x.supabase.co', TELEGRAM_BOT_TOKEN: '1:abc', FDC_API_KEY: 'k', SUPABASE_SERVICE_KEY: 'sb_secret_abc' };
+  test('passes with real-looking values', () => { assert.doesNotThrow(() => checkEnv(good)); });
+  test('names the variable when placeholder text was pasted', () => {
+    assert.throws(() => checkEnv({ ...good, SUPABASE_SERVICE_KEY: '<Supabase → Project Settings → API Keys>' }),
+      /SUPABASE_SERVICE_KEY contains spaces or special characters/);
+    assert.throws(() => checkEnv({ ...good, FDC_API_KEY: '<yourkey>' }), /FDC_API_KEY still has the <placeholder>/);
+    assert.throws(() => checkEnv({ ...good, TELEGRAM_BOT_TOKEN: '' }), /TELEGRAM_BOT_TOKEN is not set/);
   });
 });

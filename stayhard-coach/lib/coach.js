@@ -13,7 +13,23 @@ import { createClaude } from './anthropic.js';
 import { createGemini } from './gemini.js';
 import { createConversation } from './conversation.js';
 
+// Catches the common setup mistakes (missing value, pasted placeholder text,
+// stray spaces) with a message that names the variable.
+export function checkEnv(env = process.env, names = ['SUPABASE_URL', 'TELEGRAM_BOT_TOKEN', 'FDC_API_KEY']) {
+  const problems = [];
+  for (const n of names) {
+    const v = env[n];
+    if (!v) problems.push(`${n} is not set`);
+    else if (/[^\x21-\x7e]/.test(v)) problems.push(`${n} contains spaces or special characters; it looks like placeholder text rather than the real value`);
+    else if (/^<.*>$/.test(v)) problems.push(`${n} still has the <placeholder> from the instructions`);
+  }
+  if (!env.SUPABASE_SERVICE_KEY && !env.SUPABASE_KEY) problems.push('SUPABASE_SERVICE_KEY is not set');
+  else if (env.SUPABASE_SERVICE_KEY && /[^\x21-\x7e]/.test(env.SUPABASE_SERVICE_KEY)) problems.push('SUPABASE_SERVICE_KEY contains spaces or special characters; paste the actual sb_secret_... key');
+  if (problems.length) throw new Error(`Setup problem: ${problems.join('; ')}.`);
+}
+
 export function buildCoach(env = process.env) {
+  checkEnv(env);
   const telegram = createTelegram({ token: env.TELEGRAM_BOT_TOKEN });
   const defaultChat = env.TELEGRAM_CHAT_ID;
   // The secret (service) key bypasses row level security; it never leaves the server.
