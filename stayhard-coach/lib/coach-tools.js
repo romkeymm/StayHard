@@ -16,6 +16,7 @@
 // Works in Node 18+ and the browser (fetch only, no dependencies).
 
 import { scale } from './food-lookup.js';
+import { SESSIONS, BLOCK, scheduleWeek, weekOf, isDeload } from './strength-block.js';
 
 const TZ = 'America/Chicago';
 const MEALS = ['breakfast', 'lunch', 'dinner', 'snack', 'pre', 'post'];
@@ -118,6 +119,17 @@ export const TOOLS = [
         date: { type: 'string', description: 'YYYY-MM-DD, defaults to today' },
       },
       required: ['weight_lb'],
+    },
+  },
+  {
+    name: 'get_training_week',
+    description:
+      "Matt's strength plan for a week: custody week type, kid days (no lifting), long-run day, " +
+      'which session (A, B, C, L) goes on which day, block week number, deload flag, and every ' +
+      'exercise with sets, reps and cues. Running is planned in Kotcha, never by you.',
+    input_schema: {
+      type: 'object',
+      properties: { date: { type: 'string', description: 'Any YYYY-MM-DD in the week; defaults to today' } },
     },
   },
 ];
@@ -344,7 +356,33 @@ export function createCoachTools({ db, food, targets, sendCard, tz = TZ, now = (
     return { sent: true, date: day.date, items: day.items.length, footer: day.footer };
   }
 
-  const handlers = { search_food, lookup_barcode, log_food, get_nutrition_day, show_nutrition_card, log_weight };
+  async function get_training_week({ date } = {}) {
+    const d = checkDate(date) ?? localDate(now(), tz);
+    const plan = scheduleWeek(d);
+    const blockWeek = d < BLOCK.start ? null : weekOf(d);
+    const describe = (key) => {
+      const s = SESSIONS.find((x) => x.key === key);
+      const deload = blockWeek && isDeload(blockWeek);
+      return {
+        title: s.title,
+        exercises: s.exercises.map((ex) => ({
+          name: ex.name,
+          sets: deload ? Math.max(1, Math.round(ex.sets * 0.6)) : ex.sets,
+          target: ex.range ? `${ex.range[0]}-${ex.range[1]} reps` : ex.kind === 'duration' ? `${ex.duration} s`
+            : ex.kind === 'carry' ? `${ex.distance} m` : `${ex.main && blockWeek >= 5 && blockWeek <= 7 ? 3 : ex.reps} reps`,
+          superset: ex.ss ?? null,
+          cue: ex.note,
+        })),
+      };
+    };
+    return {
+      ...plan,
+      block: blockWeek ? { name: BLOCK.title, week: blockWeek, of: BLOCK.weeks, deload: isDeload(blockWeek) } : { name: BLOCK.title, starts: BLOCK.start },
+      lifts: plan.lifts.map((l) => ({ ...l, ...describe(l.session) })),
+    };
+  }
+
+  const handlers = { search_food, lookup_barcode, log_food, get_nutrition_day, show_nutrition_card, log_weight, get_training_week };
 
   // Tool errors go back to the model as { error } so it can fix the call.
   async function execute(name, input = {}, ctx = {}) {

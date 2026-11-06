@@ -19,6 +19,19 @@ export function createTelegram({ token, fetch: fetchImpl } = {}) {
 
   return {
     sendMessage: (chatId, text, opts = {}) => call('sendMessage', json({ chat_id: chatId, text, ...opts })),
+    sendChatAction: (chatId, action = 'typing') => call('sendChatAction', json({ chat_id: chatId, action })),
+    setWebhook: (url, secretToken) =>
+      call('setWebhook', json({ url, secret_token: secretToken, allowed_updates: ['message'] })),
+
+    // Download a file the user sent (e.g. a photo) as bytes.
+    async downloadFile(fileId) {
+      const file = await call('getFile', json({ file_id: fileId }));
+      const res = await doFetch(`https://api.telegram.org/file/bot${token}/${file.file_path}`);
+      if (!res.ok) throw new Error(`Telegram file download failed (${res.status})`);
+      const ext = String(file.file_path).split('.').pop().toLowerCase();
+      const mediaType = { png: 'image/png', webp: 'image/webp', gif: 'image/gif' }[ext] ?? 'image/jpeg';
+      return { bytes: new Uint8Array(await res.arrayBuffer()), mediaType };
+    },
 
     // photo: Uint8Array/ArrayBuffer of PNG bytes
     sendPhoto(chatId, photo, { caption, filename = 'nutrition.png' } = {}) {

@@ -1,17 +1,23 @@
 // Wires the coach from environment variables. Server-only.
 //
-// Required env: SUPABASE_URL, SUPABASE_KEY, FDC_API_KEY, TELEGRAM_BOT_TOKEN,
-//               TELEGRAM_CHAT_ID, CRON_SECRET
-// Optional env: TARGET_CALORIES, TARGET_PROTEIN_G, TARGET_CARBS_G, TARGET_FAT_G
+// Required env: SUPABASE_URL, SUPABASE_SERVICE_KEY (or SUPABASE_KEY), FDC_API_KEY,
+//               TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, CRON_SECRET, TELEGRAM_WEBHOOK_SECRET,
+//               and one model key: GEMINI_API_KEY (free tier) or ANTHROPIC_API_KEY
+// Optional env: GEMINI_MODEL, ANTHROPIC_MODEL, TARGET_CALORIES, TARGET_PROTEIN_G, TARGET_CARBS_G, TARGET_FAT_G
 
 import { createFoodLookup } from './food-lookup.js';
 import { createCoachTools, createSupabase } from './coach-tools.js';
 import { createTelegram } from './telegram.js';
 import { renderCardPng } from './nutrition-card.js';
+import { createClaude } from './anthropic.js';
+import { createGemini } from './gemini.js';
+import { createConversation } from './conversation.js';
 
 export function buildCoach(env = process.env) {
   const telegram = createTelegram({ token: env.TELEGRAM_BOT_TOKEN });
   const defaultChat = env.TELEGRAM_CHAT_ID;
+  // The secret (service) key bypasses row level security; it never leaves the server.
+  const db = createSupabase({ url: env.SUPABASE_URL, key: env.SUPABASE_SERVICE_KEY || env.SUPABASE_KEY });
 
   const sendCard = async (day, ctx = {}) => {
     const chatId = ctx.chatId ?? defaultChat;
@@ -21,7 +27,7 @@ export function buildCoach(env = process.env) {
   };
 
   const coach = createCoachTools({
-    db: createSupabase({ url: env.SUPABASE_URL, key: env.SUPABASE_KEY }),
+    db,
     food: createFoodLookup({ apiKey: env.FDC_API_KEY }),
     sendCard,
   });
@@ -31,6 +37,13 @@ export function buildCoach(env = process.env) {
     telegram,
     sendCard,
     sendMessage: (text, chatId = defaultChat) => telegram.sendMessage(chatId, text),
+    conversation: createConversation({ db }),
+    // The model behind the coach. Gemini (free tier) when GEMINI_API_KEY is set,
+    // otherwise Claude. Created lazily so cron routes work before either key exists.
+    get claude() {
+      if (env.GEMINI_API_KEY) return createGemini({ apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL || undefined });
+      return createClaude({ apiKey: env.ANTHROPIC_API_KEY, model: env.ANTHROPIC_MODEL || undefined });
+    },
   };
 }
 

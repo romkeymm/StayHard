@@ -92,10 +92,10 @@ function setup({ seed, now = MORNING, targets = TARGETS } = {}) {
 }
 
 // ── tool definitions ─────────────────────────────────────────
-test('exposes exactly the six tools, each with a handler', () => {
+test('exposes exactly the seven tools, each with a handler', () => {
   const { coach } = setup();
   assert.deepEqual(TOOLS.map((t) => t.name),
-    ['search_food', 'lookup_barcode', 'log_food', 'get_nutrition_day', 'show_nutrition_card', 'log_weight']);
+    ['search_food', 'lookup_barcode', 'log_food', 'get_nutrition_day', 'show_nutrition_card', 'log_weight', 'get_training_week']);
   for (const t of TOOLS) {
     assert.equal(typeof coach[t.name], 'function');
     assert.equal(t.input_schema.type, 'object');
