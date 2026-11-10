@@ -338,7 +338,7 @@ function buildLarge(widget, data) {
   widget.addSpacer(8)
 
   // All races
-  const racesLbl = widget.addText("2026 RACE CALENDAR")
+  const racesLbl = widget.addText("2027 RACE CALENDAR")
   racesLbl.font = Font.boldSystemFont(8)
   racesLbl.textColor = C.dim
   widget.addSpacer(4)

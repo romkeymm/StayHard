@@ -1,13 +1,13 @@
 {
-  "updated": "2026-04-15",
+  "updated": "2026-11-10",
   "athlete": "Matt",
 
   "next_race": {
-    "name": "Des Moines Women's Half Marathon",
-    "short_name": "DM Half",
-    "date": "2026-05-03",
-    "type": "half",
-    "distance": "13.1 mi"
+    "name": "Market to Market Iowa",
+    "short_name": "M2M Relay",
+    "date": "2027-05-08",
+    "type": "relay",
+    "distance": "Relay"
   },
 
   "fitness": {
@@ -36,11 +36,10 @@
   },
 
   "races": [
-    { "name": "Des Moines Women's Half Marathon", "short": "DM Half",     "date": "2026-05-03", "distance": "13.1 mi" },
-    { "name": "Market to Market Relay",           "short": "M2M Relay",   "date": "2026-05-09", "distance": "Relay"   },
-    { "name": "Ironman 70.3 Omaha",               "short": "Ironman 70.3","date": "2026-06-07", "distance": "70.3 mi" },
-    { "name": "Mile Night Run",                   "short": "Mile Night",  "date": "2026-06-20", "distance": "1 mi"    },
-    { "name": "Whiterock Ultra 50k",              "short": "Whiterock 50k","date": "2026-07-25","distance": "50k"     },
-    { "name": "Marine Corps Marathon",            "short": "Marine Corps", "date": "2026-10-25", "distance": "26.2 mi" }
+    { "name": "Market to Market Iowa",             "short": "M2M Relay",     "date": "2027-05-08", "distance": "Relay"   },
+    { "name": "Dam to DSM Half Marathon",          "short": "Dam to DSM",    "date": "2027-06-05", "distance": "13.1 mi" },
+    { "name": "Whiterock Ultra 50K",               "short": "Whiterock 50K", "date": "2027-07-24", "distance": "50k"     },
+    { "name": "IMT Des Moines Marathon",           "short": "IMT DSM",       "date": "2027-10-17", "distance": "26.2 mi" },
+    { "name": "California International Marathon", "short": "CIM",           "date": "2027-12-05", "distance": "26.2 mi" }
   ]
 }

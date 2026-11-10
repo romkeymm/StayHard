@@ -763,7 +763,7 @@
 </div>
 
 <!-- SECTION: RACE CALENDAR -->
-<div class="section-label">2026 Race Calendar</div>
+<div class="section-label">2027 Race Calendar</div>
 <div class="grid-gap g3" id="race-grid" style="padding:0;background:var(--border)"></div>
 
 <!-- TIMELINE -->
@@ -1062,12 +1062,12 @@ const YR_VO2 = {2026:54.8,2025:52.4,2024:48.2,2023:46.4,2022:44.8};
 const YR_RUNS = {2026:55,2025:255,2024:198,2023:213,2022:89};
 
 const RACES = [
-  {name:"Des Moines Women's Half Marathon",date:'2026-05-03',type:'half',label:'13.1 mi',color:'#ff2d20',result:'1:34:19',pace:'7:12/mi',pr:true},
-  {name:'Market to Market Relay',date:'2026-05-09',type:'relay',label:'Relay',color:'#4a9eff',result:'8:56:25',pace:'7:27/mi',pr:true},
-  {name:'Ironman 70.3 Omaha',date:'2026-06-07',type:'triathlon',label:'70.3 mi',color:'#bb86fc',result:'DNF'},
-  {name:'Mile Night Run',date:'2026-06-20',type:'run',label:'1 mi',color:'#ffd600',result:'5:48',pr:true},
-  {name:'Whiterock Ultra 50k',date:'2026-07-25',type:'ultra',label:'50k · 31 mi',color:'#ff7043',result:'DNF'},
-  {name:'Marine Corps Marathon',date:'2026-10-25',type:'marathon',label:'26.2 mi',color:'#00e676',result:'3:25:57',pace:'7:52/mi',pr:true}
+  {name:'Market to Market Iowa',date:'2027-05-08',type:'relay',label:'Relay',color:'#4a9eff'},
+  {name:'Dam to DSM Half Marathon',date:'2027-06-05',type:'half',label:'13.1 mi',color:'#ff2d20'},
+  {name:'Whiterock Ultra 50K',date:'2027-07-24',type:'ultra',label:'50k · 31 mi',color:'#ff7043'},
+  {name:'IMT Des Moines Marathon',date:'2027-10-17',type:'marathon',label:'26.2 mi · Tune-up',color:'#ffd600'},
+  // CIM 2027 date not announced yet; Dec 5 (first Sunday) is a placeholder
+  {name:'California International Marathon',date:'2027-12-05',type:'marathon',label:'26.2 mi · Goal race · Date TBC',color:'#00e676'}
 ];
 
 // ─── HELPERS ─────────────────────────────────────────────────
@@ -1142,7 +1142,7 @@ const nextRaceIdx = RACES.findIndex(r=>daysUntil(r.date)>=0);
 if (nextRaceIdx >= 0) {
   const nr = RACES[nextRaceIdx];
   const nd = daysUntil(nr.date);
-  const shortName = nr.name.replace("Des Moines Women's","DM Women's").replace('Market to Market','M2M').replace('Ironman 70.3 Omaha','Ironman 70.3').replace('Whiterock Ultra 50k','Whiterock 50k').replace('Marine Corps Marathon','Marine Corps');
+  const shortName = nr.name.replace('Market to Market Iowa','M2M').replace('Dam to DSM Half Marathon','Dam to DSM').replace('Whiterock Ultra 50K','Whiterock 50K').replace('IMT Des Moines Marathon','IMT DSM').replace('California International Marathon','CIM');
   pill.textContent = nd === 0 ? 'RACE DAY!' : 'NEXT: ' + shortName.toUpperCase() + ' — ' + nd + 'D';
   if (nd === 0) { pill.style.background='#ff2d20'; pill.style.color='#fff'; }
 } else {
