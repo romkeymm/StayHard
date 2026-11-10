@@ -142,6 +142,27 @@ def main(path):
         if d.year == year:
             monthly[d.month - 1] += mi
     year_runs = [r for r in runs if r[0].year == year]
+
+    # Last complete month (the export's own month counts only if it ends on the month's last day)
+    by_month = defaultdict(float)
+    for d, mi in runs:
+        by_month[(d.year, d.month)] += mi
+    next_day = end + dt.timedelta(days=1)
+    lm = (end.year, end.month) if next_day.month != end.month else None
+    if lm is None or next_day.day != 1:
+        first = end.replace(day=1) - dt.timedelta(days=1)
+        lm = (first.year, first.month)
+    pm_date = dt.date(lm[0], lm[1], 1) - dt.timedelta(days=1)
+    pm = (pm_date.year, pm_date.month)
+    lm_mi, pm_mi = by_month.get(lm, 0.0), by_month.get(pm, 0.0)
+    last_month = {
+        "label": dt.date(lm[0], lm[1], 1).strftime("%b"),
+        "year": lm[0],
+        "miles": round(lm_mi, 1),
+        "prev_label": dt.date(pm[0], pm[1], 1).strftime("%b"),
+        "prev_miles": round(pm_mi, 1),
+        "change_pct": round((lm_mi - pm_mi) / pm_mi * 100) if pm_mi else None,
+    }
     vo2_all = [v for _, v in samples["vo2"]]
 
     data = json.loads(DATA_JSON.read_text())
@@ -169,6 +190,7 @@ def main(path):
         "miles_ytd": round(sum(mi for _, mi in year_runs), 1),
         f"miles_{year}": round(sum(mi for _, mi in year_runs), 1),  # older widget copies read this key
         "monthly_miles": [round(m, 2) for m in monthly],
+        "last_month": last_month,
         "ctl": round(ctl, 1),
         "atl": round(atl, 1),
         "tsb": round(tsb, 1),

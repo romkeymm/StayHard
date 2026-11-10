@@ -61,20 +61,16 @@ function yearTag(data) {
   return "'" + String(data.training.year || new Date().getFullYear()).slice(2)
 }
 
-function readinessColor(score) {
-  if (score == null) return C.dim
-  if (score >= 80) return C.green
-  if (score >= 65) return C.yellow
-  if (score >= 50) return C.orange
-  return C.red
-}
-
-function readinessLabel(score) {
-  if (score == null) return "No data"
-  if (score >= 80) return "Optimal"
-  if (score >= 65) return "Good"
-  if (score >= 50) return "Moderate"
-  return "Rest Day"
+// Last complete month's miles vs the month before, e.g. "OCT 155 MI" / "▲ 59% vs Sep"
+function lastMonth(data) {
+  const lm = data.training.last_month
+  if (!lm) return null
+  const pct = lm.change_pct
+  return {
+    miles: lm.label.toUpperCase() + " · " + Math.round(lm.miles) + " MI",
+    change: pct == null ? "" : (pct >= 0 ? "▲ " : "▼ ") + Math.abs(pct) + "% vs " + lm.prev_label,
+    color: pct == null ? C.muted : (pct >= 0 ? C.green : C.orange),
+  }
 }
 
 function addRow(stack, label, value, valueColor) {
@@ -98,7 +94,7 @@ function addDivider(stack) {
 }
 
 // ── SMALL WIDGET ─────────────────────────────────────────────
-// Shows: next race countdown + readiness score
+// Shows: next race countdown + last month miles
 function buildSmall(widget, data) {
   widget.setPadding(14, 14, 14, 14)
 
@@ -132,16 +128,15 @@ function buildSmall(widget, data) {
 
       widget.addSpacer()
 
-      const score = data.fitness.readiness_score
-      const scoreRow = widget.addStack()
-      scoreRow.layoutHorizontally()
-      scoreRow.centerAlignContent()
-      const dot = scoreRow.addText("● ")
-      dot.font = Font.systemFont(8)
-      dot.textColor = readinessColor(score)
-      const readLbl = scoreRow.addText(readinessLabel(score).toUpperCase())
-      readLbl.font = Font.boldSystemFont(8)
-      readLbl.textColor = readinessColor(score)
+      const lm = lastMonth(data)
+      if (lm) {
+        const miTxt = widget.addText(lm.miles)
+        miTxt.font = Font.boldSystemFont(8)
+        miTxt.textColor = C.blue
+        const chTxt = widget.addText(lm.change)
+        chTxt.font = Font.boldSystemFont(8)
+        chTxt.textColor = lm.color
+      }
     }
   } else {
     const err = widget.addText("Tap to open")
@@ -151,7 +146,7 @@ function buildSmall(widget, data) {
 }
 
 // ── MEDIUM WIDGET ─────────────────────────────────────────────
-// Shows: countdown + all upcoming races list + readiness
+// Shows: countdown + upcoming races + last month miles
 function buildMedium(widget, data) {
   widget.setPadding(14, 16, 14, 16)
 
@@ -196,13 +191,15 @@ function buildMedium(widget, data) {
 
       left.addSpacer()
 
-      const score = data.fitness.readiness_score
-      const scoreVal = left.addText(score == null ? "—" : String(score) + " / 100")
-      scoreVal.font = Font.boldSystemFont(10)
-      scoreVal.textColor = readinessColor(score)
-      const scoreLbl = left.addText(readinessLabel(score).toUpperCase())
-      scoreLbl.font = Font.boldSystemFont(8)
-      scoreLbl.textColor = C.dim
+      const lm = lastMonth(data)
+      if (lm) {
+        const miVal = left.addText(lm.miles)
+        miVal.font = Font.boldSystemFont(10)
+        miVal.textColor = C.blue
+        const chLbl = left.addText(lm.change)
+        chLbl.font = Font.boldSystemFont(8)
+        chLbl.textColor = lm.color
+      }
     }
   }
 
@@ -401,7 +398,9 @@ function buildLarge(widget, data) {
     { label: "VO2 MAX", value: fmt(data.fitness.vo2_max), color: C.green },
     { label: "MILES " + yearTag(data), value: fmt(milesYTD(data)), color: C.blue },
     { label: "HRV", value: fmt(data.fitness.hrv, "ms"), color: C.purple },
-    { label: "READINESS", value: fmt(data.fitness.readiness_score), color: readinessColor(data.fitness.readiness_score) },
+    { label: data.training.last_month ? data.training.last_month.label.toUpperCase() + " MI" : "LAST MO",
+      value: data.training.last_month ? fmt(Math.round(data.training.last_month.miles)) : "—",
+      color: (lastMonth(data) || { color: C.muted }).color },
     { label: "RESTING HR", value: fmt(data.fitness.resting_hr), color: C.yellow },
   ]
 

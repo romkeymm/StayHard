@@ -41,7 +41,15 @@
     "ctl": null,
     "atl": null,
     "tsb": null,
-    "miles_2026": 1169.1
+    "miles_2026": 1169.1,
+    "last_month": {
+      "label": "Oct",
+      "year": 2026,
+      "miles": 154.8,
+      "prev_label": "Sep",
+      "prev_miles": 97.6,
+      "change_pct": 59
+    }
   },
   "races": [
     {
