@@ -11,8 +11,8 @@
 //  5. Supports Small, Medium, and Large widget sizes
 // ─────────────────────────────────────────────────────────────
 
-const DATA_URL       = "https://romkeymm.github.io/fitness/data.json"
-const DASHBOARD_URL  = "https://romkeymm.github.io/fitness/"
+const DATA_URL       = "https://romkeymm.github.io/StayHard/data.json"
+const DASHBOARD_URL  = "https://romkeymm.github.io/StayHard/fitness.html"
 
 // ── COLORS ───────────────────────────────────────────────────
 const C = {
