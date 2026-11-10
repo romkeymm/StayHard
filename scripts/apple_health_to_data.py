@@ -167,6 +167,7 @@ def main(path):
         "year": year,
         "runs_ytd": len(year_runs),
         "miles_ytd": round(sum(mi for _, mi in year_runs), 1),
+        f"miles_{year}": round(sum(mi for _, mi in year_runs), 1),  # older widget copies read this key
         "monthly_miles": [round(m, 2) for m in monthly],
         "ctl": round(ctl, 1),
         "atl": round(atl, 1),
