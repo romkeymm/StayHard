@@ -842,12 +842,12 @@ body {
         <div class="stat-lbl">Days to next race</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">57.1</div>
+        <div class="stat-num" id="hp-vo2">57.1</div>
         <div class="stat-lbl">VO2 Max</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">332.6</div>
-        <div class="stat-lbl">Miles in 2026</div>
+        <div class="stat-num" id="hp-miles">1169.1</div>
+        <div class="stat-lbl" id="hp-miles-lbl">Miles in 2026</div>
       </div>
     </div>
     <div class="hero-scroll-hint">
@@ -1160,6 +1160,14 @@ const obs = new IntersectionObserver(entries => {
 }, {threshold:0.08});
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+
+// ── FITNESS SNAPSHOT (data.json, refreshed from monthly Apple Health export) ──
+fetch('data.json', { cache: 'no-store' }).then(r => r.json()).then(d => {
+  const f = d.fitness || {}, t = d.training || {};
+  if (f.vo2_max_peak != null) document.getElementById('hp-vo2').textContent = f.vo2_max_peak;
+  if (t.miles_ytd != null) document.getElementById('hp-miles').textContent = t.miles_ytd.toFixed(1);
+  if (t.year) document.getElementById('hp-miles-lbl').textContent = 'Miles in ' + t.year;
+}).catch(() => {});
 </script>
 </body>
 </html>

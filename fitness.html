@@ -866,11 +866,11 @@
 <!-- SECTION: OVERVIEW -->
 <div class="section-label">Overview</div>
 <div class="grid-gap g5">
-  <div class="hero-stat"><div class="hsl">VO2 Max Peak</div><div class="hsv">57.1</div><div class="hss grn">All-time high · Apr 2026</div></div>
-  <div class="hero-stat"><div class="hsl">Resting HR</div><div class="hsv">61</div><div class="hss blu">bpm avg · Oct 2026</div></div>
-  <div class="hero-stat"><div class="hsl">HRV</div><div class="hsv">60</div><div class="hss yel">ms avg · Oct 2026</div></div>
-  <div class="hero-stat"><div class="hsl">HR Recovery</div><div class="hsv">41</div><div class="hss prp">bpm drop · Mar 2026</div></div>
-  <div class="hero-stat"><div class="hsl">2026 Runs</div><div class="hsv">55</div><div class="hss grn">workouts logged</div></div>
+  <div class="hero-stat"><div class="hsl">VO2 Max Peak</div><div class="hsv" id="hs-vo2peak">57.1</div><div class="hss grn">All-time high</div></div>
+  <div class="hero-stat"><div class="hsl">Resting HR</div><div class="hsv" id="hs-rhr">61</div><div class="hss blu" id="hs-rhr-sub">bpm avg · Oct 2026</div></div>
+  <div class="hero-stat"><div class="hsl">HRV</div><div class="hsv" id="hs-hrv">60</div><div class="hss yel" id="hs-hrv-sub">ms avg · Oct 2026</div></div>
+  <div class="hero-stat"><div class="hsl">HR Recovery</div><div class="hsv" id="hs-hrr">41</div><div class="hss prp" id="hs-hrr-sub">bpm drop · Mar 2026</div></div>
+  <div class="hero-stat"><div class="hsl" id="hs-runs-lbl">2026 Runs</div><div class="hsv" id="hs-runs">—</div><div class="hss grn">workouts logged</div></div>
 </div>
 
 <!-- SECTION: FITNESS METRICS -->
@@ -881,8 +881,8 @@
   <div class="panel">
     <div class="ptitle">VO2 Max — 950 Apple Watch readings</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
-      <div class="mini-stat" style="flex:1"><div class="msl">Oct 2026 avg</div><div class="msv grn">54.7</div></div>
-      <div class="mini-stat" style="flex:1"><div class="msl">Peak ever</div><div class="msv yel">57.1</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl" id="vo2-mo-lbl">Oct 2026 avg</div><div class="msv grn" id="vo2-mo">54.7</div></div>
+      <div class="mini-stat" style="flex:1"><div class="msl">Peak ever</div><div class="msv yel" id="vo2-peak">57.1</div></div>
       <div class="mini-stat" style="flex:1"><div class="msl">vs Jun 2021</div><div class="msv grn">+52%</div></div>
     </div>
     <div class="chart-wrap" style="height:150px">
@@ -907,7 +907,7 @@
 
   <!-- READINESS SCORE -->
   <div class="panel">
-    <div class="ptitle">Today's readiness</div>
+    <div class="ptitle">Readiness · latest export</div>
     <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px">
       <div style="position:relative;width:90px;height:90px;flex-shrink:0">
         <canvas id="readinessGauge" width="90" height="90" role="img" aria-label="Readiness score gauge"></canvas>
@@ -922,8 +922,8 @@
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-      <div class="mini-stat"><div class="msl">HRV today</div><div class="msv yel" id="rd-hrv">121</div></div>
-      <div class="mini-stat"><div class="msl">Resting HR</div><div class="msv blu" id="rd-rhr">64</div></div>
+      <div class="mini-stat"><div class="msl">HRV 7-day</div><div class="msv yel" id="rd-hrv">121</div></div>
+      <div class="mini-stat"><div class="msl">RHR 7-day</div><div class="msv blu" id="rd-rhr">64</div></div>
       <div class="mini-stat"><div class="msl">TSB (form)</div><div class="msv" id="rd-tsb" style="color:#fff">2.6</div></div>
       <div class="mini-stat"><div class="msl">Fatigue (ATL)</div><div class="msv" id="rd-atl" style="color:#ff7043">32</div></div>
     </div>
@@ -1059,7 +1059,7 @@ const MILEAGE = {
 };
 const YTOTALS = {2026:1169.14,2025:1059.7,2024:870.8,2023:1046.1,2022:463.5};
 const YR_VO2 = {2026:54.8,2025:52.4,2024:48.2,2023:46.4,2022:44.8};
-const YR_RUNS = {2026:55,2025:255,2024:198,2023:213,2022:89};
+const YR_RUNS = {2026:null,2025:255,2024:198,2023:213,2022:89};
 
 const RACES = [
   {name:'Market to Market Iowa',date:'2027-05-08',type:'relay',label:'Relay',color:'#4a9eff'},
@@ -1207,7 +1207,7 @@ mkLine('strideChart', RECENT_MOS, [{ data:STR_DATA, borderColor:'#00e676', borde
 
 // ─── YEAR COMPARE ─────────────────────────────────────────────
 
-(function() {
+function renderYearCompare() {
   const el = document.getElementById('yr-compare');
   const years = [2026,2025,2024,2023,2022];
   const colors = ['#ff2d20','#4a9eff','#00e676','#ffd600','#bb86fc'];
@@ -1216,13 +1216,14 @@ mkLine('strideChart', RECENT_MOS, [{ data:STR_DATA, borderColor:'#00e676', borde
     el.innerHTML += `
       <div style="margin-bottom:12px">
         <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:#555">${y} · ${YR_RUNS[y]} runs · ${YTOTALS[y].toFixed(0)} mi</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:#555">${y} · ${YR_RUNS[y] ?? '—'} runs · ${YTOTALS[y].toFixed(0)} mi</span>
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:#fff">VO2 ${YR_VO2[y].toFixed(1)}</span>
         </div>
         <div class="tbar-o"><div class="tbar-i" style="width:${(YR_VO2[y]/58*100).toFixed(1)}%;background:${colors[i]}"></div></div>
       </div>`;
   });
-})();
+}
+renderYearCompare();
 
 // ─── MONTHLY BARS ─────────────────────────────────────────────
 
@@ -1325,15 +1326,18 @@ const WEEKLY_HRS = [0.7+1.9, 4.0+4.2, 3.8+4.4+4.4, 4.5+4.3, 4.0+3.3, 4.6+3.4, 5.
 const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 // ─── READINESS SCORE ─────────────────────────────────────────
+// Score is computed by scripts/apple_health_to_data.py and read from data.json.
 
-(function() {
-  const hrv = 121, rhr = 64, tsb = 2.6, atl = 32.0;
-  const hrvBaseline = 110, rhrBaseline = 61;
-  const hrvScore  = Math.min(100, Math.max(0, 50 + (hrv - hrvBaseline) / hrvBaseline * 100));
-  const rhrScore  = Math.min(100, Math.max(0, 50 + (rhrBaseline - rhr) / rhrBaseline * 100));
-  const tsbScore  = Math.min(100, Math.max(0, 50 + tsb * 2));
-  const score     = Math.round(hrvScore * 0.4 + rhrScore * 0.3 + tsbScore * 0.3);
-
+function renderReadiness(f) {
+  if (!f || f.readiness_score == null || !f.readiness_inputs) {
+    document.getElementById('readiness-num').textContent = '—';
+    document.getElementById('readiness-label').textContent = 'Awaiting export';
+    document.getElementById('readiness-desc').textContent = 'Fills in with the next Apple Health export.';
+    ['rd-hrv','rd-rhr','rd-tsb','rd-atl'].forEach(id => document.getElementById(id).textContent = '—');
+    return;
+  }
+  const { hrv_7d: hrv, rhr_7d: rhr, tsb, atl } = f.readiness_inputs;
+  const score = f.readiness_score;
   let label, desc, color;
   if (score >= 80)      { label = 'Optimal'; desc = 'Body is well recovered. Good day for a hard effort or long run.'; color = '#00e676'; }
   else if (score >= 65) { label = 'Good'; desc = 'Ready to train. Moderate intensity recommended.'; color = '#ffd600'; }
@@ -1345,8 +1349,8 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
   document.getElementById('readiness-label').textContent = label;
   document.getElementById('readiness-label').style.color = color;
   document.getElementById('readiness-desc').textContent = desc;
-  document.getElementById('rd-hrv').textContent = hrv;
-  document.getElementById('rd-rhr').textContent = rhr;
+  document.getElementById('rd-hrv').textContent = hrv ?? '—';
+  document.getElementById('rd-rhr').textContent = rhr ?? '—';
   document.getElementById('rd-tsb').textContent = tsb > 0 ? '+' + tsb : tsb;
   document.getElementById('rd-tsb').style.color = tsb > 0 ? '#00e676' : '#ff7043';
   document.getElementById('rd-atl').textContent = atl.toFixed(0);
@@ -1368,7 +1372,8 @@ const WEEKLY_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oc
   ctx.lineWidth = 7;
   ctx.lineCap = 'round';
   ctx.stroke();
-})();
+}
+renderReadiness(null);
 
 // ─── LOAD/FITNESS CHART ──────────────────────────────────────
 
@@ -1661,6 +1666,31 @@ initRaceHistory();
     el.dataset.delay = i * 60;
     observer.observe(el);
   });
+})();
+
+// ─── LIVE SNAPSHOT FROM data.json ─────────────────────────────
+// scripts/apple_health_to_data.py rewrites data.json after each monthly
+// Apple Health export; the overview, readiness and current-year mileage read it here.
+(async function() {
+  let d;
+  try { d = await (await fetch('data.json', { cache: 'no-store' })).json(); } catch (e) { return; }
+  const f = d.fitness || {}, t = d.training || {};
+  const mo = f.as_of ? new Date(f.as_of + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
+  const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
+  set('hs-vo2peak', f.vo2_max_peak); set('vo2-peak', f.vo2_max_peak);
+  set('vo2-mo', f.vo2_max); set('vo2-mo-lbl', mo + ' avg');
+  if (f.resting_hr != null) { set('hs-rhr', f.resting_hr); set('hs-rhr-sub', 'bpm avg · ' + mo); }
+  if (f.hrv != null) { set('hs-hrv', f.hrv); set('hs-hrv-sub', 'ms avg · ' + mo); }
+  if (f.hr_recovery != null) { set('hs-hrr', f.hr_recovery); set('hs-hrr-sub', 'bpm drop · ' + mo); }
+  if (t.year) { set('hs-runs-lbl', t.year + ' Runs'); set('hs-runs', t.runs_ytd ?? '—'); }
+  renderReadiness(f);
+  if (t.year && Array.isArray(t.monthly_miles)) {
+    MILEAGE[t.year] = t.monthly_miles;
+    YTOTALS[t.year] = t.miles_ytd ?? t.monthly_miles.reduce((a, b) => a + b, 0);
+    if (t.runs_ytd != null) YR_RUNS[t.year] = t.runs_ytd;
+    if (MILEAGE[activeYear]) renderMbars(activeYear);
+    renderYearCompare();
+  }
 })();
 </script>
 </body>

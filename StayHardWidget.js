@@ -49,7 +49,20 @@ function daysUntil(dateStr) {
   return Math.ceil((race - today) / 86400000)
 }
 
+function fmt(v, suffix) {
+  return v == null ? "—" : String(v) + (suffix || "")
+}
+
+function milesYTD(data) {
+  return data.training.miles_ytd ?? data.training.miles_2026
+}
+
+function yearTag(data) {
+  return "'" + String(data.training.year || new Date().getFullYear()).slice(2)
+}
+
 function readinessColor(score) {
+  if (score == null) return C.dim
   if (score >= 80) return C.green
   if (score >= 65) return C.yellow
   if (score >= 50) return C.orange
@@ -57,6 +70,7 @@ function readinessColor(score) {
 }
 
 function readinessLabel(score) {
+  if (score == null) return "No data"
   if (score >= 80) return "Optimal"
   if (score >= 65) return "Good"
   if (score >= 50) return "Moderate"
@@ -183,7 +197,7 @@ function buildMedium(widget, data) {
       left.addSpacer()
 
       const score = data.fitness.readiness_score
-      const scoreVal = left.addText(String(score) + " / 100")
+      const scoreVal = left.addText(score == null ? "—" : String(score) + " / 100")
       scoreVal.font = Font.boldSystemFont(10)
       scoreVal.textColor = readinessColor(score)
       const scoreLbl = left.addText(readinessLabel(score).toUpperCase())
@@ -241,7 +255,7 @@ function buildMedium(widget, data) {
 
     const vo2Stack = statsRow.addStack()
     vo2Stack.layoutVertically()
-    const vo2Val = vo2Stack.addText(String(data.fitness.vo2_max))
+    const vo2Val = vo2Stack.addText(fmt(data.fitness.vo2_max))
     vo2Val.font = Font.boldSystemFont(12)
     vo2Val.textColor = C.green
     const vo2Lbl = vo2Stack.addText("VO2")
@@ -250,16 +264,16 @@ function buildMedium(widget, data) {
 
     const miStack = statsRow.addStack()
     miStack.layoutVertically()
-    const miVal = miStack.addText(String(data.training.miles_2026))
+    const miVal = miStack.addText(fmt(milesYTD(data)))
     miVal.font = Font.boldSystemFont(12)
     miVal.textColor = C.blue
-    const miLbl = miStack.addText("MI '26")
+    const miLbl = miStack.addText("MI " + yearTag(data))
     miLbl.font = Font.systemFont(7)
     miLbl.textColor = C.dim
 
     const hrvStack = statsRow.addStack()
     hrvStack.layoutVertically()
-    const hrvVal = hrvStack.addText(String(data.fitness.hrv))
+    const hrvVal = hrvStack.addText(fmt(data.fitness.hrv))
     hrvVal.font = Font.boldSystemFont(12)
     hrvVal.textColor = C.purple
     const hrvLbl = hrvStack.addText("HRV")
@@ -338,7 +352,7 @@ function buildLarge(widget, data) {
   widget.addSpacer(8)
 
   // All races
-  const racesLbl = widget.addText("2027 RACE CALENDAR")
+  const racesLbl = widget.addText((data.races.length ? data.races[0].date.slice(0, 4) : "") + " RACE CALENDAR")
   racesLbl.font = Font.boldSystemFont(8)
   racesLbl.textColor = C.dim
   widget.addSpacer(4)
@@ -384,11 +398,11 @@ function buildLarge(widget, data) {
   statsRow.spacing = 8
 
   const statItems = [
-    { label: "VO2 MAX", value: String(data.fitness.vo2_max), color: C.green },
-    { label: "MILES '26", value: String(data.training.miles_2026), color: C.blue },
-    { label: "HRV", value: String(data.fitness.hrv) + "ms", color: C.purple },
-    { label: "READINESS", value: String(data.fitness.readiness_score), color: readinessColor(data.fitness.readiness_score) },
-    { label: "RESTING HR", value: String(data.fitness.resting_hr), color: C.yellow },
+    { label: "VO2 MAX", value: fmt(data.fitness.vo2_max), color: C.green },
+    { label: "MILES " + yearTag(data), value: fmt(milesYTD(data)), color: C.blue },
+    { label: "HRV", value: fmt(data.fitness.hrv, "ms"), color: C.purple },
+    { label: "READINESS", value: fmt(data.fitness.readiness_score), color: readinessColor(data.fitness.readiness_score) },
+    { label: "RESTING HR", value: fmt(data.fitness.resting_hr), color: C.yellow },
   ]
 
   statItems.forEach(stat => {

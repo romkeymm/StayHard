@@ -1,7 +1,6 @@
 {
   "updated": "2026-11-10",
   "athlete": "Matt",
-
   "next_race": {
     "name": "Market to Market Iowa",
     "short_name": "M2M Relay",
@@ -9,37 +8,70 @@
     "type": "relay",
     "distance": "Relay"
   },
-
   "fitness": {
-    "vo2_max": 56.5,
+    "as_of": "2026-10-31",
+    "vo2_max": 54.7,
     "vo2_max_peak": 57.1,
-    "resting_hr": 64,
-    "hrv": 121,
-    "hr_recovery": 41,
-    "readiness_score": 68,
-    "readiness_label": "Good",
-    "readiness_color": "yellow"
+    "resting_hr": 61,
+    "hrv": 60,
+    "hr_recovery": null,
+    "readiness_score": null,
+    "readiness_label": null,
+    "readiness_color": null,
+    "readiness_inputs": null
   },
-
   "training": {
-    "runs_2026": 55,
-    "miles_2026": 332.6,
-    "miles_jan": 92.87,
-    "miles_feb": 119.19,
-    "miles_mar": 120.51,
-    "miles_apr": 0,
-    "weekly_hrs_avg": 3.7,
-    "peak_month_hrs": 16.6,
-    "ctL": 34.5,
-    "atl": 32.0,
-    "tsb": 2.6
+    "year": 2026,
+    "runs_ytd": null,
+    "miles_ytd": 1169.1,
+    "monthly_miles": [
+      92.87,
+      119.19,
+      120.51,
+      134.87,
+      85.71,
+      106.75,
+      86.64,
+      170.25,
+      97.55,
+      154.8,
+      0,
+      0
+    ],
+    "ctl": null,
+    "atl": null,
+    "tsb": null
   },
-
   "races": [
-    { "name": "Market to Market Iowa",             "short": "M2M Relay",     "date": "2027-05-08", "distance": "Relay"   },
-    { "name": "Dam to DSM Half Marathon",          "short": "Dam to DSM",    "date": "2027-06-05", "distance": "13.1 mi" },
-    { "name": "Whiterock Ultra 50K",               "short": "Whiterock 50K", "date": "2027-07-24", "distance": "50k"     },
-    { "name": "IMT Des Moines Marathon",           "short": "IMT DSM",       "date": "2027-10-17", "distance": "26.2 mi" },
-    { "name": "California International Marathon", "short": "CIM",           "date": "2027-12-05", "distance": "26.2 mi" }
+    {
+      "name": "Market to Market Iowa",
+      "short": "M2M Relay",
+      "date": "2027-05-08",
+      "distance": "Relay"
+    },
+    {
+      "name": "Dam to DSM Half Marathon",
+      "short": "Dam to DSM",
+      "date": "2027-06-05",
+      "distance": "13.1 mi"
+    },
+    {
+      "name": "Whiterock Ultra 50K",
+      "short": "Whiterock 50K",
+      "date": "2027-07-24",
+      "distance": "50k"
+    },
+    {
+      "name": "IMT Des Moines Marathon",
+      "short": "IMT DSM",
+      "date": "2027-10-17",
+      "distance": "26.2 mi"
+    },
+    {
+      "name": "California International Marathon",
+      "short": "CIM",
+      "date": "2027-12-05",
+      "distance": "26.2 mi"
+    }
   ]
 }
