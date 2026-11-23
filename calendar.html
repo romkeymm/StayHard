@@ -87,6 +87,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
   <button id="print">Print 11×17</button>
   <label class="chk"><input type="checkbox" id="askG"> Ask for a label after painting</label>
   <button id="clear">Clear year</button>
+  <span id="sync" class="hint" style="width:auto"></span>
  </div>
 </div>
 <div class="tools" id="tools"></div>
@@ -120,14 +121,29 @@ const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'
 const ys=$('year');
 for(let y=now.getFullYear()-1;y<=now.getFullYear()+5;y++)ys.insertAdjacentHTML('beforeend',`<option ${y==year?'selected':''}>${y}</option>`);
 
+const SB_URL='https://urqcldfagszngbxtdmck.supabase.co',SB_KEY='sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo',SB_T='big_calendar';
+let cloud=false;const timers={};
+function setSync(t){$('sync').textContent=t}
+function sb(path,opt={}){return fetch(SB_URL+'/rest/v1/'+path,{method:opt.method||'GET',headers:Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},opt.headers||{}),body:opt.body?JSON.stringify(opt.body):undefined}).then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error(r.status+' '+t)});return r.status===204||r.status===201&&!opt.json?null:r.json()})}
+function push(key,value){clearTimeout(timers[key]);setSync('Saving…');timers[key]=setTimeout(()=>{sb(SB_T+'?on_conflict=key',{method:'POST',body:[{key,value,updated_at:new Date().toISOString()}],headers:{Prefer:'resolution=merge-duplicates,return=minimal'}}).then(()=>{cloud=true;setSync('Saved to your site ✓')}).catch(e=>{cloud=false;setSync('Not synced · saved in this browser only');console.warn('[calendar] save failed',e.message)})},500)}
+const pushYear=()=>push('year-'+year,{data,spans});
+const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{labels,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
+function pull(){const y=year;setSync('Loading…');
+ sb(SB_T+'?select=key,value&key=in.(settings,year-'+y+')').then(rows=>{cloud=true;if(y!==year)return;
+  const st=rows.find(r=>r.key==='settings'),yr=rows.find(r=>r.key==='year-'+y);
+  if(st&&st.value){if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
+  if(yr&&yr.value){data=yr.value.data||{};spans=yr.value.spans||[];store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);render()}
+  else if(Object.keys(data).length||spans.length)pushYear();
+  setSync('Synced ✓');
+ }).catch(e=>{cloud=false;setSync('Offline · saved in this browser only');console.warn('[calendar] load failed',e.message)})}
 function load(){data=store.get('bac-'+year,{});spans=store.get('bac-spans-'+year,[]);
- for(const k in data){if(data[k].n){spans.push({s:k,e:k,t:data[k].n});delete data[k].n;if(!cols(data[k]).length)delete data[k]}}save();$('yr').textContent=year;const t=store.get('bac-title',null);const tn=$('title').firstChild;if(t&&tn&&tn.nodeType===3)tn.nodeValue=t+' ';render();}
-function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);}
+ for(const k in data){if(data[k].n){spans.push({s:k,e:k,t:data[k].n});delete data[k].n;if(!cols(data[k]).length)delete data[k]}}store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);$('yr').textContent=year;const t=store.get('bac-title',null);const tn=$('title').firstChild;if(t&&tn&&tn.nodeType===3)tn.nodeValue=t+' ';render();pull();}
+function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);pushYear();}
 
 function renderTools(){
  $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
  `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button>
- <span class="hint">Pick a color, then click or drag across days to fill them. Paint a second color on a day to split it (great for PTO on top of travel). Click a day with a color it already has to remove that color. After you paint, you can name the dates; the label stretches across the whole block. Use “Add label” to click or drag over days and label them without color, or click an existing label to edit it. Rename the labels; they print as the legend. The title is editable too.</span>`;
+ <span class="hint">Pick a color, then click or drag across days to fill them. Paint a second color on a day to split it (great for PTO on top of travel). Click a day with a color it already has to remove that color. After you paint, you can name the dates; the label stretches across the whole block. Use “Add label” to click or drag over days and label them without color, or click an existing label to edit it. Rename the labels; they print as the legend. The title is editable too. Everything saves to your site, so it shows up on any device.</span>`;
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
@@ -216,10 +232,10 @@ $('tools').addEventListener('click',e=>{
  else if(t){tool=tool===t.dataset.t?0:t.dataset.t;renderTools()}
 });
 $('tools').addEventListener('keydown',e=>{const b=e.target.closest('[data-i]');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tool=+b.dataset.i;renderTools()}});
-$('tools').addEventListener('input',e=>{const i=e.target.dataset.l;if(i!=null){labels[i]=e.target.value;store.set('bac-labels-v3',labels);renderLegend()}});
+$('tools').addEventListener('input',e=>{const i=e.target.dataset.l;if(i!=null){labels[i]=e.target.value;store.set('bac-labels-v3',labels);renderLegend();pushSettings()}});
 
 ys.onchange=()=>{year=+ys.value;store.set('bac-year',year);load()};
-$('title').addEventListener('input',()=>{const tn=$('title').firstChild;if(tn&&tn.nodeType===3)store.set('bac-title',tn.nodeValue.trim())});
+$('title').addEventListener('input',()=>{const tn=$('title').firstChild;if(tn&&tn.nodeType===3){store.set('bac-title',tn.nodeValue.trim());pushSettings()}});
 let armed=false;
 $('clear').onclick=()=>{if(!armed){armed=true;$('clear').textContent='Click again to clear';setTimeout(()=>{armed=false;$('clear').textContent='Clear year'},3000);return}data={};spans=[];save();render();armed=false;$('clear').textContent='Clear year'};
 $('print').onclick=()=>{try{window.print()}catch(e){}$('msg').textContent='If no print dialog opened, use your browser’s Print (Ctrl/Cmd+P). Choose Tabloid / 11×17, Landscape, scale 100%, and turn on “Background graphics.”'};
