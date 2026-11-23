@@ -50,11 +50,18 @@ dialog{border:1px solid var(--line);border-radius:12px;background:var(--bg);colo
 dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
 .row{display:flex;gap:8px;justify-content:flex-end}
 #msg{color:var(--soft);font-size:13px}
+#offer{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:min(560px,94vw);background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:14px 16px;display:none;z-index:5}
+#offer.show{display:block}
+#offer p{margin:0 0 8px;font-size:14px}
+#offer input{width:100%;font:inherit;font-size:16px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-bottom:10px}
+#offer .row a{display:inline-flex;align-items:center;min-height:40px;padding:6px 14px;border-radius:8px;background:#1a73e8;color:#fff;text-decoration:none;font-weight:700}
+.chk{display:flex;align-items:center;gap:6px;font-size:14px}
+.chk input{width:18px;height:18px}
 @page{size:17in 11in;margin:.35in}
 @media print{
  :root{color-scheme:light}
  body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
- .ctrl,.tools,#msg{display:none!important}
+ .ctrl,.tools,#msg,#offer{display:none!important}
  .top{padding:0 0 .08in}h1{font-size:30px}
  .scroll{padding:0;overflow:visible}
  table{min-width:0}
@@ -74,6 +81,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
   <label for="year" class="hint" style="width:auto">Year</label>
   <select id="year"></select>
   <button id="print">Print 11×17</button>
+  <label class="chk"><input type="checkbox" id="askG"> Offer Google Calendar</label>
   <button id="clear">Clear year</button>
  </div>
 </div>
@@ -81,6 +89,12 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 <div class="scroll"><table id="cal"></table></div>
 <div class="legend" id="legend"></div>
 <p id="msg" style="padding:0 max(3vw,14px) 24px;margin:0"></p>
+
+<div id="offer" role="dialog" aria-label="Add to Google Calendar">
+ <p id="offerTxt"></p>
+ <input id="offerTitle" maxlength="100" aria-label="Event name">
+ <div class="row"><button id="offerNo">No thanks</button><a id="offerGo" target="_blank" rel="noopener">Add to Google Calendar</a></div>
+</div>
 
 <dialog id="dlg">
  <strong id="dlgDate"></strong>
@@ -98,7 +112,7 @@ const now=new Date();
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let labels=store.get('bac-labels-v2',DEF.slice());
 let year=store.get('bac-year',now.getMonth()>=10?now.getFullYear()+1:now.getFullYear());
-let data={};let tool=0;let painting=false;let paintVal=null;
+let data={};let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
 const $=id=>document.getElementById(id);
 const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 
@@ -143,7 +157,7 @@ function render(){
 function apply(td){
  const k=td.dataset.k;if(!k)return;
  const v=data[k]||{};
- if(paintVal===null){delete v.c}else v.c=paintVal;
+ if(paintVal===null){delete v.c}else{v.c=paintVal;if(!stroke.includes(k))stroke.push(k)}
  if(v.c==null&&!v.n)delete data[k];else data[k]=v;
  const we=td.cellIndex%7==1||td.cellIndex%7==0;
  td.style.background=v.c!=null?COLORS[v.c]:'';
@@ -158,10 +172,27 @@ cal.addEventListener('pointerdown',e=>{
  if(tool==='note'){openNote(td.dataset.k);return}
  const cur=(data[td.dataset.k]||{}).c;
  paintVal=tool==='erase'?null:(cur===tool?null:tool);
- painting=true;apply(td);
+ painting=true;stroke=[];apply(td);
 });
 cal.addEventListener('pointerover',e=>{if(!painting)return;const td=e.target.closest('td[data-k]');if(td)apply(td)});
-window.addEventListener('pointerup',()=>{if(painting){painting=false;save();renderLegend()}});
+window.addEventListener('pointerup',()=>{if(painting){painting=false;save();renderLegend();if(stroke.length&&paintVal!==null)offer(labels[paintVal]||'Event',stroke.slice())}});
+const ymd=k=>k.replace(/-/g,'');
+function nextDay(k){const [y,m,d]=k.split('-').map(Number);const t=new Date(y,m-1,d+1);return t.getFullYear()+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')}
+const nice=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:'short',day:'numeric'})};
+let offerKeys=null;
+function gUrl(){const ks=offerKeys.slice().sort();const t=$('offerTitle').value.trim()||'Event';
+ return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(t)+'&dates='+ymd(ks[0])+'/'+nextDay(ks[ks.length-1])+'&authuser='+encodeURIComponent(GACCT)}
+function offer(title,keys){
+ if(!askG)return;offerKeys=keys;const ks=keys.slice().sort();
+ const range=ks.length>1?nice(ks[0])+' – '+nice(ks[ks.length-1]):nice(ks[0]);
+ $('offerTxt').textContent='Add this to your Google Calendar ('+GACCT+')? All-day, '+range+'.';
+ $('offerTitle').value=title;$('offerGo').href=gUrl();$('offer').classList.add('show');
+}
+const hideOffer=()=>$('offer').classList.remove('show');
+$('offerTitle').addEventListener('input',()=>{$('offerGo').href=gUrl()});
+$('offerGo').addEventListener('click',()=>setTimeout(hideOffer,300));
+$('offerNo').onclick=hideOffer;
+const ag=$('askG');ag.checked=askG;ag.onchange=()=>{askG=ag.checked;store.set('bac-askg',askG);if(!askG)hideOffer()};
 
 $('tools').addEventListener('click',e=>{
  const b=e.target.closest('[data-i]'),t=e.target.closest('[data-t]');
@@ -173,7 +204,7 @@ $('tools').addEventListener('input',e=>{const i=e.target.dataset.l;if(i!=null){l
 
 let noteKey=null;const dlg=$('dlg');
 function openNote(k){noteKey=k;const [y,m,d]=k.split('-');$('dlgDate').textContent=new Date(y,m-1,d).toDateString();$('dlgText').value=(data[k]||{}).n||'';dlg.showModal();$('dlgText').focus()}
-function setNote(t){const v=data[noteKey]||{};if(t)v.n=t;else delete v.n;if(v.c==null&&!v.n)delete data[noteKey];else data[noteKey]=v;save();dlg.close();render()}
+function setNote(t){const v=data[noteKey]||{};if(t)v.n=t;else delete v.n;if(v.c==null&&!v.n)delete data[noteKey];else data[noteKey]=v;save();dlg.close();render();if(t)offer(t,[noteKey])}
 $('dlgOk').onclick=()=>setNote($('dlgText').value.trim());
 $('dlgDel').onclick=()=>setNote('');
 $('dlgText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setNote($('dlgText').value.trim())}});
