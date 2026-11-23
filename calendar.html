@@ -181,6 +181,9 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
  .legend{padding:.1in 0 0;font-size:11px}
 }
 
+td i.ph{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:1;pointer-events:none}
+:root[data-variant=tiles] td i.ph{left:6px;right:6px;border-radius:3px 3px 0 0}
+.tog i.tr{display:inline-block;width:14px;height:3px;border-radius:2px;background:linear-gradient(90deg,#8fb3d9 0 33%,#f0a35e 33% 66%,#e05d6f 66%)}
 /* ---------- toolbar (key at the top) ---------- */
 .tools{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:10px max(3vw,14px) 14px!important;background:transparent!important;border:0!important}
 .grp{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -268,7 +271,8 @@ function holidays(Y){const h={},p=(m,d,n)=>{h[Y+'-'+String(m+1).padStart(2,'0')+
 const autoKid=k=>{const [Y,M,D]=k.split('-').map(Number);const n=Math.round((Date.UTC(Y,M-1,D)-KID_ANCHOR)/864e5);return KID_ON.includes(((n%14)+14)%14)};
 const isKidK=k=>{const v=data[k];return v&&v.kid!==undefined?v.kid:autoKid(k)};
 let AUTO={};const isDadK=k=>{const v=data[k];return v&&v.dad!==undefined?v.dad:!!AUTO[k]};
-let needRender=false;let mode='add';let data={};let spans=[];let edit=null;let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
+let needRender=false;let mode='add';let data={};let spans=[];let phases=[];let showTrn=store.get('bac-trn',true);
+const PHASE={easy:['#c9c9c4','Easy / recovery'],base:['#8fb3d9','Base'],build:['#f0a35e','Build'],peak:['#e05d6f','Peak'],taper:['#5fbf8a','Taper']};let edit=null;let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
 const $=id=>document.getElementById(id);
 const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 
@@ -282,19 +286,19 @@ let cloud=false;const timers={};
 let syncT;function setSync(t){clearTimeout(syncT);$('sync').textContent=t;if(t.endsWith('✓'))syncT=setTimeout(()=>{$('sync').textContent=''},2500)}
 function sb(path,opt={}){return fetch(SB_URL+'/rest/v1/'+path,{method:opt.method||'GET',headers:Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},opt.headers||{}),body:opt.body?JSON.stringify(opt.body):undefined}).then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error(r.status+' '+t)});return r.text().then(t=>t?JSON.parse(t):null)})}
 function push(key,value){clearTimeout(timers[key]);setSync('Saving…');timers[key]=setTimeout(()=>{sb(SB_T+'?on_conflict=key',{method:'POST',body:[{key,value,updated_at:new Date().toISOString()}],headers:{Prefer:'resolution=merge-duplicates,return=minimal'}}).then(()=>{cloud=true;setSync('Saved to your site ✓')}).catch(e=>{cloud=false;setSync('Not synced · saved in this browser only');console.warn('[calendar] save failed',e.message)})},500)}
-const pushYear=()=>push('year-'+year,{data,spans});
-const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{look,labels,showKids,showHol,showDad,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
+const pushYear=()=>push('year-'+year,{data,spans,phases});
+const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{look,showTrn,labels,showKids,showHol,showDad,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
 function pull(){const y=year;setSync('Loading…');
  sb(SB_T+'?select=key,value&key=in.(settings,year-'+y+')').then(rows=>{cloud=true;if(y!==year)return;
   const st=rows.find(r=>r.key==='settings'),yr=rows.find(r=>r.key==='year-'+y);
-  if(st&&st.value){if(st.value.look&&st.value.look!==look){look=st.value.look;store.set('bac-look',look);applyLook()}if(typeof st.value.showDad==='boolean'&&st.value.showDad!==showDad){showDad=st.value.showDad;store.set('bac-dad',showDad);renderTools();render()}if(typeof st.value.showHol==='boolean'&&st.value.showHol!==showHol){showHol=st.value.showHol;store.set('bac-hol',showHol);renderTools();render()}if(typeof st.value.showKids==='boolean'&&st.value.showKids!==showKids){showKids=st.value.showKids;store.set('bac-kids',showKids);renderTools();render()}if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
-  if(yr&&yr.value){data=yr.value.data||{};spans=yr.value.spans||[];store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);render()}
+  if(st&&st.value){if(typeof st.value.showTrn==='boolean'&&st.value.showTrn!==showTrn){showTrn=st.value.showTrn;store.set('bac-trn',showTrn);renderTools();render()}if(st.value.look&&st.value.look!==look){look=st.value.look;store.set('bac-look',look);applyLook()}if(typeof st.value.showDad==='boolean'&&st.value.showDad!==showDad){showDad=st.value.showDad;store.set('bac-dad',showDad);renderTools();render()}if(typeof st.value.showHol==='boolean'&&st.value.showHol!==showHol){showHol=st.value.showHol;store.set('bac-hol',showHol);renderTools();render()}if(typeof st.value.showKids==='boolean'&&st.value.showKids!==showKids){showKids=st.value.showKids;store.set('bac-kids',showKids);renderTools();render()}if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
+  if(yr&&yr.value){data=yr.value.data||{};spans=yr.value.spans||[];phases=yr.value.phases||[];store.set('bac-phases-'+year,phases);store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);render()}
   else if(Object.keys(data).length||spans.length)pushYear();
   setSync('Synced ✓');
  }).catch(e=>{cloud=false;setSync('Offline · saved in this browser only');console.warn('[calendar] load failed',e.message)})}
-function load(){data=store.get('bac-'+year,{});spans=store.get('bac-spans-'+year,[]);
+function load(){data=store.get('bac-'+year,{});spans=store.get('bac-spans-'+year,[]);phases=store.get('bac-phases-'+year,[]);
  for(const k in data){if(data[k].n){spans.push({s:k,e:k,t:data[k].n});delete data[k].n;if(!cols(data[k]).length&&data[k].dad===undefined&&data[k].kid===undefined)delete data[k]}}store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);$('yr').textContent=year;const t=store.get('bac-title',null);const tn=$('title').firstChild;if(t&&tn&&tn.nodeType===3)tn.nodeValue=t+' ';render();pull();}
-function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);pushYear();}
+function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);store.set('bac-phases-'+year,phases);pushYear();}
 
 function renderTools(){
  const pills=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}" style="--c:${c}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('');
@@ -302,14 +306,15 @@ function renderTools(){
  const tog=(id,on,icon,txt)=>`<label class="tog"><input type="checkbox" id="${id}" ${on?'checked':''}><span class="sl"></span>${icon}${txt}</label>`;
  $('tools').innerHTML=`<div class="grp"><span class="gl">Paint</span><div class="pills">${pills}</div></div>
  <div class="row2"><div class="grp"><span class="gl">Edit</span><div class="seg">${tb('erase','Eraser')}${tb('note','Add label')}${tb('dad','Dad outline','Click or drag to add or remove a Dad outline')}${tb('kid','Kid days','Click or drag to add or remove kid days')}</div></div>
- <div class="grp"><span class="gl">Show</span><div class="togs">${tog('kids',showKids,'<i class="kl"></i>','Kids')}${tog('dadh',showDad,'<i class="dh"></i>','Dad holidays')}${tog('hols',showHol,'<i class="hl">Aa</i>','Holidays')}</div></div></div>`;
+ <div class="grp"><span class="gl">Show</span><div class="togs">${tog('kids',showKids,'<i class="kl"></i>','Kids')}${tog('dadh',showDad,'<i class="dh"></i>','Dad holidays')}${tog('hols',showHol,'<i class="hl">Aa</i>','Holidays')}${tog('trn',showTrn,'<i class="tr"></i>','Training')}</div></div></div>`;
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
  const anyUsed=used.size>0;
  const cats=COLORS.map((c,i)=>labels[i]&&(!anyUsed||used.has(i))?`<span><i class="sq" style="background:color-mix(in srgb,${c} 70%,#fff)"></i>${esc(labels[i])}</span>`:'').join('');
  const marks=(showKids?'<span><i class="kl"></i>Kids</span>':'')+(showDad?'<span><i class="dh"></i>Dad holiday</span>':'')+(showHol?'<span><i class="hl">Aa</i>Holiday</span>':'');
- $('legend').innerHTML=`<div class="lg">${cats}</div>`+(marks?`<div class="lg lg2">${marks}</div>`:'');
+ const types=[...new Set(phases.map(p=>p.type))];const trn=showTrn&&types.length?Object.keys(PHASE).filter(t=>types.includes(t)).map(t=>`<span><i class="kl" style="background:${PHASE[t][0]}"></i>${PHASE[t][1]}</span>`).join(''):'';
+ $('legend').innerHTML=`<div class="lg">${cats}</div>`+(marks?`<div class="lg lg2">${marks}</div>`:'')+(trn?`<div class="lg lg2"><span style="color:#999">Training</span>${trn}</div>`:'');
 }
 const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
@@ -317,6 +322,7 @@ function render(){
  const SHORT={"New Year's Day":"New Year's",'MLK Jr. Day':'MLK Day',"Valentine's Day":'Valen&shy;tine\'s',"Presidents' Day":'Presi&shy;dents\'',"St. Patrick's Day":'St. Pat&shy;rick\'s','Easter':'Easter',"Mother's Day":'Moth&shy;er\'s Day','Memorial Day':'Memo&shy;rial Day',"Father's Day":'Fath&shy;er\'s Day','Independence Day':'July 4th','Labor Day':'Labor Day','Columbus Day':'Colum&shy;bus','Halloween':'Hallo&shy;ween','Veterans Day':'Veter&shy;ans','Thanksgiving':'Thanks&shy;giving','Christmas Eve':'Christ&shy;mas Eve','Christmas':'Christ&shy;mas',"New Year's Eve":"NYE"};
  const holTag=(k,H)=>`<span class="hol" title="${esc(H[k])}">${SHORT[H[k]]||esc(H[k])}</span>`;
  AUTO=dadDays(year);const DAD={};if(showDad)for(let m=0;m<12;m++)for(let d=1;d<=new Date(year,m+1,0).getDate();d++){const k=key(m,d);if(isDadK(k))DAD[k]=1}
+ const PH={};if(showTrn)for(const p of phases){let d=new Date(p.s+'T12:00:00');const E=new Date(p.e+'T12:00:00');while(d<=E){PH[d.toISOString().slice(0,10)]=p;d=new Date(d.getTime()+864e5)}}
  const first={},HOL=showHol?holidays(year):{};
  spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="${esc(sp.t)} (click to edit)" style="width:calc(${n*100}% + ${n-1} * var(--gap,1px) - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
  let h='<thead><tr><th class="m"></th>';
@@ -331,7 +337,7 @@ function render(){
    const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
    const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
    const cs=cols(v),bg=cs.length?` style="background:${bgFor(cs)}"`:'';
-   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKidK(k)?' kid':''}${HOL[k]?' hashol':''}${DAD[k]?' dad'+(d>1&&DAD[key(m,d-1)]?' dl':'')+(d<days&&DAD[key(m,d+1)]?' dr':''):''}"${bg}><span class="d">${d}</span>${HOL[k]?holTag(k,HOL):''}${first[k]||''}</td>`;
+   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKidK(k)?' kid':''}${HOL[k]?' hashol':''}${DAD[k]?' dad'+(d>1&&DAD[key(m,d-1)]?' dl':'')+(d<days&&DAD[key(m,d+1)]?' dr':''):''}"${bg}${PH[k]?` title="${esc(PH[k].t)} (${nice(PH[k].s)} – ${nice(PH[k].e)})"`:''}><span class="d">${d}</span>${PH[k]?`<i class="ph" style="background:${(PHASE[PH[k].type]||PHASE.easy)[0]}"></i>`:''}${HOL[k]?holTag(k,HOL):''}${first[k]||''}</td>`;
   }
   h+=`<th class="m">${MONTHS[m]}</th></tr>`;
  }
@@ -396,7 +402,7 @@ $('offerDel').onclick=()=>{if(edit!=null)spans.splice(edit,1);save();hideOffer()
 $('offerNo').onclick=hideOffer;
 const ag=$('askG');ag.checked=askG;ag.onchange=()=>{askG=ag.checked;store.set('bac-askg',askG);if(!askG)hideOffer()};
 
-$('tools').addEventListener('change',e=>{if(e.target.id==='dadh'){showDad=e.target.checked;store.set('bac-dad',showDad);render();pushSettings()}if(e.target.id==='hols'){showHol=e.target.checked;store.set('bac-hol',showHol);render();pushSettings()}if(e.target.id==='kids'){showKids=e.target.checked;store.set('bac-kids',showKids);render();pushSettings()}});
+$('tools').addEventListener('change',e=>{if(e.target.id==='trn'){showTrn=e.target.checked;store.set('bac-trn',showTrn);render();pushSettings()}if(e.target.id==='dadh'){showDad=e.target.checked;store.set('bac-dad',showDad);render();pushSettings()}if(e.target.id==='hols'){showHol=e.target.checked;store.set('bac-hol',showHol);render();pushSettings()}if(e.target.id==='kids'){showKids=e.target.checked;store.set('bac-kids',showKids);render();pushSettings()}});
 $('tools').addEventListener('click',e=>{
  const b=e.target.closest('[data-i]'),t=e.target.closest('[data-t]');
  if(b){tool=+b.dataset.i;renderTools()}
