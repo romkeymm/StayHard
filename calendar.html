@@ -104,15 +104,17 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 
 <script>
 {
-const COLORS=['#8cc8e8','#f2e173','#f4a3a3','#9fd8a0','#b7a6e6','#c4c4c4'];
-const DEF=['Travel','Kids day off','Race','Start of semester','Birthdays','Busy'];
+const COLORS=['#8cc8e8','#f2e173','#f4a3a3','#9fd8a0','#b7a6e6','#c4c4c4','#f5b872'];
+const DEF=['Travel','No School','Race','Start of Semester','Birthdays','Busy','PTO'];
 const MONTHS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 const DOW='SMTWTFS';
 const now=new Date();
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-let labels=store.get('bac-labels-v2',DEF.slice());
+let labels=store.get('bac-labels-v3',DEF.slice());
 let year=store.get('bac-year',now.getMonth()>=10?now.getFullYear()+1:now.getFullYear());
-let data={};let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
+const cols=v=>v?(v.cs||(v.c!=null?[v.c]:[])):[];
+const bgFor=cs=>cs.length>1?`linear-gradient(135deg,${COLORS[cs[0]]} 50%,${COLORS[cs[1]]} 50%)`:cs.length?COLORS[cs[0]]:'';
+let mode='add';let data={};let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
 const $=id=>document.getElementById(id);
 const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 
@@ -125,10 +127,10 @@ function save(){store.set('bac-'+year,data);}
 function renderTools(){
  $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
  `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add note</button>
- <span class="hint">Pick a color, then click or drag across days to fill them. Click a filled day with the same color to clear it. Use “Add note” to type a few words in a box. Rename the labels; they print as the legend. The title is editable too.</span>`;
+ <span class="hint">Pick a color, then click or drag across days to fill them. Paint a second color on a day to split it (great for PTO on top of travel). Click a day with a color it already has to remove that color. Use “Add note” to type a few words in a box. Rename the labels; they print as the legend. The title is editable too.</span>`;
 }
 function renderLegend(){
- const used=new Set(Object.values(data).map(v=>v.c).filter(v=>v!=null));
+ const used=new Set(Object.values(data).flatMap(cols));
  $('legend').innerHTML=COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
 }
 const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
@@ -145,8 +147,8 @@ function render(){
    if(d<1||d>days){h+='<td class="x"></td>';continue}
    const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
    const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
-   const bg=v.c!=null?` style="background:${COLORS[v.c]}"`:'';
-   h+=`<td data-k="${k}" class="${we&&v.c==null?'we':''}${v.c!=null?' f':''}${isT?' today':''}"${bg}><span class="d">${d}</span>${v.n?`<span class="n">${esc(v.n)}</span>`:''}</td>`;
+   const cs=cols(v),bg=cs.length?` style="background:${bgFor(cs)}"`:'';
+   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}"${bg}><span class="d">${d}</span>${v.n?`<span class="n">${esc(v.n)}</span>`:''}</td>`;
   }
   h+=`<th class="m">${MONTHS[m]}</th></tr>`;
  }
@@ -157,12 +159,15 @@ function render(){
 function apply(td){
  const k=td.dataset.k;if(!k)return;
  const v=data[k]||{};
- if(paintVal===null){delete v.c}else{v.c=paintVal;if(!stroke.includes(k))stroke.push(k)}
- if(v.c==null&&!v.n)delete data[k];else data[k]=v;
- const we=td.cellIndex%7==1||td.cellIndex%7==0;
- td.style.background=v.c!=null?COLORS[v.c]:'';
- td.classList.toggle('f',v.c!=null);
- td.classList.toggle('we',v.c==null&&(td.cellIndex-1)%7%6==0);
+ let cs=cols(v);delete v.c;
+ if(mode==='erase')cs=[];
+ else if(mode==='remove')cs=cs.filter(c=>c!==paintVal);
+ else if(!cs.includes(paintVal)){cs=cs.length>=2?[cs[0],paintVal]:cs.concat(paintVal);if(!stroke.includes(k))stroke.push(k)}
+ if(cs.length)v.cs=cs;else delete v.cs;
+ if(!cs.length&&!v.n)delete data[k];else data[k]=v;
+ td.style.background=bgFor(cs);
+ td.classList.toggle('f',cs.length>0);
+ td.classList.toggle('we',!cs.length&&(td.cellIndex-1)%7%6==0);
 }
 
 const cal=$('cal');
@@ -170,12 +175,13 @@ cal.addEventListener('pointerdown',e=>{
  const td=e.target.closest('td[data-k]');if(!td)return;
  e.preventDefault();
  if(tool==='note'){openNote(td.dataset.k);return}
- const cur=(data[td.dataset.k]||{}).c;
- paintVal=tool==='erase'?null:(cur===tool?null:tool);
+ const cur=cols(data[td.dataset.k]);
+ paintVal=tool==='erase'?null:tool;
+ mode=tool==='erase'?'erase':(cur.includes(tool)?'remove':'add');
  painting=true;stroke=[];apply(td);
 });
 cal.addEventListener('pointerover',e=>{if(!painting)return;const td=e.target.closest('td[data-k]');if(td)apply(td)});
-window.addEventListener('pointerup',()=>{if(painting){painting=false;save();renderLegend();if(stroke.length&&paintVal!==null)offer(labels[paintVal]||'Event',stroke.slice())}});
+window.addEventListener('pointerup',()=>{if(painting){painting=false;save();renderLegend();if(stroke.length&&mode==='add')offer(labels[paintVal]||'Event',stroke.slice())}});
 const ymd=k=>k.replace(/-/g,'');
 function nextDay(k){const [y,m,d]=k.split('-').map(Number);const t=new Date(y,m-1,d+1);return t.getFullYear()+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')}
 const nice=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:'short',day:'numeric'})};
@@ -200,11 +206,11 @@ $('tools').addEventListener('click',e=>{
  else if(t){tool=tool===t.dataset.t?0:t.dataset.t;renderTools()}
 });
 $('tools').addEventListener('keydown',e=>{const b=e.target.closest('[data-i]');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tool=+b.dataset.i;renderTools()}});
-$('tools').addEventListener('input',e=>{const i=e.target.dataset.l;if(i!=null){labels[i]=e.target.value;store.set('bac-labels-v2',labels);renderLegend()}});
+$('tools').addEventListener('input',e=>{const i=e.target.dataset.l;if(i!=null){labels[i]=e.target.value;store.set('bac-labels-v3',labels);renderLegend()}});
 
 let noteKey=null;const dlg=$('dlg');
 function openNote(k){noteKey=k;const [y,m,d]=k.split('-');$('dlgDate').textContent=new Date(y,m-1,d).toDateString();$('dlgText').value=(data[k]||{}).n||'';dlg.showModal();$('dlgText').focus()}
-function setNote(t){const v=data[noteKey]||{};if(t)v.n=t;else delete v.n;if(v.c==null&&!v.n)delete data[noteKey];else data[noteKey]=v;save();dlg.close();render();if(t)offer(t,[noteKey])}
+function setNote(t){const v=data[noteKey]||{};if(t)v.n=t;else delete v.n;if(!cols(v).length&&!v.n)delete data[noteKey];else data[noteKey]=v;save();dlg.close();render();if(t)offer(t,[noteKey])}
 $('dlgOk').onclick=()=>setNote($('dlgText').value.trim());
 $('dlgDel').onclick=()=>setNote('');
 $('dlgText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setNote($('dlgText').value.trim())}});
