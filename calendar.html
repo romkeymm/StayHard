@@ -177,6 +177,9 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
  td{height:.66in}
  thead th{height:.2in;color:#333}
  td.today{box-shadow:none}
+ :root[data-look] td{height:.6in!important}
+ :root[data-look] .top{padding:0 0 .04in!important}
+ .legend{padding-bottom:0!important}
  :root[data-look] td .sp.one{display:flex!important;-webkit-line-clamp:unset;max-height:none!important;bottom:1px!important}
  .legend{padding:.1in 0 0;font-size:11px}
 }
@@ -184,6 +187,13 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 td i.ph{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:1;pointer-events:none}
 :root[data-variant=tiles] td i.ph{left:6px;right:6px;border-radius:3px 3px 0 0}
 .tog i.tr{display:inline-block;width:14px;height:3px;border-radius:2px;background:linear-gradient(90deg,#8fb3d9 0 33%,#f0a35e 33% 66%,#e05d6f 66%)}
+.phdefs{flex-basis:100%;margin-top:14px;padding-top:14px;border-top:1px solid #ececea}
+.phdefs h2{margin:0 0 10px;font-size:13px;font-weight:700;color:#444}
+.phgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 28px}
+.phgrid b{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#333}
+.phgrid b i{display:inline-block;width:16px;height:3px;border-radius:2px}
+.phgrid p{margin:4px 0 0;font-size:12px;line-height:1.45;color:#777;max-width:36ch}
+@media print{.phdefs{margin-top:.06in;padding-top:.06in}.phgrid{grid-template-columns:repeat(5,1fr);gap:4px 16px}.phgrid p{font-size:9px;margin-top:1px}.phdefs h2{font-size:10px;margin-bottom:3px}}
 /* ---------- toolbar (key at the top) ---------- */
 .tools{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:10px max(3vw,14px) 14px!important;background:transparent!important;border:0!important}
 .grp{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -272,7 +282,8 @@ const autoKid=k=>{const [Y,M,D]=k.split('-').map(Number);const n=Math.round((Dat
 const isKidK=k=>{const v=data[k];return v&&v.kid!==undefined?v.kid:autoKid(k)};
 let AUTO={};const isDadK=k=>{const v=data[k];return v&&v.dad!==undefined?v.dad:!!AUTO[k]};
 let needRender=false;let mode='add';let data={};let spans=[];let phases=[];let showTrn=store.get('bac-trn',true);
-const PHASE={easy:['#c9c9c4','Easy / recovery'],base:['#8fb3d9','Base'],build:['#f0a35e','Build'],peak:['#e05d6f','Peak'],taper:['#5fbf8a','Taper']};let edit=null;let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
+const PHASE={easy:['#c9c9c4','Easy / recovery'],base:['#8fb3d9','Base'],build:['#f0a35e','Build'],peak:['#e05d6f','Peak'],taper:['#5fbf8a','Taper']};
+const PHASE_DEF={base:'Easy aerobic miles that build volume and durability. Strides, hills and strength work; little hard running.',build:'Mileage climbs and race-specific work is added: tempo, threshold and speed sessions, with longer long runs.',peak:'The biggest, hardest weeks. Long runs at race pace or race conditions, back-to-backs for the ultra.',taper:'Volume drops 30–60% while some intensity stays, so you arrive at the start line fresh and sharp.',easy:'Short, easy runs and rest to absorb training or recover from a race. Nothing hard.'};let edit=null;let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
 const $=id=>document.getElementById(id);
 const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 
@@ -314,7 +325,8 @@ function renderLegend(){
  const cats=COLORS.map((c,i)=>labels[i]&&(!anyUsed||used.has(i))?`<span><i class="sq" style="background:color-mix(in srgb,${c} 70%,#fff)"></i>${esc(labels[i])}</span>`:'').join('');
  const marks=(showKids?'<span><i class="kl"></i>Kids</span>':'')+(showDad?'<span><i class="dh"></i>Dad holiday</span>':'')+(showHol?'<span><i class="hl">Aa</i>Holiday</span>':'');
  const types=[...new Set(phases.map(p=>p.type))];const trn=showTrn&&types.length?Object.keys(PHASE).filter(t=>types.includes(t)).map(t=>`<span><i class="kl" style="background:${PHASE[t][0]}"></i>${PHASE[t][1]}</span>`).join(''):'';
- $('legend').innerHTML=`<div class="lg">${cats}</div>`+(marks?`<div class="lg lg2">${marks}</div>`:'')+(trn?`<div class="lg lg2"><span style="color:#999">Training</span>${trn}</div>`:'');
+ const defs=showTrn&&types.length?`<div class="phdefs"><h2>Training phases</h2><div class="phgrid">${['base','build','peak','taper','easy'].filter(t=>types.includes(t)).map(t=>`<div><b><i style="background:${PHASE[t][0]}"></i>${PHASE[t][1]}</b><p>${PHASE_DEF[t]}</p></div>`).join('')}</div></div>`:'';
+ $('legend').innerHTML=`<div class="lg">${cats}</div>`+(marks?`<div class="lg lg2">${marks}</div>`:'')+defs;
 }
 const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
