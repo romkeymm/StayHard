@@ -52,6 +52,8 @@ td.today{box-shadow:inset 0 0 0 2px #2b6cff}
 td .hol{position:absolute;left:4px;top:16px;z-index:3;font-size:8.5px;font-style:italic;font-weight:600;color:#5b4a8a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 td .hol.w{white-space:normal;overflow-wrap:anywhere;font-size:7.5px;line-height:1;width:calc(100% - 5px)}
 td.hashol .sp.one{top:26px}
+td.dad::after{content:'';position:absolute;inset:0;border:3px solid #0f766e;z-index:1;pointer-events:none}
+td.dad.dl::after{border-left:0}td.dad.dr::after{border-right:0}
 td.kid::before{content:'';position:absolute;left:0;right:0;top:0;height:16px;background:#d3efe6}
 td .d{z-index:1}
 .kidtog{display:flex;align-items:center;gap:6px;font-size:14px;padding:0 6px}
@@ -128,13 +130,22 @@ const cols=v=>v?(v.cs||(v.c!=null?[v.c]:[])):[];
 const bgFor=cs=>cs.length>1?`linear-gradient(135deg,${COLORS[cs[0]]} 50%,${COLORS[cs[1]]} 50%)`:cs.length?COLORS[cs[0]]:'';
 let showKids=store.get('bac-kids',true);const KID_ANCHOR=Date.UTC(2027,0,4),KID_ON=[0,1,4,5,6,9,10];
 const isKid=(m,d)=>{const n=Math.round((Date.UTC(year,m,d)-KID_ANCHOR)/864e5);return KID_ON.includes(((n%14)+14)%14)};
-let showHol=store.get('bac-hol',true);
+let showHol=store.get('bac-hol',true),showDad=store.get('bac-dad',true);
+const DAD_COLOR='#0f766e';
+const SPRING_BREAK={2027:['2027-03-11','2027-03-21']}; // school dismisses for break through the day before school resumes
+function easter(Y){const a=Y%19,b=Math.floor(Y/100),c=Y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),n=h+l-7*m+114;return [Math.floor(n/31)-1,(n%31)+1]}
+// Custody holiday schedule: which holidays are Dad's in even vs odd years
+function dadDays(Y){const odd=Y%2===1,H=holidays(Y),byName={};for(const k in H)byName[H[k]]=k;const out={};
+ const want=[["New Year's Day",odd],['Easter',!odd],['Memorial Day',odd],["Father's Day",true],['Independence Day',!odd],['Labor Day',odd],["Halloween",!odd],['Thanksgiving',odd],['Christmas Eve',!odd],['Christmas',odd],["New Year's Eve",odd]];
+ for(const [n,dad] of want)if(dad&&byName[n])out[byName[n]]=n;
+ const sb=SPRING_BREAK[Y];if(sb&&odd){let d=new Date(sb[0]+'T12:00:00');const E=new Date(sb[1]+'T12:00:00');while(d<=E){out[d.toISOString().slice(0,10)]='Spring Break';d=new Date(d.getTime()+864e5)}}
+ return out}
 function holidays(Y){const h={},p=(m,d,n)=>{h[Y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')]=n};
  const nth=(m,wd,n)=>{const f=new Date(Y,m,1).getDay();return 1+((wd-f+7)%7)+7*(n-1)};
  const last=(m,wd)=>{const L=new Date(Y,m+1,0);return L.getDate()-((L.getDay()-wd+7)%7)};
  p(0,1,"New Year's Day");p(0,nth(0,1,3),'MLK Jr. Day');p(1,14,"Valentine's Day");p(1,nth(1,1,3),"Presidents' Day");p(2,17,"St. Patrick's Day");
  p(4,nth(4,0,2),"Mother's Day");p(4,last(4,1),'Memorial Day');p(5,nth(5,0,3),"Father's Day");p(6,4,'Independence Day');p(8,nth(8,1,1),'Labor Day');
- p(9,nth(9,1,2),'Columbus Day');p(9,31,'Halloween');p(10,11,'Veterans Day');p(10,nth(10,4,4),'Thanksgiving');p(11,25,'Christmas');return h}
+ p(9,nth(9,1,2),'Columbus Day');p(9,31,"Halloween");p(10,11,'Veterans Day');p(10,nth(10,4,4),'Thanksgiving');p(11,24,'Christmas Eve');p(11,25,'Christmas');p(11,31,"New Year's Eve");const [em,ed]=easter(Y);p(em,ed,'Easter');return h}
 let needRender=false;let mode='add';let data={};let spans=[];let edit=null;let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
 const $=id=>document.getElementById(id);
 const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
@@ -148,11 +159,11 @@ let syncT;function setSync(t){clearTimeout(syncT);$('sync').textContent=t;if(t.e
 function sb(path,opt={}){return fetch(SB_URL+'/rest/v1/'+path,{method:opt.method||'GET',headers:Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},opt.headers||{}),body:opt.body?JSON.stringify(opt.body):undefined}).then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error(r.status+' '+t)});return r.status===204||r.status===201&&!opt.json?null:r.json()})}
 function push(key,value){clearTimeout(timers[key]);setSync('Saving…');timers[key]=setTimeout(()=>{sb(SB_T+'?on_conflict=key',{method:'POST',body:[{key,value,updated_at:new Date().toISOString()}],headers:{Prefer:'resolution=merge-duplicates,return=minimal'}}).then(()=>{cloud=true;setSync('Saved to your site ✓')}).catch(e=>{cloud=false;setSync('Not synced · saved in this browser only');console.warn('[calendar] save failed',e.message)})},500)}
 const pushYear=()=>push('year-'+year,{data,spans});
-const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{labels,showKids,showHol,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
+const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{labels,showKids,showHol,showDad,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
 function pull(){const y=year;setSync('Loading…');
  sb(SB_T+'?select=key,value&key=in.(settings,year-'+y+')').then(rows=>{cloud=true;if(y!==year)return;
   const st=rows.find(r=>r.key==='settings'),yr=rows.find(r=>r.key==='year-'+y);
-  if(st&&st.value){if(typeof st.value.showHol==='boolean'&&st.value.showHol!==showHol){showHol=st.value.showHol;store.set('bac-hol',showHol);renderTools();render()}if(typeof st.value.showKids==='boolean'&&st.value.showKids!==showKids){showKids=st.value.showKids;store.set('bac-kids',showKids);renderTools();render()}if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
+  if(st&&st.value){if(typeof st.value.showDad==='boolean'&&st.value.showDad!==showDad){showDad=st.value.showDad;store.set('bac-dad',showDad);renderTools();render()}if(typeof st.value.showHol==='boolean'&&st.value.showHol!==showHol){showHol=st.value.showHol;store.set('bac-hol',showHol);renderTools();render()}if(typeof st.value.showKids==='boolean'&&st.value.showKids!==showKids){showKids=st.value.showKids;store.set('bac-kids',showKids);renderTools();render()}if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
   if(yr&&yr.value){data=yr.value.data||{};spans=yr.value.spans||[];store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);render()}
   else if(Object.keys(data).length||spans.length)pushYear();
   setSync('Synced ✓');
@@ -163,17 +174,17 @@ function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);p
 
 function renderTools(){
  $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
- `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><label class="kidtog"><input type="checkbox" id="hols" ${showHol?'checked':''}> Holidays</label><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kids</label>`;
+ `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><label class="kidtog"><input type="checkbox" id="dadh" ${showDad?'checked':''}><i style="background:none;border:2px solid #0f766e"></i> Dad holidays</label><label class="kidtog"><input type="checkbox" id="hols" ${showHol?'checked':''}> Holidays</label><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kids</label>`;
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
- $('legend').innerHTML=(showKids?'<span><i style="background:#d3efe6"></i>Kids</span>':'')+COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
+ $('legend').innerHTML=(showDad?'<span><i style="background:none;border:2px solid #0f766e"></i>Dad holiday</span>':'')+(showKids?'<span><i style="background:#d3efe6"></i>Kids</span>':'')+COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
 }
 const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
 function render(){
  const holTag=(k,i,m,d,days,H)=>{let gap=37-i;for(let j=1;j<gap&&d+j<=days;j++)if(H[key(m,d+j)]){gap=j;break}const n=Math.min(gap,3);return n>=2?`<span class="hol" style="max-width:calc(${n*100}% + ${n}px - 6px)">${H[k]}</span>`:`<span class="hol w">${H[k]}</span>`};
- const first={},HOL=showHol?holidays(year):{};
+ const first={},HOL=showHol?holidays(year):{},DAD=showDad?dadDays(year):{};
  spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="Click to edit label" style="width:calc(${n*100}% + ${n-1}px - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
  let h='<thead><tr><th class="m"></th>';
  for(let i=0;i<37;i++)h+=`<th class="${i%7==0||i%7==6?'we':''}">${DOW[i%7]}</th>`;
@@ -187,7 +198,7 @@ function render(){
    const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
    const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
    const cs=cols(v),bg=cs.length?` style="background:${bgFor(cs)}"`:'';
-   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKid(m,d)?' kid':''}${HOL[k]?' hashol':''}"${bg}><span class="d">${d}</span>${HOL[k]?holTag(k,i,m,d,days,HOL):''}${first[k]||''}</td>`;
+   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKid(m,d)?' kid':''}${HOL[k]?' hashol':''}${DAD[k]?' dad'+(d>1&&DAD[key(m,d-1)]?' dl':'')+(d<days&&DAD[key(m,d+1)]?' dr':''):''}"${bg}><span class="d">${d}</span>${HOL[k]?holTag(k,i,m,d,days,HOL):''}${first[k]||''}</td>`;
   }
   h+=`<th class="m">${MONTHS[m]}</th></tr>`;
  }
@@ -248,7 +259,7 @@ $('offerDel').onclick=()=>{if(edit!=null)spans.splice(edit,1);save();hideOffer()
 $('offerNo').onclick=hideOffer;
 const ag=$('askG');ag.checked=askG;ag.onchange=()=>{askG=ag.checked;store.set('bac-askg',askG);if(!askG)hideOffer()};
 
-$('tools').addEventListener('change',e=>{if(e.target.id==='hols'){showHol=e.target.checked;store.set('bac-hol',showHol);render();pushSettings()}if(e.target.id==='kids'){showKids=e.target.checked;store.set('bac-kids',showKids);render();pushSettings()}});
+$('tools').addEventListener('change',e=>{if(e.target.id==='dadh'){showDad=e.target.checked;store.set('bac-dad',showDad);render();pushSettings()}if(e.target.id==='hols'){showHol=e.target.checked;store.set('bac-hol',showHol);render();pushSettings()}if(e.target.id==='kids'){showKids=e.target.checked;store.set('bac-kids',showKids);render();pushSettings()}});
 $('tools').addEventListener('click',e=>{
  const b=e.target.closest('[data-i]'),t=e.target.closest('[data-t]');
  if(b){tool=+b.dataset.i;renderTools()}
