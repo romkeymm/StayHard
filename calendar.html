@@ -41,7 +41,8 @@ td{height:58px;vertical-align:top;position:relative;cursor:crosshair}
 td.x{background:repeating-linear-gradient(45deg,transparent 0 5px,var(--wk) 5px 6px);cursor:default}
 td.we{background:var(--wk)}
 td .d{position:absolute;z-index:1;top:2px;left:4px;font-size:12px;font-weight:700}
-td .sp{position:absolute;left:3px;bottom:4px;height:22px;z-index:2;display:flex;align-items:center;padding:0 9px;border-radius:5px;background:var(--ac,#666);font-size:13px;font-weight:700;line-height:1.1;color:#fff;white-space:nowrap;overflow:hidden;pointer-events:none;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+td .sp{position:absolute;left:3px;bottom:4px;height:22px;z-index:2;display:flex;align-items:center;padding:0 9px;border-radius:5px;background:var(--ac,#666);font-size:13px;font-weight:700;line-height:1.1;color:#fff;white-space:nowrap;overflow:hidden;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+td .sp:hover{outline:2px solid #2b6cff;outline-offset:1px}
 td .sp span{overflow:hidden;text-overflow:ellipsis}
 td .sp.one{left:1px!important;width:calc(100% - 2px)!important;top:16px;bottom:1px;height:auto;padding:0;background:none;box-shadow:none;color:#111;font-size:8.5px;font-weight:700;white-space:normal;overflow-wrap:anywhere;line-height:1.05;align-items:flex-start;justify-content:center;text-align:center;border-radius:0}
 td.sel{outline:2px dashed #2b6cff;outline-offset:-3px}
@@ -162,7 +163,7 @@ const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&q
 
 function render(){
  const first={};
- spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" style="width:calc(${n*100}% + ${n-1}px - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
+ spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="Click to edit label" style="width:calc(${n*100}% + ${n-1}px - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
  let h='<thead><tr><th class="m"></th>';
  for(let i=0;i<37;i++)h+=`<th class="${i%7==0||i%7==6?'we':''}">${DOW[i%7]}</th>`;
  h+='<th class="m"></th></tr></thead><tbody>';
@@ -199,6 +200,7 @@ function apply(td){
 
 const cal=$('cal');
 cal.addEventListener('pointerdown',e=>{
+ const spEl=e.target.closest('.sp');if(spEl){e.preventDefault();const ix=+spEl.dataset.sp,sp=spans[ix];if(sp)openBox(sp.t,[sp.s,sp.e],ix,sp.c);return}
  const td=e.target.closest('td[data-k]');if(!td)return;
  e.preventDefault();
  if(tool==='note'){const k=td.dataset.k,ix=spans.findIndex(sp=>k>=sp.s&&k<=sp.e);if(ix>-1){openBox(spans[ix].t,[spans[ix].s,spans[ix].e],ix);return}selecting=true;stroke=[k];td.classList.add('sel');return}
