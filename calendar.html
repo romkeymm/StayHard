@@ -78,11 +78,30 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 :root[data-look=clean]{--line:#e7e7e4;--wk:#f6f6f3}
 :root[data-look=clean] h1{font-weight:800;font-size:clamp(28px,4vw,40px);letter-spacing:-.02em}
 :root[data-look=clean] th,:root[data-look=clean] td{border-color:#ececea}
-:root[data-look=clean] tbody tr{border-top:2px solid #d9d9d5}
-:root[data-look=clean] td.x{background:#fbfbfa}
+:root[data-look=clean] tbody tr{border-top:1.5px solid #dcdcd8}
+:root[data-look=clean] td.x{background:#fff;border-color:transparent}
+:root[data-look=clean]{--panel:#fff}
+:root[data-look=clean] body{background:#fff}
+:root[data-look=clean] .top{padding:22px max(3vw,14px) 6px;align-items:center}
+:root[data-look=clean] .ctrl select,:root[data-look=clean] .ctrl button{font-size:13px;min-height:32px;padding:4px 10px;border-color:#e3e3e0}
+:root[data-look=clean] .ctrl .chk{font-size:12px;color:#777}
+:root[data-look=clean] .tools{gap:4px 6px;padding:6px max(3vw,14px) 8px;border-block:0}
+:root[data-look=clean] .sw{gap:5px;padding:3px 6px 3px 3px;border-width:1.5px;border-radius:999px}
+:root[data-look=clean] .sw b{width:18px;height:18px;border-radius:50%;border:0}
+:root[data-look=clean] .sw input{width:auto;field-sizing:content;min-width:40px;font-size:13px;border-bottom:0;padding:0 2px}
+:root[data-look=clean] .tbtn{font-size:13px;min-height:30px;padding:3px 10px;border-radius:999px;border-color:#e3e3e0}
+:root[data-look=clean] .kidtog{font-size:12px;color:#666;padding:0 4px}
+:root[data-look=clean] .kidtog input{width:15px;height:15px}
+:root[data-look=clean] td.we{background:#f9f9f7}
+:root[data-look=clean] td{height:56px}
+:root[data-look=clean] td .sp.one{font-weight:600;color:#333}
+:root[data-look=clean] thead th{font-size:10px;font-weight:600;color:#aaa;height:20px;border-color:transparent}
+:root[data-look=clean] thead th.we{background:none}
+:root[data-look=clean] .legend{font-size:12px;color:#555;gap:8px 18px}
+:root[data-look=clean] .legend i{width:12px;height:12px;border-radius:50%;border:0}
 :root[data-look=clean] td .d{font-size:10.5px;font-weight:600;color:#8a8a86}
 :root[data-look=clean] td.f .d{color:#333}
-:root[data-look=clean] td.kid::before{height:4px;background:#7cc9b2}
+:root[data-look=clean] td.kid::before{height:3px;background:#8fd0bc}
 :root[data-look=clean] th.m{font-size:12px;font-weight:800;letter-spacing:.04em;color:#555}
 :root[data-look=clean] tr th.m:last-child{display:none}
 :root[data-look=clean] td .sp:not(.one){height:16px;bottom:5px;border-radius:999px;font-size:10.5px;font-weight:700;padding:0 8px}
@@ -201,7 +220,7 @@ const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'
 const ys=$('year');
 for(let y=now.getFullYear()-1;y<=now.getFullYear()+5;y++)ys.insertAdjacentHTML('beforeend',`<option ${y==year?'selected':''}>${y}</option>`);
 
-let look=store.get('bac-look','classic');const applyLook=()=>{document.documentElement.dataset.look=look;$('look').value=look};
+let look=store.get('bac-look','clean');const applyLook=()=>{document.documentElement.dataset.look=look;$('look').value=look};
 $('look').onchange=()=>{look=$('look').value;store.set('bac-look',look);applyLook();render();pushSettings()};
 const SB_URL='https://urqcldfagszngbxtdmck.supabase.co',SB_KEY='sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo',SB_T='big_calendar';
 let cloud=false;const timers={};
