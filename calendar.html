@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Big Year Calendar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
 /*
 VOICE: plain, sturdy wall-planner; a tool you mark up.
@@ -73,9 +73,56 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 #offer .row a{display:inline-flex;align-items:center;min-height:40px;padding:6px 14px;border-radius:8px;background:#1a73e8;color:#fff;text-decoration:none;font-weight:700}
 .chk{display:flex;align-items:center;gap:6px;font-size:14px}
 .chk input{width:18px;height:18px}
+/* ---------- LOOKS ---------- */
+/* Clean: quiet grid, thin kid line, slim pills */
+:root[data-look=clean]{--line:#e7e7e4;--wk:#f6f6f3}
+:root[data-look=clean] h1{font-weight:800;font-size:clamp(28px,4vw,40px);letter-spacing:-.02em}
+:root[data-look=clean] th,:root[data-look=clean] td{border-color:#ececea}
+:root[data-look=clean] tbody tr{border-top:2px solid #d9d9d5}
+:root[data-look=clean] td.x{background:#fbfbfa}
+:root[data-look=clean] td .d{font-size:10.5px;font-weight:600;color:#8a8a86}
+:root[data-look=clean] td.f .d{color:#333}
+:root[data-look=clean] td.kid::before{height:4px;background:#7cc9b2}
+:root[data-look=clean] th.m{font-size:12px;font-weight:800;letter-spacing:.04em;color:#555}
+:root[data-look=clean] tr th.m:last-child{display:none}
+:root[data-look=clean] td .sp:not(.one){height:16px;bottom:5px;border-radius:999px;font-size:10.5px;font-weight:700;padding:0 8px}
+:root[data-look=clean] td.dad::after{border-width:2px}
+:root[data-look=clean] td .hol{color:#8a7fb0;font-weight:500}
+/* Dark: matches the StayHard homepage */
+:root[data-look=dark]{--bg:#0d0d0d;--ink:#eee;--line:#232323;--wk:#151515;--soft:#777;--panel:#111}
+:root[data-look=dark] h1{font-family:'Barlow Condensed',Archivo,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+:root[data-look=dark] td.x{background:#0a0a0a}
+:root[data-look=dark] td .d{color:#9a9a9a;font-weight:600}
+:root[data-look=dark] td.f .d,:root[data-look=dark] td.f{color:#111}
+:root[data-look=dark] td.kid::before{height:3px;background:#3fb68b}
+:root[data-look=dark] th.m{color:#ddd;font-family:'Barlow Condensed',Archivo,sans-serif;font-size:16px;letter-spacing:.06em}
+:root[data-look=dark] tr th.m:last-child{display:none}
+:root[data-look=dark] td .hol{color:#b9a8ff}
+:root[data-look=dark] td .sp:not(.one){height:17px;bottom:5px;border-radius:4px;font-size:10.5px;background:#f2f2f2;color:#111;box-shadow:none}
+:root[data-look=dark] td .sp.one{background:none;color:#eee}:root[data-look=dark] td.f .sp.one{color:#111}
+:root[data-look=dark] td.dad::after{border:2px solid #2dd4bf}
+:root[data-look=dark] .sw,:root[data-look=dark] select,:root[data-look=dark] button{background:#1a1a1a}
+/* Tiles: each day a soft rounded tile, no grid lines */
+:root[data-look=tiles]{--gap:4px;--line:transparent;--wk:#f1f0ec}
+:root[data-look=tiles] table{border-collapse:separate;border-spacing:4px}
+:root[data-look=tiles] th,:root[data-look=tiles] td{border:0}
+:root[data-look=tiles] td{border-radius:7px;background:#f8f7f4;height:54px}
+:root[data-look=tiles] td.we{background:#efede7}
+:root[data-look=tiles] td.x{background:transparent}
+:root[data-look=tiles] td .d{font-size:10.5px;font-weight:600;color:#777}
+:root[data-look=tiles] td.f .d{color:#222}
+:root[data-look=tiles] td.kid::before{left:auto;right:5px;top:5px;width:6px;height:6px;border-radius:50%;background:#3fae8c}
+:root[data-look=tiles] th.m{font-size:12px;letter-spacing:.05em;color:#666}
+:root[data-look=tiles] tr th.m:last-child{display:none}
+:root[data-look=tiles] thead th{height:16px;font-size:10px}
+:root[data-look=tiles] td .sp:not(.one){height:16px;bottom:5px;border-radius:999px;font-size:10.5px;padding:0 8px}
+:root[data-look=tiles] td.dad::after{border-width:2px;border-radius:7px}
+:root[data-look=tiles] td.dad.dl::after{border-radius:0 7px 7px 0}:root[data-look=tiles] td.dad.dr::after{border-radius:7px 0 0 7px}:root[data-look=tiles] td.dad.dl.dr::after{border-radius:0}
+:root[data-look=tiles] td.today{box-shadow:inset 0 0 0 2px #2b6cff}
 @page{size:17in 11in;margin:.35in}
 @media print{
- :root{color-scheme:light}
+ :root,:root[data-look]{color-scheme:light;--bg:#fff;--ink:#000;--line:#bbb;--wk:#f0f0f0;--soft:#444}
+ :root[data-look=dark] h1,:root[data-look=dark] th.m{color:#000}
  body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
  .ctrl,.tools,#msg,#offer,#sync{display:none!important}
  .top{padding:0 0 .08in}h1{font-size:30px}
@@ -96,6 +143,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
  <div class="ctrl">
   <label for="year" class="hint" style="width:auto">Year</label>
   <select id="year"></select>
+  <select id="look" aria-label="Look"><option value="classic">Classic</option><option value="clean">Clean</option><option value="dark">Dark</option><option value="tiles">Tiles</option></select>
   <button id="print">Print 11×17</button>
   <label class="chk"><input type="checkbox" id="askG"> Ask for a label after painting</label>
   <button id="clear">Clear year</button>
@@ -153,17 +201,19 @@ const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'
 const ys=$('year');
 for(let y=now.getFullYear()-1;y<=now.getFullYear()+5;y++)ys.insertAdjacentHTML('beforeend',`<option ${y==year?'selected':''}>${y}</option>`);
 
+let look=store.get('bac-look','classic');const applyLook=()=>{document.documentElement.dataset.look=look;$('look').value=look};
+$('look').onchange=()=>{look=$('look').value;store.set('bac-look',look);applyLook();render();pushSettings()};
 const SB_URL='https://urqcldfagszngbxtdmck.supabase.co',SB_KEY='sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo',SB_T='big_calendar';
 let cloud=false;const timers={};
 let syncT;function setSync(t){clearTimeout(syncT);$('sync').textContent=t;if(t.endsWith('✓'))syncT=setTimeout(()=>{$('sync').textContent=''},2500)}
 function sb(path,opt={}){return fetch(SB_URL+'/rest/v1/'+path,{method:opt.method||'GET',headers:Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},opt.headers||{}),body:opt.body?JSON.stringify(opt.body):undefined}).then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error(r.status+' '+t)});return r.status===204||r.status===201&&!opt.json?null:r.json()})}
 function push(key,value){clearTimeout(timers[key]);setSync('Saving…');timers[key]=setTimeout(()=>{sb(SB_T+'?on_conflict=key',{method:'POST',body:[{key,value,updated_at:new Date().toISOString()}],headers:{Prefer:'resolution=merge-duplicates,return=minimal'}}).then(()=>{cloud=true;setSync('Saved to your site ✓')}).catch(e=>{cloud=false;setSync('Not synced · saved in this browser only');console.warn('[calendar] save failed',e.message)})},500)}
 const pushYear=()=>push('year-'+year,{data,spans});
-const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{labels,showKids,showHol,showDad,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
+const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{look,labels,showKids,showHol,showDad,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
 function pull(){const y=year;setSync('Loading…');
  sb(SB_T+'?select=key,value&key=in.(settings,year-'+y+')').then(rows=>{cloud=true;if(y!==year)return;
   const st=rows.find(r=>r.key==='settings'),yr=rows.find(r=>r.key==='year-'+y);
-  if(st&&st.value){if(typeof st.value.showDad==='boolean'&&st.value.showDad!==showDad){showDad=st.value.showDad;store.set('bac-dad',showDad);renderTools();render()}if(typeof st.value.showHol==='boolean'&&st.value.showHol!==showHol){showHol=st.value.showHol;store.set('bac-hol',showHol);renderTools();render()}if(typeof st.value.showKids==='boolean'&&st.value.showKids!==showKids){showKids=st.value.showKids;store.set('bac-kids',showKids);renderTools();render()}if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
+  if(st&&st.value){if(st.value.look&&st.value.look!==look){look=st.value.look;store.set('bac-look',look);applyLook()}if(typeof st.value.showDad==='boolean'&&st.value.showDad!==showDad){showDad=st.value.showDad;store.set('bac-dad',showDad);renderTools();render()}if(typeof st.value.showHol==='boolean'&&st.value.showHol!==showHol){showHol=st.value.showHol;store.set('bac-hol',showHol);renderTools();render()}if(typeof st.value.showKids==='boolean'&&st.value.showKids!==showKids){showKids=st.value.showKids;store.set('bac-kids',showKids);renderTools();render()}if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
   if(yr&&yr.value){data=yr.value.data||{};spans=yr.value.spans||[];store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);render()}
   else if(Object.keys(data).length||spans.length)pushYear();
   setSync('Synced ✓');
@@ -187,7 +237,7 @@ function render(){
  const holTag=(k,H)=>`<span class="hol" title="${esc(H[k])}">${SHORT[H[k]]||esc(H[k])}</span>`;
  AUTO=dadDays(year);const DAD={};if(showDad)for(let m=0;m<12;m++)for(let d=1;d<=new Date(year,m+1,0).getDate();d++){const k=key(m,d);if(isDadK(k))DAD[k]=1}
  const first={},HOL=showHol?holidays(year):{};
- spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="Click to edit label" style="width:calc(${n*100}% + ${n-1}px - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
+ spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="Click to edit label" style="width:calc(${n*100}% + ${n-1} * var(--gap,1px) - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
  let h='<thead><tr><th class="m"></th>';
  for(let i=0;i<37;i++)h+=`<th class="${i%7==0||i%7==6?'we':''}">${DOW[i%7]}</th>`;
  h+='<th class="m"></th></tr></thead><tbody>';
@@ -278,7 +328,7 @@ let armed=false;
 $('clear').onclick=()=>{if(!armed){armed=true;$('clear').textContent='Click again to clear';setTimeout(()=>{armed=false;$('clear').textContent='Clear year'},3000);return}data={};spans=[];save();render();armed=false;$('clear').textContent='Clear year'};
 $('print').onclick=()=>{try{window.print()}catch(e){}$('msg').textContent='If no print dialog opened, use your browser’s Print (Ctrl/Cmd+P). Choose Tabloid / 11×17, Landscape, scale 100%, and turn on “Background graphics.”'};
 
-renderTools();load();
+applyLook();renderTools();load();
 }
 </script>
 </body>
