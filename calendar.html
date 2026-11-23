@@ -40,12 +40,19 @@ th.m{width:52px;font-weight:900;font-size:15px;text-align:center;color:var(--ink
 td{height:58px;vertical-align:top;position:relative;cursor:crosshair}
 td.x{background:repeating-linear-gradient(45deg,transparent 0 5px,var(--wk) 5px 6px);cursor:default}
 td.we{background:var(--wk)}
-td .d{position:absolute;top:2px;left:4px;font-size:12px;font-weight:700}
+td .d{position:absolute;z-index:1;top:2px;left:4px;font-size:12px;font-weight:700}
 td .sp{position:absolute;left:3px;bottom:4px;height:22px;z-index:2;display:flex;align-items:center;padding:0 9px;border-radius:5px;background:var(--ac,#666);font-size:13px;font-weight:700;line-height:1.1;color:#fff;white-space:nowrap;overflow:hidden;pointer-events:none;box-shadow:0 1px 2px rgba(0,0,0,.18)}
 td .sp span{overflow:hidden;text-overflow:ellipsis}
 td .sp.one{left:1px!important;width:calc(100% - 2px)!important;top:16px;bottom:1px;height:auto;padding:0;background:none;box-shadow:none;color:#111;font-size:8.5px;font-weight:700;white-space:normal;overflow-wrap:anywhere;line-height:1.05;align-items:flex-start;justify-content:center;text-align:center;border-radius:0}
 td.sel{outline:2px dashed #2b6cff;outline-offset:-3px}
 td.today{box-shadow:inset 0 0 0 2px #2b6cff}
+#sync{position:fixed;right:14px;bottom:14px;z-index:4;font-size:12px;color:var(--soft);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;pointer-events:none}
+#sync:empty{display:none}
+td.kid::before{content:'';position:absolute;left:0;right:0;top:0;height:16px;background:#d3efe6}
+td .d{z-index:1}
+.kidtog{display:flex;align-items:center;gap:6px;font-size:14px;padding:0 6px}
+.kidtog input{width:18px;height:18px}
+.kidtog i{display:inline-block;width:22px;height:12px;border-radius:3px;background:#d3efe6;border:1px solid rgba(0,0,0,.12)}
 td.f{color:#111}
 .legend{display:flex;flex-wrap:wrap;gap:10px 22px;padding:10px max(3vw,14px) 24px;font-size:14px}
 .legend i{display:inline-block;width:16px;height:16px;border-radius:3px;vertical-align:-3px;margin-right:6px;border:1px solid rgba(0,0,0,.15)}
@@ -65,7 +72,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 @media print{
  :root{color-scheme:light}
  body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
- .ctrl,.tools,#msg,#offer{display:none!important}
+ .ctrl,.tools,#msg,#offer,#sync{display:none!important}
  .top{padding:0 0 .08in}h1{font-size:30px}
  .scroll{padding:0;overflow:visible}
  table{min-width:0}
@@ -87,10 +94,11 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
   <button id="print">Print 11×17</button>
   <label class="chk"><input type="checkbox" id="askG"> Ask for a label after painting</label>
   <button id="clear">Clear year</button>
-  <span id="sync" class="hint" style="width:auto"></span>
+
  </div>
 </div>
 <div class="tools" id="tools"></div>
+<div id="sync" aria-live="polite"></div>
 <div class="scroll"><table id="cal"></table></div>
 <div class="legend" id="legend"></div>
 <p id="msg" style="padding:0 max(3vw,14px) 24px;margin:0"></p>
@@ -114,6 +122,8 @@ let labels=store.get('bac-labels-v3',DEF.slice());
 let year=store.get('bac-year',now.getMonth()>=10?now.getFullYear()+1:now.getFullYear());
 const cols=v=>v?(v.cs||(v.c!=null?[v.c]:[])):[];
 const bgFor=cs=>cs.length>1?`linear-gradient(135deg,${COLORS[cs[0]]} 50%,${COLORS[cs[1]]} 50%)`:cs.length?COLORS[cs[0]]:'';
+let showKids=store.get('bac-kids',true);const KID_ANCHOR=Date.UTC(2027,0,4),KID_ON=[0,1,4,5,6,9,10];
+const isKid=(m,d)=>{const n=Math.round((Date.UTC(year,m,d)-KID_ANCHOR)/864e5);return KID_ON.includes(((n%14)+14)%14)};
 let needRender=false;let mode='add';let data={};let spans=[];let edit=null;let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
 const $=id=>document.getElementById(id);
 const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
@@ -123,15 +133,15 @@ for(let y=now.getFullYear()-1;y<=now.getFullYear()+5;y++)ys.insertAdjacentHTML('
 
 const SB_URL='https://urqcldfagszngbxtdmck.supabase.co',SB_KEY='sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo',SB_T='big_calendar';
 let cloud=false;const timers={};
-function setSync(t){$('sync').textContent=t}
+let syncT;function setSync(t){clearTimeout(syncT);$('sync').textContent=t;if(t.endsWith('✓'))syncT=setTimeout(()=>{$('sync').textContent=''},2500)}
 function sb(path,opt={}){return fetch(SB_URL+'/rest/v1/'+path,{method:opt.method||'GET',headers:Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},opt.headers||{}),body:opt.body?JSON.stringify(opt.body):undefined}).then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error(r.status+' '+t)});return r.status===204||r.status===201&&!opt.json?null:r.json()})}
 function push(key,value){clearTimeout(timers[key]);setSync('Saving…');timers[key]=setTimeout(()=>{sb(SB_T+'?on_conflict=key',{method:'POST',body:[{key,value,updated_at:new Date().toISOString()}],headers:{Prefer:'resolution=merge-duplicates,return=minimal'}}).then(()=>{cloud=true;setSync('Saved to your site ✓')}).catch(e=>{cloud=false;setSync('Not synced · saved in this browser only');console.warn('[calendar] save failed',e.message)})},500)}
 const pushYear=()=>push('year-'+year,{data,spans});
-const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{labels,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
+const pushSettings=()=>{const tn=$('title').firstChild;push('settings',{labels,showKids,title:tn&&tn.nodeType===3?tn.nodeValue.trim():''})};
 function pull(){const y=year;setSync('Loading…');
  sb(SB_T+'?select=key,value&key=in.(settings,year-'+y+')').then(rows=>{cloud=true;if(y!==year)return;
   const st=rows.find(r=>r.key==='settings'),yr=rows.find(r=>r.key==='year-'+y);
-  if(st&&st.value){if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
+  if(st&&st.value){if(typeof st.value.showKids==='boolean'&&st.value.showKids!==showKids){showKids=st.value.showKids;store.set('bac-kids',showKids);renderTools();render()}if(Array.isArray(st.value.labels)){labels=st.value.labels;store.set('bac-labels-v3',labels);renderTools()}if(st.value.title){store.set('bac-title',st.value.title);const tn=$('title').firstChild;if(tn&&tn.nodeType===3)tn.nodeValue=st.value.title+' '}}else pushSettings();
   if(yr&&yr.value){data=yr.value.data||{};spans=yr.value.spans||[];store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);render()}
   else if(Object.keys(data).length||spans.length)pushYear();
   setSync('Synced ✓');
@@ -142,12 +152,12 @@ function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);p
 
 function renderTools(){
  $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
- `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button>
+ `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kid days (2-2-3)</label>
  <span class="hint">Pick a color, then click or drag across days to fill them. Paint a second color on a day to split it (great for PTO on top of travel). Click a day with a color it already has to remove that color. After you paint, you can name the dates; the label stretches across the whole block. Use “Add label” to click or drag over days and label them without color, or click an existing label to edit it. Rename the labels; they print as the legend. The title is editable too. Everything saves to your site, so it shows up on any device.</span>`;
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
- $('legend').innerHTML=COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
+ $('legend').innerHTML=(showKids?'<span><i style="background:#d3efe6"></i>Kid days (2-2-3)</span>':'')+COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
 }
 const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
@@ -166,7 +176,7 @@ function render(){
    const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
    const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
    const cs=cols(v),bg=cs.length?` style="background:${bgFor(cs)}"`:'';
-   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}"${bg}><span class="d">${d}</span>${first[k]||''}</td>`;
+   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKid(m,d)?' kid':''}"${bg}><span class="d">${d}</span>${first[k]||''}</td>`;
   }
   h+=`<th class="m">${MONTHS[m]}</th></tr>`;
  }
@@ -214,7 +224,7 @@ function openBox(title,r,ix,c){
  $('offerTxt').textContent=(ix==null?'Label ':'Edit label for ')+txt+'. It stretches across all of these days.';
  $('offerTitle').value=title;$('offerGo').href=gUrl();
  $('offerDel').style.display=ix==null?'none':'';
- $('offer').classList.add('show');$('offerTitle').focus();$('offerTitle').select();
+ $('offer').classList.add('show');$('offerTitle').focus({preventScroll:true});$('offerTitle').select();
 }
 function hideOffer(){$('offer').classList.remove('show');document.querySelectorAll('td.sel').forEach(t=>t.classList.remove('sel'))}
 function saveLabel(){const t=$('offerTitle').value.trim();if(edit!=null){if(t)spans[edit].t=t;else spans.splice(edit,1)}else if(t)spans.push({s:range[0],e:range[1],t,c:boxColor});save();hideOffer();render()}
@@ -226,6 +236,7 @@ $('offerDel').onclick=()=>{if(edit!=null)spans.splice(edit,1);save();hideOffer()
 $('offerNo').onclick=hideOffer;
 const ag=$('askG');ag.checked=askG;ag.onchange=()=>{askG=ag.checked;store.set('bac-askg',askG);if(!askG)hideOffer()};
 
+$('tools').addEventListener('change',e=>{if(e.target.id==='kids'){showKids=e.target.checked;store.set('bac-kids',showKids);render();pushSettings()}});
 $('tools').addEventListener('click',e=>{
  const b=e.target.closest('[data-i]'),t=e.target.closest('[data-t]');
  if(b){tool=+b.dataset.i;renderTools()}
