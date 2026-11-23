@@ -28,7 +28,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 .sw{display:flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border:2px solid transparent;border-radius:10px;background:var(--bg)}
 .sw.on{border-color:var(--ink)}
 .sw b{width:30px;height:30px;border-radius:6px;flex:none;cursor:pointer;border:1px solid rgba(0,0,0,.15)}
-.sw input{width:110px;font:inherit;font-size:15px;border:0;border-bottom:1px dashed var(--line);background:transparent;color:var(--ink);padding:2px}
+.sw input{width:136px;font:inherit;font-size:15px;border:0;border-bottom:1px dashed var(--line);background:transparent;color:var(--ink);padding:2px}
 .tbtn.on{background:var(--ink);color:var(--bg)}
 .hint{color:var(--soft);font-size:13px;width:100%}
 .scroll{overflow-x:auto;padding:10px max(3vw,14px) 6px}
@@ -41,7 +41,9 @@ td{height:58px;vertical-align:top;position:relative;cursor:crosshair}
 td.x{background:repeating-linear-gradient(45deg,transparent 0 5px,var(--wk) 5px 6px);cursor:default}
 td.we{background:var(--wk)}
 td .d{position:absolute;top:2px;left:4px;font-size:12px;font-weight:700}
-td .sp{position:absolute;left:3px;top:17px;bottom:3px;z-index:2;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;line-height:1.15;overflow:hidden;word-break:break-word;pointer-events:none;color:#111}
+td .sp{position:absolute;left:3px;bottom:4px;height:22px;z-index:2;display:flex;align-items:center;padding:0 9px;border-radius:5px;background:var(--ac,#666);font-size:13px;font-weight:700;line-height:1.1;color:#fff;white-space:nowrap;overflow:hidden;pointer-events:none;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+td .sp span{overflow:hidden;text-overflow:ellipsis}
+td .sp.one{left:1px!important;width:calc(100% - 2px)!important;top:16px;bottom:1px;height:auto;padding:0;background:none;box-shadow:none;color:#111;font-size:8.5px;font-weight:700;white-space:normal;overflow-wrap:anywhere;line-height:1.05;align-items:flex-start;justify-content:center;text-align:center;border-radius:0}
 td.sel{outline:2px dashed #2b6cff;outline-offset:-3px}
 td.today{box-shadow:inset 0 0 0 2px #2b6cff}
 td.f{color:#111}
@@ -135,7 +137,7 @@ const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&q
 
 function render(){
  const first={};
- spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;first[s0]=(first[s0]||'')+`<span class="sp" style="width:calc(${n*100}% + ${n-1}px - 6px)">${esc(sp.t)}</span>`}});
+ spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" style="width:calc(${n*100}% + ${n-1}px - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
  let h='<thead><tr><th class="m"></th>';
  for(let i=0;i<37;i++)h+=`<th class="${i%7==0||i%7==6?'we':''}">${DOW[i%7]}</th>`;
  h+='<th class="m"></th></tr></thead><tbody>';
@@ -182,16 +184,16 @@ cal.addEventListener('pointerdown',e=>{
 });
 cal.addEventListener('pointerover',e=>{const td=e.target.closest('td[data-k]');if(!td)return;if(painting)apply(td);else if(selecting&&!stroke.includes(td.dataset.k)){stroke.push(td.dataset.k);td.classList.add('sel')}});
 let selecting=false;
-window.addEventListener('pointerup',()=>{if(painting){painting=false;save();if(needRender){needRender=false;render()}else renderLegend();if(stroke.length&&mode==='add'&&askG){const ks=stroke.slice().sort();openBox(labels[paintVal]||'',[ks[0],ks[ks.length-1]],null)}}
- else if(selecting){selecting=false;const ks=stroke.slice().sort();openBox('',[ks[0],ks[ks.length-1]],null)}});
+window.addEventListener('pointerup',()=>{if(painting){painting=false;save();if(needRender){needRender=false;render()}else renderLegend();if(stroke.length&&mode==='add'&&askG){const ks=stroke.slice().sort();openBox(labels[paintVal]||'',[ks[0],ks[ks.length-1]],null,paintVal)}}
+ else if(selecting){selecting=false;const ks=stroke.slice().sort();openBox('',[ks[0],ks[ks.length-1]],null,null)}});
 const ymd=k=>k.replace(/-/g,'');
 function nextDay(k){const [y,m,d]=k.split('-').map(Number);const t=new Date(y,m-1,d+1);return t.getFullYear()+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')}
 const nice=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:'short',day:'numeric'})};
-let range=null;
+let range=null;let boxColor=null;
 function gUrl(){const t=$('offerTitle').value.trim()||'Event';
  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(t)+'&dates='+ymd(range[0])+'/'+nextDay(range[1])+'&authuser='+encodeURIComponent(GACCT)}
-function openBox(title,r,ix){
- range=r;edit=ix;
+function openBox(title,r,ix,c){
+ range=r;edit=ix;boxColor=c;
  const txt=r[0]===r[1]?nice(r[0]):nice(r[0])+' – '+nice(r[1]);
  $('offerTxt').textContent=(ix==null?'Label ':'Edit label for ')+txt+'. It stretches across all of these days.';
  $('offerTitle').value=title;$('offerGo').href=gUrl();
@@ -199,7 +201,7 @@ function openBox(title,r,ix){
  $('offer').classList.add('show');$('offerTitle').focus();$('offerTitle').select();
 }
 function hideOffer(){$('offer').classList.remove('show');document.querySelectorAll('td.sel').forEach(t=>t.classList.remove('sel'))}
-function saveLabel(){const t=$('offerTitle').value.trim();if(edit!=null){if(t)spans[edit].t=t;else spans.splice(edit,1)}else if(t)spans.push({s:range[0],e:range[1],t});save();hideOffer();render()}
+function saveLabel(){const t=$('offerTitle').value.trim();if(edit!=null){if(t)spans[edit].t=t;else spans.splice(edit,1)}else if(t)spans.push({s:range[0],e:range[1],t,c:boxColor});save();hideOffer();render()}
 $('offerTitle').addEventListener('input',()=>{$('offerGo').href=gUrl()});
 $('offerTitle').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveLabel()}if(e.key==='Escape')hideOffer()});
 $('offerSave').onclick=saveLabel;
