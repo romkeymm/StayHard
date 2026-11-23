@@ -152,12 +152,12 @@ function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);p
 
 function renderTools(){
  $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
- `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kid days (2-2-3)</label>
+ `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kids</label>
  <span class="hint">Pick a color, then click or drag across days to fill them. Paint a second color on a day to split it (great for PTO on top of travel). Click a day with a color it already has to remove that color. After you paint, you can name the dates; the label stretches across the whole block. Use “Add label” to click or drag over days and label them without color, or click an existing label to edit it. Rename the labels; they print as the legend. The title is editable too. Everything saves to your site, so it shows up on any device.</span>`;
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
- $('legend').innerHTML=(showKids?'<span><i style="background:#d3efe6"></i>Kid days (2-2-3)</span>':'')+COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
+ $('legend').innerHTML=(showKids?'<span><i style="background:#d3efe6"></i>Kids</span>':'')+COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
 }
 const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
