@@ -142,6 +142,21 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 :root[data-look=tiles] td.dad::after{border-width:2px;border-radius:7px}
 :root[data-look=tiles] td.dad.dl::after{border-radius:0 7px 7px 0}:root[data-look=tiles] td.dad.dr::after{border-radius:7px 0 0 7px}:root[data-look=tiles] td.dad.dl.dr::after{border-radius:0}
 :root[data-look=tiles] td.today{box-shadow:inset 0 0 0 2px #2b6cff}
+/* Clean tiles: Clean styling on the Tiles layout */
+:root[data-variant=tiles]{--gap:4px}
+:root[data-variant=tiles] table{border-collapse:separate;border-spacing:4px 5px}
+:root[data-variant=tiles] th,:root[data-variant=tiles] td{border:0}
+:root[data-variant=tiles] tbody tr{border:0}
+:root[data-variant=tiles] td{border-radius:8px;background:#f7f6f3;height:64px;overflow:visible}
+:root[data-variant=tiles] td.we{background:#efeee9}
+:root[data-variant=tiles] td.x{background:transparent}
+:root[data-variant=tiles] td.kid::before{height:3px;left:6px;right:6px;top:0;border-radius:0 0 3px 3px;background:#7fcbb4}
+:root[data-variant=tiles] td.dad::after{border-width:2px;border-radius:8px}
+:root[data-variant=tiles] td.dad.dl::after{border-radius:0 8px 8px 0}:root[data-variant=tiles] td.dad.dr::after{border-radius:8px 0 0 8px}:root[data-variant=tiles] td.dad.dl.dr::after{border-radius:0}
+:root[data-variant=tiles] td.f{box-shadow:inset 0 0 0 200px rgba(255,255,255,.32)}
+:root[data-variant=tiles] td .d{top:4px;left:6px}
+:root[data-variant=tiles] td .hol{top:18px;left:5px}
+:root[data-variant=tiles] thead th{height:16px}
 @page{size:17in 11in;margin:.35in}
 @media print{
  :root,:root[data-look]{color-scheme:light;--bg:#fff;--ink:#000;--line:#bbb;--wk:#f0f0f0;--soft:#444}
@@ -167,7 +182,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
  <div class="ctrl">
   <label for="year" class="hint" style="width:auto">Year</label>
   <select id="year"></select>
-  <select id="look" aria-label="Look"><option value="classic">Classic</option><option value="clean">Clean</option><option value="dark">Dark</option><option value="tiles">Tiles</option></select>
+  <select id="look" aria-label="Look"><option value="classic">Classic</option><option value="clean">Clean</option><option value="dark">Dark</option><option value="tiles">Tiles</option><option value="cleantiles">Clean tiles</option></select>
   <button id="print">Print 11×17</button>
   <label class="chk"><input type="checkbox" id="askG"> Ask for a label after painting</label>
   <button id="clear">Clear year</button>
@@ -225,7 +240,7 @@ const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'
 const ys=$('year');
 for(let y=now.getFullYear()-1;y<=now.getFullYear()+5;y++)ys.insertAdjacentHTML('beforeend',`<option ${y==year?'selected':''}>${y}</option>`);
 
-let look=store.get('bac-look','clean');const applyLook=()=>{document.documentElement.dataset.look=look;$('look').value=look};
+let look=store.get('bac-look','clean');const applyLook=()=>{const r=document.documentElement;r.dataset.look=look==='cleantiles'?'clean':look;if(look==='cleantiles')r.dataset.variant='tiles';else delete r.dataset.variant;$('look').value=look};
 $('look').onchange=()=>{look=$('look').value;store.set('bac-look',look);applyLook();render();pushSettings()};
 const SB_URL='https://urqcldfagszngbxtdmck.supabase.co',SB_KEY='sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo',SB_T='big_calendar';
 let cloud=false;const timers={};
