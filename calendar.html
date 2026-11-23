@@ -240,7 +240,7 @@ const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'
 const ys=$('year');
 for(let y=now.getFullYear()-1;y<=now.getFullYear()+5;y++)ys.insertAdjacentHTML('beforeend',`<option ${y==year?'selected':''}>${y}</option>`);
 
-let look=store.get('bac-look','clean');const applyLook=()=>{const r=document.documentElement;r.dataset.look=look==='cleantiles'?'clean':look;if(look==='cleantiles')r.dataset.variant='tiles';else delete r.dataset.variant;$('look').value=look};
+let look=store.get('bac-look','cleantiles');const applyLook=()=>{const r=document.documentElement;r.dataset.look=look==='cleantiles'?'clean':look;if(look==='cleantiles')r.dataset.variant='tiles';else delete r.dataset.variant;$('look').value=look};
 $('look').onchange=()=>{look=$('look').value;store.set('bac-look',look);applyLook();render();pushSettings()};
 const SB_URL='https://urqcldfagszngbxtdmck.supabase.co',SB_KEY='sb_publishable_2_QTJRjxaZ7QcUdfJB03FA_2ljD_bSo',SB_T='big_calendar';
 let cloud=false;const timers={};
