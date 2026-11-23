@@ -59,7 +59,14 @@ td .d{z-index:1}
 .kidtog input{width:18px;height:18px}
 .kidtog i{display:inline-block;width:22px;height:12px;border-radius:3px;background:#d3efe6;border:1px solid rgba(0,0,0,.12)}
 td.f{color:#111}
-.legend{display:flex;flex-wrap:wrap;gap:10px 22px;padding:10px max(3vw,14px) 24px;font-size:14px}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 28px;padding:14px max(3vw,14px) 28px;font-size:12.5px;color:#666}
+.lg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.lg2{padding-left:28px;border-left:1px solid #e2e2de}
+.lg span{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.legend i.sq{width:11px;height:11px;border-radius:3px;border:0;margin:0}
+.legend i.kl{width:14px;height:3px;border-radius:2px;background:#7fcbb4;border:0;margin:0}
+.legend i.dh{width:11px;height:11px;border-radius:3px;border:2px solid #0f766e;background:none;margin:0}
+.legend i.hl{width:auto;height:auto;border:0;margin:0;font-size:11px;font-weight:600;color:#5b4a8a;vertical-align:0}
 .legend i{display:inline-block;width:16px;height:16px;border-radius:3px;vertical-align:-3px;margin-right:6px;border:1px solid rgba(0,0,0,.15)}
 dialog{border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:18px;width:min(360px,92vw)}
 dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
@@ -101,8 +108,6 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 :root[data-look=clean] h1{font-weight:300}:root[data-look=clean] h1 span{font-weight:800}
 :root[data-look=clean] thead th{font-size:10px;font-weight:600;color:#aaa;height:20px;border-color:transparent}
 :root[data-look=clean] thead th.we{background:none}
-:root[data-look=clean] .legend{font-size:12px;color:#555;gap:8px 18px}
-:root[data-look=clean] .legend i{width:12px;height:12px;border-radius:50%;border:0}
 :root[data-look=clean] td .d{font-size:10.5px;font-weight:600;color:#8a8a86}
 :root[data-look=clean] td.f .d{color:#333}
 :root[data-look=clean] td.kid::before{height:3px;background:#8fd0bc}
@@ -173,8 +178,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
  thead th{height:.2in;color:#333}
  td.today{box-shadow:none}
  :root[data-look] td .sp.one{display:flex!important;-webkit-line-clamp:unset;max-height:none!important;bottom:1px!important}
- .legend{padding:.08in 0 0;font-size:12px}
- .legend .empty{display:none}
+ .legend{padding:.1in 0 0;font-size:11px}
 }
 </style>
 </head>
@@ -271,7 +275,10 @@ function renderTools(){
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
- $('legend').innerHTML=(showDad?'<span><i style="background:none;border:2px solid #0f766e"></i>Dad holiday</span>':'')+(showKids?'<span><i style="background:#d3efe6"></i>Kids</span>':'')+COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
+ const anyUsed=used.size>0;
+ const cats=COLORS.map((c,i)=>labels[i]&&(!anyUsed||used.has(i))?`<span><i class="sq" style="background:color-mix(in srgb,${c} 70%,#fff)"></i>${esc(labels[i])}</span>`:'').join('');
+ const marks=(showKids?'<span><i class="kl"></i>Kids</span>':'')+(showDad?'<span><i class="dh"></i>Dad holiday</span>':'')+(showHol?'<span><i class="hl">Aa</i>Holiday</span>':'');
+ $('legend').innerHTML=`<div class="lg">${cats}</div>`+(marks?`<div class="lg lg2">${marks}</div>`:'');
 }
 const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
