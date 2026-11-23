@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big Year Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: plain, sturdy wall-planner; a tool you mark up.
+IDEA: the one-sheet year planner pinned to an office wall, weekdays lined up in columns.
+PICTURE: the full year grid itself, top of the page.
+COLOUR and TYPE: white paper, black ink, soft marker fills; Archivo heavy for the year.
+LAYOUT: toolbar, then the grid edge to edge, legend beneath; prints on 11x17 landscape.
+*/
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#15171a);--ink:light-dark(#111,#eee);--line:light-dark(#cfcfcf,#3a3d42);--wk:light-dark(#efefef,#24272c);--soft:light-dark(#666,#aaa);--panel:light-dark(#f6f6f4,#1e2125)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 Archivo,system-ui,sans-serif;overflow-x:clip}
+.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;padding:20px max(3vw,14px) 10px}
+h1{margin:0;font-weight:900;font-size:clamp(32px,5vw,52px);line-height:1.05;outline:none}
+h1 span{font-weight:500}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto}
+select,button{font:inherit;font-size:16px;min-height:40px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #2b6cff;outline-offset:2px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;padding:8px max(3vw,14px) 12px;align-items:center;background:var(--panel);border-block:1px solid var(--line)}
+.sw{display:flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border:2px solid transparent;border-radius:10px;background:var(--bg)}
+.sw.on{border-color:var(--ink)}
+.sw b{width:30px;height:30px;border-radius:6px;flex:none;cursor:pointer;border:1px solid rgba(0,0,0,.15)}
+.sw input{width:110px;font:inherit;font-size:15px;border:0;border-bottom:1px dashed var(--line);background:transparent;color:var(--ink);padding:2px}
+.tbtn.on{background:var(--ink);color:var(--bg)}
+.hint{color:var(--soft);font-size:13px;width:100%}
+.scroll{overflow-x:auto;padding:10px max(3vw,14px) 6px}
+table{border-collapse:collapse;width:100%;min-width:1180px;table-layout:fixed;user-select:none}
+th,td{border:1px solid var(--line);padding:0}
+thead th{font-size:12px;font-weight:700;height:22px;color:var(--soft)}
+thead th.we{background:var(--wk)}
+th.m{width:52px;font-weight:900;font-size:15px;text-align:center;color:var(--ink)}
+td{height:58px;vertical-align:top;position:relative;cursor:crosshair}
+td.x{background:repeating-linear-gradient(45deg,transparent 0 5px,var(--wk) 5px 6px);cursor:default}
+td.we{background:var(--wk)}
+td .d{position:absolute;top:2px;left:4px;font-size:12px;font-weight:700}
+td .n{position:absolute;inset:17px 3px 2px;font-size:10.5px;line-height:1.15;overflow:hidden;word-break:break-word}
+td.today{box-shadow:inset 0 0 0 2px #2b6cff}
+td.f{color:#111}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;padding:10px max(3vw,14px) 24px;font-size:14px}
+.legend i{display:inline-block;width:16px;height:16px;border-radius:3px;vertical-align:-3px;margin-right:6px;border:1px solid rgba(0,0,0,.15)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:18px;width:min(360px,92vw)}
+dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:8px;justify-content:flex-end}
+#msg{color:var(--soft);font-size:13px}
+@page{size:17in 11in;margin:.35in}
+@media print{
+ :root{color-scheme:light}
+ body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .ctrl,.tools,#msg{display:none!important}
+ .top{padding:0 0 .08in}h1{font-size:30px}
+ .scroll{padding:0;overflow:visible}
+ table{min-width:0}
+ th,td{border-color:#999}
+ td{height:.66in}
+ thead th{height:.2in;color:#333}
+ td.today{box-shadow:none}
+ .legend{padding:.08in 0 0;font-size:12px}
+ .legend .empty{display:none}
+}
+</style>
+</head>
+<body>
+<div class="top">
+ <h1 id="title" contenteditable="true" spellcheck="false">My Big Calendar <span id="yr">2027</span></h1>
+ <div class="ctrl">
+  <label for="year" class="hint" style="width:auto">Year</label>
+  <select id="year"></select>
+  <button id="print">Print 11×17</button>
+  <button id="clear">Clear year</button>
+ </div>
+</div>
+<div class="tools" id="tools"></div>
+<div class="scroll"><table id="cal"></table></div>
+<div class="legend" id="legend"></div>
+<p id="msg" style="padding:0 max(3vw,14px) 24px;margin:0"></p>
+
+<dialog id="dlg">
+ <strong id="dlgDate"></strong>
+ <input id="dlgText" maxlength="60" placeholder="Short note (prints in the box)">
+ <div class="row"><button id="dlgDel">Remove note</button><button id="dlgOk">Save</button></div>
+</dialog>
+
+<script>
+{
+const COLORS=['#8cc8e8','#f2e173','#f4a3a3','#9fd8a0','#b7a6e6','#c4c4c4'];
+const DEF=['Travel','Kids day off','Race','Start of semester','Birthdays','Busy'];
+const MONTHS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const DOW='SMTWTFS';
+const now=new Date();
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let labels=store.get('bac-labels-v2',DEF.slice());
+let year=store.get('bac-year',now.getMonth()>=10?now.getFullYear()+1:now.getFullYear());
+let data={};let tool=0;let painting=false;let paintVal=null;
+const $=id=>document.getElementById(id);
+const key=(m,d)=>year+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+
+const ys=$('year');
+for(let y=now.getFullYear()-1;y<=now.getFullYear()+5;y++)ys.insertAdjacentHTML('beforeend',`<option ${y==year?'selected':''}>${y}</option>`);
+
+function load(){data=store.get('bac-'+year,{});$('yr').textContent=year;const t=store.get('bac-title',null);const tn=$('title').firstChild;if(t&&tn&&tn.nodeType===3)tn.nodeValue=t+' ';render();}
+function save(){store.set('bac-'+year,data);}
+
+function renderTools(){
+ $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
+ `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add note</button>
+ <span class="hint">Pick a color, then click or drag across days to fill them. Click a filled day with the same color to clear it. Use “Add note” to type a few words in a box. Rename the labels; they print as the legend. The title is editable too.</span>`;
+}
+function renderLegend(){
+ const used=new Set(Object.values(data).map(v=>v.c).filter(v=>v!=null));
+ $('legend').innerHTML=COLORS.map((c,i)=>labels[i]?`<span class="${used.has(i)?'':'empty'}"><i style="background:${c}"></i>${esc(labels[i])}</span>`:'').join('');
+}
+const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+
+function render(){
+ let h='<thead><tr><th class="m"></th>';
+ for(let i=0;i<37;i++)h+=`<th class="${i%7==0||i%7==6?'we':''}">${DOW[i%7]}</th>`;
+ h+='<th class="m"></th></tr></thead><tbody>';
+ for(let m=0;m<12;m++){
+  const start=new Date(year,m,1).getDay(),days=new Date(year,m+1,0).getDate();
+  h+=`<tr><th class="m">${MONTHS[m]}</th>`;
+  for(let i=0;i<37;i++){
+   const d=i-start+1;
+   if(d<1||d>days){h+='<td class="x"></td>';continue}
+   const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
+   const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
+   const bg=v.c!=null?` style="background:${COLORS[v.c]}"`:'';
+   h+=`<td data-k="${k}" class="${we&&v.c==null?'we':''}${v.c!=null?' f':''}${isT?' today':''}"${bg}><span class="d">${d}</span>${v.n?`<span class="n">${esc(v.n)}</span>`:''}</td>`;
+  }
+  h+=`<th class="m">${MONTHS[m]}</th></tr>`;
+ }
+ $('cal').innerHTML=h+'</tbody>';
+ renderLegend();
+}
+
+function apply(td){
+ const k=td.dataset.k;if(!k)return;
+ const v=data[k]||{};
+ if(paintVal===null){delete v.c}else v.c=paintVal;
+ if(v.c==null&&!v.n)delete data[k];else data[k]=v;
+ const we=td.cellIndex%7==1||td.cellIndex%7==0;
+ td.style.background=v.c!=null?COLORS[v.c]:'';
+ td.classList.toggle('f',v.c!=null);
+ td.classList.toggle('we',v.c==null&&(td.cellIndex-1)%7%6==0);
+}
+
+const cal=$('cal');
+cal.addEventListener('pointerdown',e=>{
+ const td=e.target.closest('td[data-k]');if(!td)return;
+ e.preventDefault();
+ if(tool==='note'){openNote(td.dataset.k);return}
+ const cur=(data[td.dataset.k]||{}).c;
+ paintVal=tool==='erase'?null:(cur===tool?null:tool);
+ painting=true;apply(td);
+});
+cal.addEventListener('pointerover',e=>{if(!painting)return;const td=e.target.closest('td[data-k]');if(td)apply(td)});
+window.addEventListener('pointerup',()=>{if(painting){painting=false;save();renderLegend()}});
+
+$('tools').addEventListener('click',e=>{
+ const b=e.target.closest('[data-i]'),t=e.target.closest('[data-t]');
+ if(b){tool=+b.dataset.i;renderTools()}
+ else if(t){tool=tool===t.dataset.t?0:t.dataset.t;renderTools()}
+});
+$('tools').addEventListener('keydown',e=>{const b=e.target.closest('[data-i]');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tool=+b.dataset.i;renderTools()}});
+$('tools').addEventListener('input',e=>{const i=e.target.dataset.l;if(i!=null){labels[i]=e.target.value;store.set('bac-labels-v2',labels);renderLegend()}});
+
+let noteKey=null;const dlg=$('dlg');
+function openNote(k){noteKey=k;const [y,m,d]=k.split('-');$('dlgDate').textContent=new Date(y,m-1,d).toDateString();$('dlgText').value=(data[k]||{}).n||'';dlg.showModal();$('dlgText').focus()}
+function setNote(t){const v=data[noteKey]||{};if(t)v.n=t;else delete v.n;if(v.c==null&&!v.n)delete data[noteKey];else data[noteKey]=v;save();dlg.close();render()}
+$('dlgOk').onclick=()=>setNote($('dlgText').value.trim());
+$('dlgDel').onclick=()=>setNote('');
+$('dlgText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setNote($('dlgText').value.trim())}});
+
+ys.onchange=()=>{year=+ys.value;store.set('bac-year',year);load()};
+$('title').addEventListener('input',()=>{const tn=$('title').firstChild;if(tn&&tn.nodeType===3)store.set('bac-title',tn.nodeValue.trim())});
+let armed=false;
+$('clear').onclick=()=>{if(!armed){armed=true;$('clear').textContent='Click again to clear';setTimeout(()=>{armed=false;$('clear').textContent='Clear year'},3000);return}data={};save();render();armed=false;$('clear').textContent='Clear year'};
+$('print').onclick=()=>{try{window.print()}catch(e){}$('msg').textContent='If no print dialog opened, use your browser’s Print (Ctrl/Cmd+P). Choose Tabloid / 11×17, Landscape, scale 100%, and turn on “Background graphics.”'};
+
+renderTools();load();
+}
+</script>
+</body>
+</html>
