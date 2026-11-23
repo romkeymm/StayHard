@@ -234,6 +234,8 @@ function holidays(Y){const h={},p=(m,d,n)=>{h[Y+'-'+String(m+1).padStart(2,'0')+
  p(0,1,"New Year's Day");p(0,nth(0,1,3),'MLK Jr. Day');p(1,14,"Valentine's Day");p(1,nth(1,1,3),"Presidents' Day");p(2,17,"St. Patrick's Day");
  p(4,nth(4,0,2),"Mother's Day");p(4,last(4,1),'Memorial Day');p(5,nth(5,0,3),"Father's Day");p(6,4,'Independence Day');p(8,nth(8,1,1),'Labor Day');
  p(9,nth(9,1,2),'Columbus Day');p(9,31,"Halloween");p(10,11,'Veterans Day');p(10,nth(10,4,4),'Thanksgiving');p(11,24,'Christmas Eve');p(11,25,'Christmas');p(11,31,"New Year's Eve");const [em,ed]=easter(Y);p(em,ed,'Easter');return h}
+const autoKid=k=>{const [Y,M,D]=k.split('-').map(Number);const n=Math.round((Date.UTC(Y,M-1,D)-KID_ANCHOR)/864e5);return KID_ON.includes(((n%14)+14)%14)};
+const isKidK=k=>{const v=data[k];return v&&v.kid!==undefined?v.kid:autoKid(k)};
 let AUTO={};const isDadK=k=>{const v=data[k];return v&&v.dad!==undefined?v.dad:!!AUTO[k]};
 let needRender=false;let mode='add';let data={};let spans=[];let edit=null;let tool=0;let stroke=[];let askG=store.get('bac-askg',true);const GACCT='matt.romkey@gmail.com';let painting=false;let paintVal=null;
 const $=id=>document.getElementById(id);
@@ -260,12 +262,12 @@ function pull(){const y=year;setSync('Loading…');
   setSync('Synced ✓');
  }).catch(e=>{cloud=false;setSync('Offline · saved in this browser only');console.warn('[calendar] load failed',e.message)})}
 function load(){data=store.get('bac-'+year,{});spans=store.get('bac-spans-'+year,[]);
- for(const k in data){if(data[k].n){spans.push({s:k,e:k,t:data[k].n});delete data[k].n;if(!cols(data[k]).length&&data[k].dad===undefined)delete data[k]}}store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);$('yr').textContent=year;const t=store.get('bac-title',null);const tn=$('title').firstChild;if(t&&tn&&tn.nodeType===3)tn.nodeValue=t+' ';render();pull();}
+ for(const k in data){if(data[k].n){spans.push({s:k,e:k,t:data[k].n});delete data[k].n;if(!cols(data[k]).length&&data[k].dad===undefined&&data[k].kid===undefined)delete data[k]}}store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);$('yr').textContent=year;const t=store.get('bac-title',null);const tn=$('title').firstChild;if(t&&tn&&tn.nodeType===3)tn.nodeValue=t+' ';render();pull();}
 function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);pushYear();}
 
 function renderTools(){
  $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
- `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><button class="tbtn ${tool==='dad'?'on':''}" data-t="dad" title="Click or drag to add or remove a Dad outline">Dad outline</button><label class="kidtog"><input type="checkbox" id="dadh" ${showDad?'checked':''}><i style="background:none;border:2px solid #0f766e"></i> Dad holidays</label><label class="kidtog"><input type="checkbox" id="hols" ${showHol?'checked':''}> Holidays</label><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kids</label>`;
+ `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><button class="tbtn ${tool==='dad'?'on':''}" data-t="dad" title="Click or drag to add or remove a Dad outline">Dad outline</button><button class="tbtn ${tool==='kid'?'on':''}" data-t="kid" title="Click or drag to add or remove kid days">Kid days</button><label class="kidtog"><input type="checkbox" id="dadh" ${showDad?'checked':''}><i style="background:none;border:2px solid #0f766e"></i> Dad holidays</label><label class="kidtog"><input type="checkbox" id="hols" ${showHol?'checked':''}> Holidays</label><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kids</label>`;
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
@@ -291,7 +293,7 @@ function render(){
    const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
    const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
    const cs=cols(v),bg=cs.length?` style="background:${bgFor(cs)}"`:'';
-   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKid(m,d)?' kid':''}${HOL[k]?' hashol':''}${DAD[k]?' dad'+(d>1&&DAD[key(m,d-1)]?' dl':'')+(d<days&&DAD[key(m,d+1)]?' dr':''):''}"${bg}><span class="d">${d}</span>${HOL[k]?holTag(k,HOL):''}${first[k]||''}</td>`;
+   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKidK(k)?' kid':''}${HOL[k]?' hashol':''}${DAD[k]?' dad'+(d>1&&DAD[key(m,d-1)]?' dl':'')+(d<days&&DAD[key(m,d+1)]?' dr':''):''}"${bg}><span class="d">${d}</span>${HOL[k]?holTag(k,HOL):''}${first[k]||''}</td>`;
   }
   h+=`<th class="m">${MONTHS[m]}</th></tr>`;
  }
@@ -302,13 +304,14 @@ function render(){
 function apply(td){
  const k=td.dataset.k;if(!k)return;
  const v=data[k]||{};
- if(tool==='dad'){const want=mode==='dad';if(want===!!AUTO[k])delete v.dad;else v.dad=want;if(!cols(v).length&&v.dad===undefined)delete data[k];else data[k]=v;needRender=true;return}
+ if(tool==='kid'){const want=mode==='kid';if(want===autoKid(k))delete v.kid;else v.kid=want;if(!cols(v).length&&v.dad===undefined&&v.kid===undefined)delete data[k];else data[k]=v;needRender=true;return}
+ if(tool==='dad'){const want=mode==='dad';if(want===!!AUTO[k])delete v.dad;else v.dad=want;if(!cols(v).length&&v.dad===undefined&&v.kid===undefined)delete data[k];else data[k]=v;needRender=true;return}
  let cs=cols(v);delete v.c;
  if(mode==='erase'){cs=[];const before=spans.length;spans=spans.filter(sp=>k<sp.s||k>sp.e);if(spans.length!==before)needRender=true}
  else if(mode==='remove')cs=cs.filter(c=>c!==paintVal);
  else if(!cs.includes(paintVal)){cs=cs.length>=2?[cs[0],paintVal]:cs.concat(paintVal);if(!stroke.includes(k))stroke.push(k)}
  if(cs.length)v.cs=cs;else delete v.cs;
- if(!cs.length&&v.dad===undefined)delete data[k];else data[k]=v;
+ if(!cs.length&&v.dad===undefined&&v.kid===undefined)delete data[k];else data[k]=v;
  td.style.background=bgFor(cs);
  td.classList.toggle('f',cs.length>0);
  td.classList.toggle('we',!cs.length&&(td.cellIndex-1)%7%6==0);
@@ -321,6 +324,7 @@ cal.addEventListener('pointerdown',e=>{
  e.preventDefault();
  if(tool==='note'){const k=td.dataset.k,ix=spans.findIndex(sp=>k>=sp.s&&k<=sp.e);if(ix>-1){openBox(spans[ix].t,[spans[ix].s,spans[ix].e],ix);return}selecting=true;stroke=[k];td.classList.add('sel');return}
  const cur=cols(data[td.dataset.k]);
+ if(tool==='kid'){mode=isKidK(td.dataset.k)?'unkid':'kid';painting=true;stroke=[];apply(td);return}
  if(tool==='dad'){mode=isDadK(td.dataset.k)?'undad':'dad';painting=true;stroke=[];apply(td);return}
  paintVal=tool==='erase'?null:tool;
  mode=tool==='erase'?'erase':(cur.includes(tool)?'remove':'add');
