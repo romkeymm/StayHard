@@ -76,9 +76,8 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 /* ---------- LOOKS ---------- */
 /* Clean: quiet grid, thin kid line, slim pills */
 :root[data-look=clean]{--line:#e7e7e4;--wk:#f6f6f3}
-:root[data-look=clean] h1{font-weight:800;font-size:clamp(28px,4vw,40px);letter-spacing:-.02em}
+:root[data-look=clean] h1{font-size:clamp(28px,4vw,40px);letter-spacing:-.02em}
 :root[data-look=clean] th,:root[data-look=clean] td{border-color:#ececea}
-:root[data-look=clean] tbody tr{border-top:1.5px solid #dcdcd8}
 :root[data-look=clean] td.x{background:#fff;border-color:transparent}
 :root[data-look=clean]{--panel:#fff}
 :root[data-look=clean] body{background:#fff}
@@ -93,8 +92,13 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
 :root[data-look=clean] .kidtog{font-size:12px;color:#666;padding:0 4px}
 :root[data-look=clean] .kidtog input{width:15px;height:15px}
 :root[data-look=clean] td.we{background:#f9f9f7}
-:root[data-look=clean] td{height:56px}
-:root[data-look=clean] td .sp.one{font-weight:600;color:#333}
+:root[data-look=clean] td{height:68px}
+:root[data-look=clean] td.f{box-shadow:inset 0 0 0 200px rgba(255,255,255,.38)}
+:root[data-look=clean] td.f.today{box-shadow:inset 0 0 0 200px rgba(255,255,255,.38),inset 0 0 0 2px #2b6cff}
+:root[data-look=clean] th.m{font-size:13px}
+:root[data-look=clean] tbody tr{border-top:2px solid #cfcfcb}
+:root[data-look=clean] td .sp.one{font-weight:500;color:#555;font-size:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;bottom:auto;max-height:18px}
+:root[data-look=clean] h1{font-weight:300}:root[data-look=clean] h1 span{font-weight:800}
 :root[data-look=clean] thead th{font-size:10px;font-weight:600;color:#aaa;height:20px;border-color:transparent}
 :root[data-look=clean] thead th.we{background:none}
 :root[data-look=clean] .legend{font-size:12px;color:#555;gap:8px 18px}
@@ -151,6 +155,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
  td{height:.66in}
  thead th{height:.2in;color:#333}
  td.today{box-shadow:none}
+ :root[data-look] td .sp.one{display:flex!important;-webkit-line-clamp:unset;max-height:none!important;bottom:1px!important}
  .legend{padding:.08in 0 0;font-size:12px}
  .legend .empty{display:none}
 }
@@ -256,7 +261,7 @@ function render(){
  const holTag=(k,H)=>`<span class="hol" title="${esc(H[k])}">${SHORT[H[k]]||esc(H[k])}</span>`;
  AUTO=dadDays(year);const DAD={};if(showDad)for(let m=0;m<12;m++)for(let d=1;d<=new Date(year,m+1,0).getDate();d++){const k=key(m,d);if(isDadK(k))DAD[k]=1}
  const first={},HOL=showHol?holidays(year):{};
- spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="Click to edit label" style="width:calc(${n*100}% + ${n-1} * var(--gap,1px) - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
+ spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="${esc(sp.t)} (click to edit)" style="width:calc(${n*100}% + ${n-1} * var(--gap,1px) - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
  let h='<thead><tr><th class="m"></th>';
  for(let i=0;i<37;i++)h+=`<th class="${i%7==0||i%7==6?'we':''}">${DOW[i%7]}</th>`;
  h+='<th class="m"></th></tr></thead><tbody>';
