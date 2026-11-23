@@ -180,6 +180,33 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
  :root[data-look] td .sp.one{display:flex!important;-webkit-line-clamp:unset;max-height:none!important;bottom:1px!important}
  .legend{padding:.1in 0 0;font-size:11px}
 }
+
+/* ---------- toolbar (key at the top) ---------- */
+.tools{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:10px max(3vw,14px) 14px!important;background:transparent!important;border:0!important}
+.grp{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.gl{font-size:11px;color:#999;width:34px;flex:none}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.tools .sw{gap:6px;padding:4px 10px 4px 6px;border:1px solid #e6e6e2;border-radius:999px;background:#fff}
+.tools .sw.on{border-color:color-mix(in srgb,var(--c) 70%,#000);background:color-mix(in srgb,var(--c) 22%,#fff)}
+.tools .sw b{width:14px;height:14px;border-radius:50%;border:0}
+.tools .sw input{width:auto;field-sizing:content;min-width:30px;font-size:13px;border:0;padding:0;background:transparent}
+.row2{display:flex;flex-wrap:wrap;gap:10px 40px;align-items:center}
+.seg{display:inline-flex;border:1px solid #e6e6e2;border-radius:999px;overflow:hidden;background:#fff}
+.seg .tbtn{border:0;border-radius:0;min-height:30px;padding:3px 14px;font-size:13px;background:transparent;color:#444}
+.seg .tbtn+.tbtn{border-left:1px solid #ededea}
+.seg .tbtn.on{background:#222;color:#fff}
+.togs{display:flex;flex-wrap:wrap;gap:6px 18px}
+.tog{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:#555;cursor:pointer}
+.tog input{position:absolute;opacity:0;width:1px;height:1px}
+.tog .sl{width:26px;height:15px;border-radius:999px;background:#d9d9d5;position:relative;flex:none;transition:background .15s}
+.tog .sl::after{content:'';position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#fff;transition:transform .15s}
+.tog input:checked+.sl{background:#0f766e}
+.tog input:checked+.sl::after{transform:translateX(11px)}
+.tog input:focus-visible+.sl{outline:2px solid #2b6cff;outline-offset:2px}
+.tog i.kl{display:inline-block;width:14px;height:3px;border-radius:2px;background:#7fcbb4}
+.tog i.dh{display:inline-block;width:11px;height:11px;border-radius:3px;border:2px solid #0f766e}
+.tog i.hl{font-size:11px;font-weight:600;color:#5b4a8a}
+@media(prefers-reduced-motion:reduce){.tog .sl,.tog .sl::after{transition:none}}
 </style>
 </head>
 <body>
@@ -190,7 +217,7 @@ dialog input{width:100%;font:inherit;font-size:16px;padding:8px;margin:8px 0 12p
   <select id="year"></select>
   <select id="look" aria-label="Look"><option value="classic">Classic</option><option value="clean">Clean</option><option value="dark">Dark</option><option value="tiles">Tiles</option><option value="cleantiles">Clean tiles</option></select>
   <button id="print">Print 11×17</button>
-  <label class="chk"><input type="checkbox" id="askG"> Ask for a label after painting</label>
+  <label class="tog"><input type="checkbox" id="askG"><span class="sl"></span>Ask for a label after painting</label>
   <button id="clear">Clear year</button>
 
  </div>
@@ -270,8 +297,12 @@ function load(){data=store.get('bac-'+year,{});spans=store.get('bac-spans-'+year
 function save(){store.set('bac-'+year,data);store.set('bac-spans-'+year,spans);pushYear();}
 
 function renderTools(){
- $('tools').innerHTML=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('')+
- `<button class="tbtn ${tool==='erase'?'on':''}" data-t="erase">Eraser</button><button class="tbtn ${tool==='note'?'on':''}" data-t="note">Add label</button><button class="tbtn ${tool==='dad'?'on':''}" data-t="dad" title="Click or drag to add or remove a Dad outline">Dad outline</button><button class="tbtn ${tool==='kid'?'on':''}" data-t="kid" title="Click or drag to add or remove kid days">Kid days</button><label class="kidtog"><input type="checkbox" id="dadh" ${showDad?'checked':''}><i style="background:none;border:2px solid #0f766e"></i> Dad holidays</label><label class="kidtog"><input type="checkbox" id="hols" ${showHol?'checked':''}> Holidays</label><label class="kidtog"><input type="checkbox" id="kids" ${showKids?'checked':''}><i></i> Kids</label>`;
+ const pills=COLORS.map((c,i)=>`<div class="sw ${tool===i?'on':''}" style="--c:${c}"><b data-i="${i}" style="background:${c}" title="Paint with this color" tabindex="0" role="button" aria-label="Select ${labels[i]||'color'}"></b><input data-l="${i}" value="${(labels[i]||'').replace(/"/g,'&quot;')}" placeholder="Label"></div>`).join('');
+ const tb=(t,txt,tip)=>`<button class="tbtn ${tool===t?'on':''}" data-t="${t}"${tip?` title="${tip}"`:''}>${txt}</button>`;
+ const tog=(id,on,icon,txt)=>`<label class="tog"><input type="checkbox" id="${id}" ${on?'checked':''}><span class="sl"></span>${icon}${txt}</label>`;
+ $('tools').innerHTML=`<div class="grp"><span class="gl">Paint</span><div class="pills">${pills}</div></div>
+ <div class="row2"><div class="grp"><span class="gl">Edit</span><div class="seg">${tb('erase','Eraser')}${tb('note','Add label')}${tb('dad','Dad outline','Click or drag to add or remove a Dad outline')}${tb('kid','Kid days','Click or drag to add or remove kid days')}</div></div>
+ <div class="grp"><span class="gl">Show</span><div class="togs">${tog('kids',showKids,'<i class="kl"></i>','Kids')}${tog('dadh',showDad,'<i class="dh"></i>','Dad holidays')}${tog('hols',showHol,'<i class="hl">Aa</i>','Holidays')}</div></div></div>`;
 }
 function renderLegend(){
  const used=new Set(Object.values(data).flatMap(cols));
