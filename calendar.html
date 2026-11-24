@@ -238,6 +238,45 @@ tr.phr th{height:15px;border:0}
 .tog i.dh{display:inline-block;width:11px;height:11px;border-radius:3px;border:2px solid #0f766e}
 .tog i.hl{font-size:11px;font-weight:600;color:#5b4a8a}
 @media(prefers-reduced-motion:reduce){.tog .sl,.tog .sl::after{transition:none}}
+
+/* ---------- mobile: month-by-month ---------- */
+#mcal{display:none}
+.mnav{position:sticky;top:0;z-index:6;display:flex;gap:4px;overflow-x:auto;padding:8px 14px;background:var(--bg);border-bottom:1px solid #ececea;scrollbar-width:none}
+.mnav a{flex:none;padding:6px 10px;border-radius:999px;font-size:13px;color:#555;text-decoration:none;border:1px solid #e6e6e2}
+.mm{padding:6px 10px 4px;scroll-margin-top:52px}
+.mm h3{margin:12px 4px 6px;font-size:20px;font-weight:800;letter-spacing:-.01em}
+table.mt{width:100%;min-width:0;table-layout:fixed}
+table.mt thead th{height:18px;font-size:11px}
+table.mt td{height:62px}
+table.mt td .d{font-size:12px}
+table.mt td .hol{font-size:9px}
+:root[data-variant=tiles] table.mt td .sp.one{font-size:9.5px}
+table.mt td .sp:not(.one){font-size:11px}
+@media(max-width:700px){
+ .scroll{display:none}
+ #mcal{display:block}
+ .top{gap:8px!important;padding:14px 14px 4px!important}
+ h1{font-size:28px!important;width:100%}
+ .ctrl{margin-left:0;gap:6px}
+ .ctrl .hint{display:none}
+ .tools{padding:6px 14px 8px!important;gap:8px}
+ .gl{display:none}
+ .grp{flex-wrap:nowrap;min-width:0}
+ .pills,.seg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}
+ .tools .sw{flex:none}
+ .row2{gap:8px;flex-direction:column;align-items:flex-start}
+ .row2 .grp{width:100%;max-width:100%}
+ .togs{flex:1 1 auto;min-width:0;flex-wrap:wrap}
+ .tools>*,.row2>*{max-width:100%;min-width:0}
+ .tools,.row2{min-width:0;max-width:100vw}
+ .pills,.seg{flex:1 1 auto;min-width:0}
+ .togs{gap:6px 14px}
+ #tl{overflow-x:auto;padding:4px 14px 6px}
+ .tlw{min-width:680px;margin-left:0}
+ .legend{padding:14px!important}
+ td{cursor:pointer}
+}
+@media print{#mcal{display:none!important}.scroll{display:block!important}}
 </style>
 </head>
 <body>
@@ -256,7 +295,7 @@ tr.phr th{height:15px;border:0}
 <div class="tools" id="tools"></div>
 <div id="sync" aria-live="polite"></div>
 <div id="tl"></div>
-<div class="scroll"><table id="cal"></table></div>
+<div id="calwrap"><div class="scroll"><table id="cal"></table></div><div id="mcal"></div></div>
 <div class="legend" id="legend"></div>
 <p id="msg" style="padding:0 max(3vw,14px) 24px;margin:0"></p>
 
@@ -355,7 +394,14 @@ function render(){
  AUTO=dadDays(year);const DAD={};if(showDad)for(let m=0;m<12;m++)for(let d=1;d<=new Date(year,m+1,0).getDate();d++){const k=key(m,d);if(isDadK(k))DAD[k]=1}
  const PH={};if(showTrn)for(const p of phases){let d=new Date(p.s+'T12:00:00');const E=new Date(p.e+'T12:00:00');while(d<=E){PH[d.toISOString().slice(0,10)]=p;d=new Date(d.getTime()+864e5)}}
  const first={},HOL=showHol?holidays(year):{};
- spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';first[s0]=(first[s0]||'')+`<span class="sp${n==1?' one':''}" data-sp="${idx}" title="${esc(sp.t)} (click to edit)" style="width:calc(${n*100}% + ${n-1} * var(--gap,1px) - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`}});
+ const spanH=(sp,idx,n)=>{const ac=sp.c!=null?`color-mix(in srgb,${COLORS[sp.c]} 58%,#000)`:'#777';return `<span class="sp${n==1?' one':''}" data-sp="${idx}" title="${esc(sp.t)} (click to edit)" style="width:calc(${n*100}% + ${n-1} * var(--gap,1px) - 6px);--ac:${ac}"><span>${esc(sp.t)}</span></span>`};
+ spans.forEach((sp,idx)=>{for(let m=0;m<12;m++){const a=key(m,1),b=key(m,new Date(year,m+1,0).getDate());const s0=sp.s>a?sp.s:a,e0=sp.e<b?sp.e:b;if(s0>e0)continue;const n=+e0.slice(8)-+s0.slice(8)+1;first[s0]=(first[s0]||'')+spanH(sp,idx,n)}});
+ const cellH=(m,d,days,i,F)=>{
+  const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
+  const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
+  const cs=cols(v),bg=cs.length?` style="background:${bgFor(cs)}"`:'';
+  return `<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKidK(k)?' kid':''}${HOL[k]?' hashol':''}${DAD[k]?' dad'+(d>1&&!(F&&i===0)&&DAD[key(m,d-1)]?' dl':'')+(d<days&&!(F&&i===6)&&DAD[key(m,d+1)]?' dr':''):''}"${bg}${PH[k]?` title="${esc(PH[k].t)} (${nice(PH[k].s)} – ${nice(PH[k].e)})"`:''}><span class="d">${d}</span>${PH[k]?`<i class="ph" style="background:${(PHASE[PH[k].type]||PHASE.easy)[0]}"></i>`:''}${HOL[k]?holTag(k,HOL):''}${(F||first)[k]||''}</td>`;
+ };
  let h='<thead><tr><th class="m"></th>';
  for(let i=0;i<37;i++)h+=`<th class="${i%7==0||i%7==6?'we':''}">${DOW[i%7]}</th>`;
  h+='<th class="m"></th></tr></thead><tbody>';
@@ -366,10 +412,7 @@ function render(){
   for(let i=0;i<37;i++){
    const d=i-start+1;
    if(d<1||d>days){h+='<td class="x"></td>';continue}
-   const k=key(m,d),v=data[k]||{},we=i%7==0||i%7==6;
-   const isT=year==now.getFullYear()&&m==now.getMonth()&&d==now.getDate();
-   const cs=cols(v),bg=cs.length?` style="background:${bgFor(cs)}"`:'';
-   h+=`<td data-k="${k}" class="${we&&!cs.length?'we':''}${cs.length?' f':''}${isT?' today':''}${showKids&&isKidK(k)?' kid':''}${HOL[k]?' hashol':''}${DAD[k]?' dad'+(d>1&&DAD[key(m,d-1)]?' dl':'')+(d<days&&DAD[key(m,d+1)]?' dr':''):''}"${bg}${PH[k]?` title="${esc(PH[k].t)} (${nice(PH[k].s)} – ${nice(PH[k].e)})"`:''}><span class="d">${d}</span>${PH[k]?`<i class="ph" style="background:${(PHASE[PH[k].type]||PHASE.easy)[0]}"></i>`:''}${HOL[k]?holTag(k,HOL):''}${first[k]||''}</td>`;
+   h+=cellH(m,d,days,i);
   }
   h+=`<th class="m">${MONTHS[m]}</th></tr>`;
   if(PHS('band')&&showTrn&&Object.keys(PH).some(k=>+k.slice(5,7)===m+1)){
@@ -381,6 +424,21 @@ function render(){
    h+='<th class="m"></th></tr>'}
  }
  $('cal').innerHTML=h+'</tbody>';
+ // ---- mobile: one month at a time, 7-day weeks ----
+ const FW={};spans.forEach((sp,idx)=>{let d=new Date(sp.s+'T12:00:00');const E=new Date(sp.e+'T12:00:00');while(d<=E){if(d.getFullYear()===year){const k=d.toISOString().slice(0,10),prev=new Date(d.getTime()-864e5);if(k===sp.s||d.getDay()===0||d.getDate()===1){let n=1,x=new Date(d.getTime()+864e5);while(x<=E&&x.getDay()!==0&&x.getDate()!==1){n++;x=new Date(x.getTime()+864e5)}FW[k]=(FW[k]||'')+spanH(sp,idx,n)}}d=new Date(d.getTime()+864e5)}});
+ let mh=`<nav class="mnav">${MONTHS.map((mo,i)=>`<a href="#" data-mm="${i}">${mo[0]+mo.slice(1).toLowerCase()}</a>`).join('')}</nav>`;
+ for(let m=0;m<12;m++){const start=new Date(year,m,1).getDay(),days=new Date(year,m+1,0).getDate();
+  mh+=`<section class="mm" id="mm-${m}"><h3>${new Date(year,m,1).toLocaleDateString(undefined,{month:'long'})}</h3><table class="mt"><thead><tr>${[...DOW].map((c,i)=>`<th class="${i%6==0?'we':''}">${c}</th>`).join('')}</tr></thead><tbody>`;
+  for(let w=0;w*7-start<days;w++){mh+='<tr>';const ks=[];
+   for(let i=0;i<7;i++){const d=w*7+i-start+1;if(d<1||d>days){mh+='<td class="x"></td>';ks.push(null);continue}ks.push(d);mh+=cellH(m,d,days,i,FW)}
+   mh+='</tr>';
+   if(PHS('band')&&showTrn&&ks.some(d=>d&&PH[key(m,d)])){mh+='<tr class="phr">';
+    for(let i=0;i<7;i++){const d=ks[i],p=d&&PH[key(m,d)];if(!p){mh+='<td class="pb"></td>';continue}
+     let lab='';if(i===0||d===1||PH[key(m,d-1)]!==p){let n=1;while(i+n<7&&ks[i+n]&&PH[key(m,ks[i+n])]===p)n++;const c=(PHASE[p.type]||PHASE.easy)[0];lab=`<span class="pbs" style="width:calc(${n*100}% + ${n-1} * var(--gap,1px));background:color-mix(in srgb,${c} 80%,#000)">${esc(p.t)}</span>`}
+     mh+=`<td class="pb">${lab}</td>`}
+    mh+='</tr>'}}
+  mh+='</tbody></table></section>'}
+ $('mcal').innerHTML=mh;
  document.documentElement.dataset.phase=showTrn?phStyle:'off';
  let tl='';if(PHS('timeline')&&showTrn&&phases.length){const N=(Date.UTC(year+1,0,1)-Date.UTC(year,0,1))/864e5,doy=k=>{const [Y,M,D]=k.split('-').map(Number);return (Date.UTC(Y,M-1,D)-Date.UTC(year,0,1))/864e5};
   tl=`<div class="tlw"><div class="tlm">${MONTHS.map((mo,i)=>`<span style="left:${doy(key(i,1))/N*100}%">${mo}</span>`).join('')}</div><div class="tlb">${phases.map(p=>{const c=(PHASE[p.type]||PHASE.easy)[0];return `<span title="${esc(p.t)} (${nice(p.s)} – ${nice(p.e)})" style="left:${doy(p.s)/N*100}%;width:${(doy(p.e)-doy(p.s)+1)/N*100}%;background:color-mix(in srgb,${c} 80%,#000)">${esc(p.t)}</span>`}).join('')}</div><div class="tlr">${spans.filter(sp=>sp.c===2).sort((a,b)=>a.s<b.s?-1:1).map((sp,ri)=>`<span style="left:${(doy(sp.s)+.5)/N*100}%;top:${ri%2?13:0}px"><i></i>${esc(sp.t)}</span>`).join('')}</div></div>`}
@@ -404,7 +462,9 @@ function apply(td){
  td.classList.toggle('we',!cs.length&&(td.cellIndex-1)%7%6==0);
 }
 
-const cal=$('cal');
+const cal=$('calwrap');
+cal.addEventListener('click',e=>{const a=e.target.closest('[data-mm]');if(!a)return;e.preventDefault();const el=$('mm-'+a.dataset.mm);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})});
+window.addEventListener('pointercancel',()=>{if(painting){painting=false;save();if(needRender){needRender=false;render()}}});
 cal.addEventListener('pointerdown',e=>{
  const spEl=e.target.closest('.sp');if(spEl){e.preventDefault();const ix=+spEl.dataset.sp,sp=spans[ix];if(sp)openBox(sp.t,[sp.s,sp.e],ix,sp.c);return}
  const td=e.target.closest('td[data-k]');if(!td)return;
@@ -460,6 +520,7 @@ let armed=false;
 $('clear').onclick=()=>{if(!armed){armed=true;$('clear').textContent='Click again to clear';setTimeout(()=>{armed=false;$('clear').textContent='Clear year'},3000);return}data={};spans=[];save();render();armed=false;$('clear').textContent='Clear year'};
 $('print').onclick=()=>{try{window.print()}catch(e){}$('msg').textContent='If no print dialog opened, use your browser’s Print (Ctrl/Cmd+P). Choose Tabloid / 11×17, Landscape, scale 100%, and turn on “Background graphics.”'};
 
+try{matchMedia('(max-width:700px)').addEventListener('change',()=>render())}catch(e){}
 applyLook();renderTools();load();
 }
 </script>
