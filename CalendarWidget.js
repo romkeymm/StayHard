@@ -11,9 +11,9 @@
 //     → long-press the new widget → Edit Widget → Script: Calendar.
 //  Tapping the widget opens the full calendar.
 //
-//  Small:  today (kids / Dad holiday / phase) and next race countdown
-//  Medium: the next 7 days as tiles, with the current training phase
-//  Large:  this month as tiles, plus what's coming up
+//  Small:  today's items (kids, Dad holiday, events) and your training week
+//  Medium: today, plus the next 4 days, with your training week
+//  Large:  training card with season ribbon, this week, today and tomorrow
 // ─────────────────────────────────────────────────────────────
 
 const SB_URL = "https://urqcldfagszngbxtdmck.supabase.co/rest/v1/big_calendar"
@@ -108,145 +108,166 @@ function buildModel(rows, years) {
 }
 
 // ── drawing helpers ──────────────────────────────────────────
+const INK = new Color("#1a1a1a"), MUTE = new Color("#8a8a86"), FAINT = new Color("#aaaaaa"), RED = new Color("#e0362c")
+const TRACK = "#e6e4de", CARD = "#f4f3ef", CHIP = "#efeee9"
 function text(stack, s, size, color, weight) {
-  const t = stack.addText(s)
+  const t = stack.addText(String(s))
   t.font = weight === "heavy" ? Font.heavySystemFont(size) : weight === "bold" ? Font.boldSystemFont(size) : weight === "semi" ? Font.semiboldSystemFont(size) : Font.systemFont(size)
-  t.textColor = color || C.ink
+  t.textColor = color || INK
   return t
 }
-function bar(stack, w, h, color, r) { const b = stack.addStack(); b.size = new Size(w, h); b.backgroundColor = new Color(color); b.cornerRadius = r == null ? h / 2 : r; return b }
+function box(stack, w, h, color, r) { const b = stack.addStack(); b.size = new Size(w, h); if (color) b.backgroundColor = new Color(color); if (r != null) b.cornerRadius = r; return b }
+const WD = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 
-// One calendar tile: color fill (two colors split top/bottom), kid line on top, Dad outline, label.
-function tile(parent, k, M, w, h, opts = {}) {
-  const info = M.day[k] || { cs: [] }
-  const d = parseKey(k), we = d.getDay() === 0 || d.getDay() === 6
-  const cell = parent.addStack()
-  cell.size = new Size(w, h)
-  cell.cornerRadius = 6
-  cell.layoutVertically()
-  if (info.dad) { cell.borderColor = new Color(DAD); cell.borderWidth = 2 }
-  if (info.cs.length) cell.backgroundColor = new Color(CAT[info.cs[0]], 0.75)
-  else {
-    const ph = M.phaseOn(k)
-    cell.backgroundColor = ph ? new Color((PHASE[ph.type] || PHASE.easy)[0], 0.16) : (we ? C.we : C.tile)
-  }
-  if (keyOf(today0()) === k) { cell.borderColor = new Color("#2b6cff"); cell.borderWidth = 2 }
-  // kid line
-  const top = cell.addStack(); top.size = new Size(w, 3)
-  if (info.kid) { top.addSpacer(5); bar(top, w - 10, 3, KID, 1.5); top.addSpacer(5) }
-  cell.setPadding(0, 0, 0, 0)
-  const body = cell.addStack(); body.layoutVertically(); body.setPadding(1, 4, 2, 3)
-  const num = text(body, String(d.getDate()), opts.numSize || 10, info.cs.length ? new Color("#1a1a1a") : C.soft, "bold")
-  if (info.cs.length > 1) { const s = body.addStack(); s.addSpacer(); bar(s, 7, 7, CAT[info.cs[1]], 3.5) }
-  if (opts.labels) {
-    const lab = M.labelOn(k)[0]
-    const txt = lab ? lab.t : (info.hol || "")
-    if (txt) { const t = text(body, txt, opts.labelSize || 7.5, lab ? (info.cs.length ? new Color("#222222") : C.ink) : new Color(HOL), lab ? "semi" : null); t.lineLimit = opts.lines || 2; t.minimumScaleFactor = 0.8 }
-  }
-  cell.addSpacer()
-  return cell
+function itemsOf(M, k) {
+  const I = M.day[k] || {}
+  const out = []
+  if (I.kid) out.push(["#7fcbb4", "Kids"])
+  if (I.dad) out.push([DAD, "Dad holiday"])
+  for (const s of M.labelOn(k)) out.push([s.c != null ? CAT[s.c] : "#999999", s.t])
+  if (I.hol) out.push([HOL, I.hol])
+  return out
 }
-
-function nextRace(M) {
-  const t = keyOf(today0())
-  return M.spans.filter(s => s.c === RACE && s.s >= t).sort((a, b) => a.s < b.s ? -1 : 1)[0]
+function header(stack, d, size) {
+  const r = stack.addStack(); r.bottomAlignContent(); r.spacing = 5
+  text(r, d.getDate(), size, INK, "heavy")
+  const w = text(r, WD[d.getDay()], Math.round(size * 0.42), RED, "heavy")
+  return r
 }
-function upcoming(M, n) {
-  const t = keyOf(today0())
-  return M.spans.filter(s => s.e >= t).sort((a, b) => a.s < b.s ? -1 : 1).slice(0, n)
+function item(stack, color, label, size) {
+  const r = stack.addStack(); r.centerAlignContent(); r.spacing = 7
+  box(r, 3, size + 3, color, 1.5)
+  const t = text(r, label, size, INK, "bold"); t.lineLimit = 1; t.minimumScaleFactor = 0.75
 }
-function phaseLine(stack, M, k, size) {
-  const p = M.phaseOn(k); if (!p) return
-  const r = stack.addStack(); r.centerAlignContent(); r.spacing = 5
-  bar(r, 12, 4, (PHASE[p.type] || PHASE.easy)[0])
+function agenda(stack, M, k, max, size) {
+  const it = itemsOf(M, k)
+  if (!it.length) { text(stack, "Nothing planned", size - 1.5, FAINT, "semi"); return }
+  for (const [c, l] of it.slice(0, max)) { item(stack, c, l, size); stack.addSpacer(4) }
+  if (it.length > max) text(stack, `+${it.length - max} more`, 9, FAINT, "semi")
+}
+function phaseInfo(M, k) {
+  const p = M.phaseOn(k); if (!p) return null
   const total = daysBetween(parseKey(p.s), parseKey(p.e)) + 1, nth = daysBetween(parseKey(p.s), parseKey(k)) + 1
-  const wk = Math.ceil(nth / 7), wks = Math.ceil(total / 7)
-  const t = text(r, `${p.t} · week ${wk} of ${wks}`, size, C.soft, "semi"); t.lineLimit = 1; t.minimumScaleFactor = 0.7
+  return { p, frac: nth / total, wk: Math.ceil(nth / 7), wks: Math.ceil(total / 7), color: (PHASE[p.type] || PHASE.easy)[0], name: (PHASE[p.type] || PHASE.easy)[1] }
 }
-function raceLine(stack, M, size) {
-  const r = nextRace(M); if (!r) return
-  const n = daysBetween(today0(), parseKey(r.s))
-  const row = stack.addStack(); row.centerAlignContent(); row.spacing = 5
-  bar(row, 8, 8, CAT[RACE], 4)
-  const t = text(row, `${r.t} · ${n === 0 ? "today" : n + " days"}`, size, C.ink, "semi"); t.lineLimit = 1; t.minimumScaleFactor = 0.7
+function trainingBar(stack, M, k, width) {
+  const P = phaseInfo(M, k); if (!P) return false
+  const r = stack.addStack(); r.centerAlignContent(); r.spacing = 6
+  text(r, P.name.toUpperCase(), 8, new Color(P.color), "heavy")
+  const tw = width - 92
+  const track = box(r, tw, 5, TRACK, 2.5); track.layoutHorizontally()
+  box(track, Math.max(5, Math.round(tw * P.frac)), 5, P.color, 2.5); track.addSpacer()
+  text(r, `WK ${P.wk}/${P.wks}`, 8, MUTE, "heavy")
+  return true
+}
+function seasonRibbon(stack, M, year, width) {
+  const ps = M.phases.filter(p => p.s.startsWith(String(year)) || p.e.startsWith(String(year))).sort((a, b) => a.s < b.s ? -1 : 1)
+  if (!ps.length) return
+  const N = daysBetween(new Date(year, 0, 1), new Date(year + 1, 0, 1)), tday = daysBetween(new Date(year, 0, 1), today0())
+  const segs = []; let cur = 0
+  for (const p of ps) {
+    const s = Math.max(0, daysBetween(new Date(year, 0, 1), parseKey(p.s))), e = Math.min(N - 1, daysBetween(new Date(year, 0, 1), parseKey(p.e)))
+    if (s > cur) segs.push([cur, s - 1, CHIP]); segs.push([s, e, (PHASE[p.type] || PHASE.easy)[0]]); cur = e + 1
+  }
+  if (cur < N) segs.push([cur, N - 1, CHIP])
+  const rib = stack.addStack(); rib.cornerRadius = 4; rib.size = new Size(width, 8); rib.layoutHorizontally()
+  const px = d => Math.round(d / N * width)
+  for (const [s, e, c] of segs) {
+    if (tday >= s && tday <= e && today0().getFullYear() === year) {
+      const a = px(tday) - px(s); if (a > 0) box(rib, a, 8, c)
+      box(rib, 2, 8, "#1a1a1a")
+      const b = px(e + 1) - px(tday) - 2; if (b > 0) box(rib, b, 8, c)
+    } else { const w = px(e + 1) - px(s); if (w > 0) box(rib, w, 8, c) }
+  }
+  stack.addSpacer(2)
+  const ml = stack.addStack(); ml.size = new Size(width, 9)
+  "JFMAMJJASOND".split("").forEach((c, i) => { text(ml, c, 7, FAINT, "bold"); if (i < 11) ml.addSpacer() })
 }
 
 // ── SMALL ────────────────────────────────────────────────────
 function small(w, M) {
-  w.setPadding(14, 14, 12, 14)
-  const t = today0(), k = keyOf(t), info = M.day[k] || {}
-  text(w, t.toLocaleDateString(undefined, { weekday: "long" }).toUpperCase(), 10, new Color("#c94a5c"), "bold")
-  text(w, String(t.getDate()), 34, C.ink, "heavy")
-  w.addSpacer(2)
-  const tags = []
-  if (info.kid) tags.push(["Kids", KID])
-  if (info.dad) tags.push(["Dad holiday", DAD])
-  for (const s of M.labelOn(k).slice(0, 1)) tags.push([s.t, s.c != null ? CAT[s.c] : "#999999"])
-  if (info.hol) tags.push([info.hol, HOL])
-  for (const [s, c] of tags.slice(0, 2)) { const r = w.addStack(); r.centerAlignContent(); r.spacing = 5; bar(r, 8, 8, c, 4); const x = text(r, s, 10, C.ink, "semi"); x.lineLimit = 1; x.minimumScaleFactor = 0.7 }
+  w.setPadding(13, 14, 12, 14)
+  const t = today0(), k = keyOf(t)
+  header(w, t, 26)
+  w.addSpacer(5)
+  agenda(w, M, k, 3, 11.5)
   w.addSpacer()
-  const r = nextRace(M)
-  if (r) {
-    const n = daysBetween(t, parseKey(r.s))
-    const row = w.addStack(); row.bottomAlignContent(); row.spacing = 4
-    text(row, String(n), 20, new Color("#c94a5c"), "heavy"); const d = text(row, "days", 9, C.soft, "semi")
-    const nm = text(w, r.t, 9, C.soft, "semi"); nm.lineLimit = 1; nm.minimumScaleFactor = 0.7
-  }
+  trainingBar(w, M, k, 142)
 }
 
 // ── MEDIUM ───────────────────────────────────────────────────
 function medium(w, M) {
-  w.setPadding(12, 12, 10, 12)
-  const t = today0()
-  const head = w.addStack(); head.centerAlignContent()
-  text(head, "Next 7 days", 12, C.ink, "heavy"); head.addSpacer()
-  raceLine(head, M, 10)
-  w.addSpacer(6)
-  const row = w.addStack(); row.spacing = 4
-  for (let i = 0; i < 7; i++) {
-    const d = addDays(t, i)
-    const col = row.addStack(); col.layoutVertically(); col.spacing = 2
-    const hd = col.addStack(); hd.addSpacer(); text(hd, i === 0 ? "Today" : DOW[d.getDay()], 8, i === 0 ? new Color("#2b6cff") : C.faint, "bold"); hd.addSpacer()
-    tile(col, keyOf(d), M, 42, 86, { labels: true, lines: 4, labelSize: 7.5, numSize: 11 })
+  w.setPadding(13, 14, 12, 14)
+  const t = today0(), k = keyOf(t)
+  const root = w.addStack(); root.spacing = 12
+  const left = root.addStack(); left.layoutVertically(); left.size = new Size(128, 0)
+  header(left, t, 26)
+  text(left, "TODAY", 8, FAINT, "heavy"); left.addSpacer(4)
+  agenda(left, M, k, 3, 11.5); left.addSpacer()
+  box(root, 1, 0, TRACK)
+  const right = root.addStack(); right.layoutVertically()
+  text(right, "NEXT 4 DAYS", 8, FAINT, "heavy"); right.addSpacer(4)
+  for (let i = 1; i <= 4; i++) {
+    const d = addDays(t, i), dk = keyOf(d), I = M.day[dk] || {}
+    const main = itemsOf(M, dk).find(x => x[1] !== "Kids" && x[1] !== "Dad holiday")
+    const r = right.addStack(); r.centerAlignContent(); r.spacing = 6
+    const wd = r.addStack(); wd.size = new Size(26, 0); text(wd, WD[d.getDay()], 9.5, MUTE, "heavy")
+    box(r, 6, 6, I.kid ? "#7fcbb4" : "#dcdad4", 3)
+    const tx = text(r, main ? main[1] : "—", 10, main ? INK : FAINT, main ? "semi" : null); tx.lineLimit = 1; tx.minimumScaleFactor = 0.75
+    right.addSpacer(5)
   }
-  w.addSpacer(6)
-  phaseLine(w, M, keyOf(t), 9)
+  right.addSpacer()
+  trainingBar(right, M, k, 170)
 }
 
 // ── LARGE ────────────────────────────────────────────────────
 function large(w, M) {
-  w.setPadding(14, 12, 12, 12)
-  const t = today0(), y = t.getFullYear(), m = t.getMonth()
-  const head = w.addStack(); head.centerAlignContent()
-  text(head, t.toLocaleDateString(undefined, { month: "long" }), 16, C.ink, "heavy")
-  text(head, " " + y, 16, C.soft, null)
-  head.addSpacer()
-  phaseLine(head, M, keyOf(t), 9)
-  w.addSpacer(6)
-  const wd = w.addStack(); wd.spacing = 4
-  for (const c of DOW) { const s = wd.addStack(); s.size = new Size(42, 10); text(s, c, 8, C.faint, "bold") }
-  w.addSpacer(3)
-  const first = new Date(y, m, 1), start = first.getDay(), days = new Date(y, m + 1, 0).getDate()
-  const weeks = Math.ceil((start + days) / 7), th = weeks > 5 ? 30 : 36
-  for (let r = 0; r < weeks; r++) {
-    const row = w.addStack(); row.spacing = 4
-    for (let i = 0; i < 7; i++) {
-      const d = r * 7 + i - start + 1
-      if (d < 1 || d > days) { const e = row.addStack(); e.size = new Size(42, th); continue }
-      tile(row, keyOf(new Date(y, m, d)), M, 42, th, { labels: true, lines: 1, labelSize: 6.5, numSize: 9 })
-    }
-    w.addSpacer(4)
+  w.setPadding(14, 14, 14, 14)
+  const t = today0(), k = keyOf(t), W = 312
+  const head = w.addStack(); head.bottomAlignContent()
+  header(head, t, 24); head.addSpacer()
+  text(head, t.toLocaleDateString(undefined, { month: "long", year: "numeric" }).toUpperCase(), 9, FAINT, "bold")
+  w.addSpacer(10)
+  const P = phaseInfo(M, k)
+  if (P) {
+    const card = w.addStack(); card.layoutVertically(); card.backgroundColor = new Color(CARD); card.cornerRadius = 10; card.setPadding(9, 11, 9, 11)
+    const r1 = card.addStack(); r1.centerAlignContent()
+    text(r1, "TRAINING", 8, new Color(P.color), "heavy"); r1.addSpacer()
+    const nx = M.phases.filter(p => p.s > k).sort((a, b) => a.s < b.s ? -1 : 1)[0]
+    if (nx) { const d = parseKey(nx.s); const x = text(r1, `NEXT: ${nx.t} · ${MON[d.getMonth()]} ${d.getDate()}`.toUpperCase(), 8, MUTE, "bold"); x.lineLimit = 1; x.minimumScaleFactor = 0.6 }
+    card.addSpacer(2)
+    const nm = text(card, P.p.t, 13.5, INK, "heavy"); nm.lineLimit = 1; nm.minimumScaleFactor = 0.7
+    card.addSpacer(6)
+    trainingBar(card, M, k, W - 22)
+    card.addSpacer(8)
+    seasonRibbon(card, M, t.getFullYear(), W - 22)
+    w.addSpacer(10)
   }
+  text(w, "THIS WEEK", 8, FAINT, "heavy"); w.addSpacer(5)
+  const wk = w.addStack(); wk.spacing = 0
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(t, i), dk = keyOf(d), I = M.day[dk] || { cs: [] }
+    const col = wk.addStack(); col.layoutVertically(); col.size = new Size(W / 7, 0); col.centerAlignContent()
+    const l1 = col.addStack(); l1.addSpacer(); text(l1, DOW[d.getDay()], 8, i ? FAINT : INK, "heavy"); l1.addSpacer()
+    col.addSpacer(3)
+    const l2 = col.addStack(); l2.addSpacer()
+    const chip = l2.addStack(); chip.size = new Size(30, 26); chip.cornerRadius = 7; chip.centerAlignContent()
+    chip.backgroundColor = new Color(I.cs.length ? CAT[I.cs[0]] : CHIP)
+    if (I.dad) { chip.borderColor = new Color(DAD); chip.borderWidth = 2 }
+    if (i === 0) { chip.borderColor = new Color("#2b6cff"); chip.borderWidth = 2 }
+    chip.addSpacer(); text(chip, d.getDate(), 11, I.cs.length ? INK : MUTE, "heavy"); chip.addSpacer()
+    l2.addSpacer()
+    col.addSpacer(3)
+    const l3 = col.addStack(); l3.addSpacer(); box(l3, 16, 3, I.kid ? "#7fcbb4" : null, 1.5); l3.addSpacer()
+  }
+  w.addSpacer(10)
+  const cols = w.addStack(); cols.spacing = 14
+  ;[0, 1].forEach(i => {
+    const c = cols.addStack(); c.layoutVertically(); c.size = new Size((W - 14) / 2, 0)
+    text(c, i ? "TOMORROW" : "TODAY", 8, i ? FAINT : INK, "heavy"); c.addSpacer(4)
+    agenda(c, M, keyOf(addDays(t, i)), P ? 3 : 5, 11.5)
+  })
   w.addSpacer()
-  const list = w.addStack(); list.layoutVertically(); list.spacing = 3
-  for (const s of upcoming(M, 3)) {
-    const r = list.addStack(); r.centerAlignContent(); r.spacing = 6
-    bar(r, 8, 8, s.c != null ? CAT[s.c] : "#999999", 4)
-    const ds = parseKey(s.s), de = parseKey(s.e)
-    const when = s.s === s.e ? `${MON[ds.getMonth()]} ${ds.getDate()}` : `${MON[ds.getMonth()]} ${ds.getDate()} – ${MON[de.getMonth()]} ${de.getDate()}`
-    const a = text(r, when, 9, C.soft, "semi"); a.lineLimit = 1
-    const b = text(r, s.t, 9.5, C.ink, "semi"); b.lineLimit = 1; b.minimumScaleFactor = 0.7
-  }
 }
 
 // ── MAIN ─────────────────────────────────────────────────────
@@ -255,7 +276,7 @@ const years = [yr, yr + 1]
 const rows = await load(years)
 const M = buildModel(rows, years)
 const w = new ListWidget()
-w.backgroundColor = C.bg
+w.backgroundColor = Color.white()
 w.url = CAL_URL
 w.refreshAfterDate = new Date(Date.now() + 30 * 60 * 1000)
 const fam = config.widgetFamily
